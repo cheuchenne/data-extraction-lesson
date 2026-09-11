@@ -1,0 +1,15 @@
+---
+title: "Course Title"
+---
+
+# Course Title
+
+This repository contains the materials for the course.
+
+## Course materials
+
+- Quarto documents: `lessons/`
+- Jupyter notebooks: `notebooks/`
+- Python scripts: `python/`
+- Data: `data/`
+- Figures: `figures/`

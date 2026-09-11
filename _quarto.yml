@@ -1,0 +1,16 @@
+project:
+  type: book
+
+book:
+  title: "Course Title"
+  chapters:
+    - index.qmd
+    - lessons/01-lesson.qmd
+
+format:
+  html:
+    toc: true
+    number-sections: true
+    code-fold: false
+
+jupyter: python3
