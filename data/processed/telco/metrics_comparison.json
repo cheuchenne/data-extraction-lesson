@@ -1,0 +1,58 @@
+{
+  "text_encoding_communications": {
+    "backend": "tfidf_svd",
+    "reference": "sklearn TfidfVectorizer + TruncatedSVD (LSA)",
+    "dim": 64
+  },
+  "text_encoding_profile": {
+    "backend": "tfidf_svd",
+    "reference": "sklearn TfidfVectorizer + TruncatedSVD (LSA)",
+    "dim": 64
+  },
+  "classifier": "sklearn.linear_model.LogisticRegression (balanced)",
+  "n_customers": 7043,
+  "n_communication_texts": 24708,
+  "note_on_communications": "Communications used Churn as hidden tone \u2192 optimistic upper bound. Profile text is the fairer churn-blind ablation.",
+  "metrics": [
+    {
+      "model": "tabular_only",
+      "accuracy": 0.7501419647927314,
+      "precision": 0.5188284518828452,
+      "recall": 0.7965738758029979,
+      "f1": 0.6283783783783784,
+      "roc_auc": 0.8461024196671179,
+      "tn": 949,
+      "fp": 345,
+      "fn": 95,
+      "tp": 372
+    },
+    {
+      "model": "tabular_plus_communications",
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "roc_auc": 1.0,
+      "tn": 1294,
+      "fp": 0,
+      "fn": 0,
+      "tp": 467
+    },
+    {
+      "model": "tabular_plus_profile_text",
+      "accuracy": 0.7529812606473595,
+      "precision": 0.5222841225626741,
+      "recall": 0.8029978586723768,
+      "f1": 0.6329113924050633,
+      "roc_auc": 0.8451029128013,
+      "tn": 951,
+      "fp": 343,
+      "fn": 92,
+      "tp": 375
+    }
+  ],
+  "auc_lift_communications": 0.15389758033288214,
+  "auc_lift_profile_text": -0.0009995068658178452,
+  "f1_lift_communications": 0.3716216216216216,
+  "f1_lift_profile_text": 0.004533014026684934
+}

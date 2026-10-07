@@ -1,0 +1,7 @@
+variable,type,definition
+payment_id,identifier,Identifier of the payment row attached to this invoice.
+invoice_id,identifier,Unique identifier of one invoice (one billing cycle for one customer).
+customer_id,identifier,Identifier of the customer billed on this invoice.
+amount,numeric,"Amount recorded on the payment row, in euros."
+status,factor,"Finance snapshot on 12 September 2026. paid = a payment_date is recorded (including paid after the due date). unpaid = no payment yet, and the due date has not passed. overdue = no payment, and the due date has already passed. overdue is not 'paid late'."
+payment_date,date,Date a payment was recorded. Empty when no payment has been recorded (unpaid or overdue invoices).

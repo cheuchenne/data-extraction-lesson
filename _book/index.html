@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Course Title</title>
+<title>AI and Data Science</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./lessons/01-lesson.html" rel="next">
+<link href="./lessons/02b-data-loading.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5e2915e4d4df5928b2b0a61215b328b6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -80,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Course Title</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Loading, integrating and exploring data</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -95,7 +95,7 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Course Title</a> 
+      <a href="./">AI and Data Science</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -108,13 +108,31 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Course Title</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Loading, integrating and exploring data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lessons/01-lesson.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  <a href="./lessons/02b-data-loading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">From Business Information to Analysis-Ready Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lessons/02c-exploratory-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">One Analysis Table from Several Sources</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lessons/02d-eda-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exploratory Analysis and Data Visualisation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lessons/02e-churn-text-ml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">From Structured Data to a Predictive Model</span></span></a>
   </div>
 </li>
     </ul>
@@ -127,10 +145,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#course-title" id="toc-course-title" class="nav-link active" data-scroll-target="#course-title"><span class="header-section-number">1</span> Course Title</a>
-  <ul class="collapse">
-  <li><a href="#course-materials" id="toc-course-materials" class="nav-link" data-scroll-target="#course-materials"><span class="header-section-number">1.1</span> Course materials</a></li>
-  </ul></li>
+  <li><a href="#section-2.b-from-business-information-to-analysis-ready-data" id="toc-section-2.b-from-business-information-to-analysis-ready-data" class="nav-link active" data-scroll-target="#section-2.b-from-business-information-to-analysis-ready-data"><span class="header-section-number">0.1</span> Section 2.b — From business information to analysis-ready data</a></li>
+  <li><a href="#section-2.c-one-analysis-table-from-several-sources" id="toc-section-2.c-one-analysis-table-from-several-sources" class="nav-link" data-scroll-target="#section-2.c-one-analysis-table-from-several-sources"><span class="header-section-number">0.2</span> Section 2.c — One analysis table from several sources</a></li>
+  <li><a href="#section-2.d-exploratory-analysis-and-data-visualisation" id="toc-section-2.d-exploratory-analysis-and-data-visualisation" class="nav-link" data-scroll-target="#section-2.d-exploratory-analysis-and-data-visualisation"><span class="header-section-number">0.3</span> Section 2.d — Exploratory analysis and data visualisation</a></li>
+  <li><a href="#section-2.e-from-structured-data-to-a-predictive-model" id="toc-section-2.e-from-structured-data-to-a-predictive-model" class="nav-link" data-scroll-target="#section-2.e-from-structured-data-to-a-predictive-model"><span class="header-section-number">0.4</span> Section 2.e — From structured data to a predictive model</a></li>
+  <li><a href="#how-to-follow-the-lessons" id="toc-how-to-follow-the-lessons" class="nav-link" data-scroll-target="#how-to-follow-the-lessons"><span class="header-section-number">0.5</span> How to follow the lessons</a></li>
   </ul>
 </nav>
     </div>
@@ -139,7 +158,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Course Title</h1>
+<h1 class="title">AI and Data Science</h1>
+<p class="subtitle lead">From extraction to analysis-ready data</p>
 </div>
 
 
@@ -156,21 +176,33 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="course-title" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Course Title</h1>
-<p>This repository contains the materials for the course.</p>
-<section id="course-materials" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="course-materials"><span class="header-section-number">1.1</span> Course materials</h2>
-<ul>
-<li>Quarto documents: <code>lessons/</code></li>
-<li>Jupyter notebooks: <code>notebooks/</code></li>
-<li>Python scripts: <code>python/</code></li>
-<li>Data: <code>data/</code></li>
-<li>Figures: <code>figures/</code></li>
-</ul>
-
-
+<p>This repository is the teaching material for <strong>Sections 2.b, 2.c, 2.d and 2.e</strong>.</p>
+<p>The HarborLink documents (2.b–2.d) use one fictitious subscription company. Those datasets are entirely synthetic. Section 2.e then uses a customer-level telco table plus generated communications to train a predictive model.</p>
+<section id="section-2.b-from-business-information-to-analysis-ready-data" class="level2" data-number="0.1">
+<h2 data-number="0.1" class="anchored" data-anchor-id="section-2.b-from-business-information-to-analysis-ready-data"><span class="header-section-number">0.1</span> Section 2.b — From business information to analysis-ready data</h2>
+<p>How can we transform information produced in everyday business activities into structured data that Python can load?</p>
+<p>Main document: <code>lessons/02b-data-loading.qmd</code></p>
 </section>
+<section id="section-2.c-one-analysis-table-from-several-sources" class="level2" data-number="0.2">
+<h2 data-number="0.2" class="anchored" data-anchor-id="section-2.c-one-analysis-table-from-several-sources"><span class="header-section-number">0.2</span> Section 2.c — One analysis table from several sources</h2>
+<p>Join the HarborLink extracts into one invoice-level DataFrame (<code>lessons/02c-exploratory-analysis.qmd</code>).</p>
+</section>
+<section id="section-2.d-exploratory-analysis-and-data-visualisation" class="level2" data-number="0.3">
+<h2 data-number="0.3" class="anchored" data-anchor-id="section-2.d-exploratory-analysis-and-data-visualisation"><span class="header-section-number">0.3</span> Section 2.d — Exploratory analysis and data visualisation</h2>
+<p>Explore and visualise that table with pandas, matplotlib and seaborn (<code>lessons/02d-eda-visualisation.qmd</code>).</p>
+</section>
+<section id="section-2.e-from-structured-data-to-a-predictive-model" class="level2" data-number="0.4">
+<h2 data-number="0.4" class="anchored" data-anchor-id="section-2.e-from-structured-data-to-a-predictive-model"><span class="header-section-number">0.4</span> Section 2.e — From structured data to a predictive model</h2>
+<p>Once a table is ready, how do we turn numbers <strong>and</strong> text into a probability of churn?</p>
+<p>Main document: <code>lessons/02e-churn-text-ml.qmd</code></p>
+<p>Practice notebook: <code>notebooks/02e-churn-text-ml.ipynb</code></p>
+<p>The session formalizes early fusion (tabular fields + TF–IDF / SVD text), logistic regression, evaluation metrics, and explanations (permutation importance, LIME).</p>
+</section>
+<section id="how-to-follow-the-lessons" class="level2" data-number="0.5">
+<h2 data-number="0.5" class="anchored" data-anchor-id="how-to-follow-the-lessons"><span class="header-section-number">0.5</span> How to follow the lessons</h2>
+<p>Open the Quarto file for the session and execute the Python cells in order. The HarborLink demonstrations do not require an ERP, a CRM, API keys or an internet connection. The modelling session reads local CSV files already present in <code>data/raw/telco/</code>.</p>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -595,8 +627,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./lessons/01-lesson.html" class="pagination-link" aria-label="Introduction">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./lessons/02b-data-loading.html" class="pagination-link" aria-label="From Business Information to Analysis-Ready Data">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">From Business Information to Analysis-Ready Data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

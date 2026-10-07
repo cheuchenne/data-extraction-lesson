@@ -1,0 +1,9 @@
+customer_id,customer_name,company_name,customer_segment,subscription_type,monthly_amount,signup_date,country,payment_status
+1827,Elena Vargas,Atelier Vega,mid-market,premium,49.90,2025-03-12,BE,unpaid
+1841,Marc Dubois,Dubois & Fils,smb,standard,29.90,2025-05-04,FR,paid
+1903,Priya Shah,Shah Consulting,smb,starter,19.90,2025-06-18,NL,paid
+1918,Thomas Berg,Berg Logistics,mid-market,premium,49.90,2025-01-20,DE,overdue
+2044,Amelie Laurent,Laurent Design,smb,standard,29.90,2025-09-01,BE,paid
+2110,Jonas Keller,Keller Studio,smb,starter,19.90,2026-01-15,DE,unpaid
+2235,Sofia Rossi,Rossi Media,mid-market,premium,49.90,2025-11-08,IT,paid
+2301,Liam OConnor,Northwind Retail,smb,standard,29.90,2026-02-02,IE,paid

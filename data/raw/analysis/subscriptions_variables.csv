@@ -1,0 +1,7 @@
+variable,type,definition
+subscription_id,identifier,Identifier of that customer's HarborLink subscription.
+customer_id,identifier,Identifier of the customer billed on this invoice.
+subscription_type,factor,"Plan of the subscription: starter, standard or premium."
+monthly_amount,numeric,"Monthly price of the plan, in euros. It should match amount on these invoices."
+start_date,date,Date this subscription started.
+status,factor,Whether the subscription is active in the operations table.

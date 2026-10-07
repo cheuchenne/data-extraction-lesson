@@ -1,0 +1,7 @@
+variable,type,definition
+customer_id,identifier,Identifier of the customer billed on this invoice.
+customer_name,identifier,Name of the person who is the HarborLink customer.
+company_name,identifier,Name of the customer's company.
+customer_segment,factor,"Commercial segment of the customer (smb, mid-market, enterprise). Empty when the customer file has no segment for that customer."
+country,factor,"Country of the customer, as an ISO two-letter code."
+signup_date,date,Date the customer first subscribed to HarborLink.

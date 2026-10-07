@@ -1,16 +1,31 @@
 project:
   type: book
+  execute-dir: project
 
 book:
-  title: "Course Title"
+  title: "AI and Data Science"
+  subtitle: "From extraction to analysis-ready data"
+  sidebar:
+    collapse-level: 1
   chapters:
     - index.qmd
-    - lessons/01-lesson.qmd
+    - lessons/02b-data-loading.qmd
+    - lessons/02c-exploratory-analysis.qmd
+    - lessons/02d-eda-visualisation.qmd
+    - lessons/02e-churn-text-ml.qmd
 
 format:
   html:
     toc: true
+    toc-depth: 3
     number-sections: true
+    number-depth: 3
     code-fold: false
+    theme: cosmo
 
-jupyter: python3
+execute:
+  echo: true
+  warning: false
+  message: false
+
+jupyter: data-extraction-lesson

@@ -1,15 +1,35 @@
 ---
-title: "Course Title"
+title: "Loading, integrating and exploring data"
 ---
 
-# Course Title
+This repository is the teaching material for **Sections 2.b, 2.c, 2.d and 2.e**.
 
-This repository contains the materials for the course.
+The HarborLink documents (2.b–2.d) use one fictitious subscription company. Those datasets are entirely synthetic. Section 2.e then uses a customer-level telco table plus generated communications to train a predictive model.
 
-## Course materials
+## Section 2.b — From business information to analysis-ready data
 
-- Quarto documents: `lessons/`
-- Jupyter notebooks: `notebooks/`
-- Python scripts: `python/`
-- Data: `data/`
-- Figures: `figures/`
+How can we transform information produced in everyday business activities into structured data that Python can load?
+
+Main document: `lessons/02b-data-loading.qmd`
+
+## Section 2.c — One analysis table from several sources
+
+Join the HarborLink extracts into one invoice-level DataFrame (`lessons/02c-exploratory-analysis.qmd`).
+
+## Section 2.d — Exploratory analysis and data visualisation
+
+Explore and visualise that table with pandas, matplotlib and seaborn (`lessons/02d-eda-visualisation.qmd`).
+
+## Section 2.e — From structured data to a predictive model
+
+Once a table is ready, how do we turn numbers **and** text into a probability of churn?
+
+Main document: `lessons/02e-churn-text-ml.qmd`
+
+Practice notebook: `notebooks/02e-churn-text-ml.ipynb`
+
+The session formalizes early fusion (tabular fields + TF–IDF / SVD text), logistic regression, evaluation metrics, and explanations (permutation importance, LIME).
+
+## How to follow the lessons
+
+Open the Quarto file for the session and execute the Python cells in order. The HarborLink demonstrations do not require an ERP, a CRM, API keys or an internet connection. The modelling session reads local CSV files already present in `data/raw/telco/`.

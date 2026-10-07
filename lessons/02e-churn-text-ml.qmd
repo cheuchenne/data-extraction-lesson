@@ -1,0 +1,607 @@
+---
+title: "From Structured Data to a Predictive Model"
+subtitle: "Multimodal churn classification"
+jupyter: data-extraction-lesson
+---
+
+After the HarborLink extraction and exploratory sessions, this lesson uses a
+customer-level table together with textual communications. The goal is no longer
+to describe the data, but to **score a binary outcome** with a transparent
+multimodal model.
+
+The communications files `customer_communications.csv`,
+`customer_communications_2.csv` and `customer_communications_3.csv` are kept
+under `data/raw/telco/` so we can later decide which corpus is the most useful.
+The live cells below use the full template file
+`customer_communications.csv`.
+
+## Learning objectives
+
+By the end of this session you should be able to:
+
+1. Write the multimodal churn model as a map from **heterogeneous raw data** to a probability $\hat p_i\in(0,1)$.
+2. Explain, with formulae, **standardization**, **one-hot encoding**, **TF–IDF** and **truncated SVD (LSA)**.
+3. Formalize **early fusion** (concatenation of tabular and text vectors).
+4. State the **logistic regression** likelihood and the decision rule.
+5. Define **TP/FP/TN/FN**, Precision, Recall, $F_1$, ROC and AUC.
+6. Interpret **global** and **local** explanations (permutation importance, LIME, text-type diagnostics).
+
+## The prediction problem
+
+### Observed data for customer $i$
+
+For each customer $i=1,\dots,n$ we observe:
+
+1. **Structured CRM fields**
+   - continuous: e.g. $\mathrm{tenure}_i$, $\mathrm{MonthlyCharges}_i$, $\mathrm{TotalCharges}_i$;
+   - categorical: e.g. $\mathrm{Contract}_i$, $\mathrm{InternetService}_i$, $\mathrm{PaymentMethod}_i$, …
+2. **A collection of textual communications**
+   $$
+   \mathcal{T}_i=\{t_{i1},\dots,t_{i m_i}\},
+   $$
+   where each $t_{ij}$ is a billing email, support dialog, complaint, CRM note, etc.
+3. **A binary label**
+   $$
+   Y_i\in\{0,1\},
+   \qquad
+   Y_i=1 \Leftrightarrow \text{customer }i\text{ churns}.
+   $$
+
+We treat CRM fields and texts as **given inputs**. The goal is to learn a function
+$$
+f:\ \text{(CRM fields of }i\text{)},\ \mathcal{T}_i\ \longmapsto\ \hat p_i=\widehat{\mathbb{P}}(Y_i=1\mid \text{data of }i).
+$$
+
+```{python}
+#| label: data-glimpse
+from pathlib import Path
+import os
+import pandas as pd
+
+if not Path("data/raw/telco/telco_with_profiles.csv").exists():
+    os.chdir(Path("..").resolve())
+
+TELCO_RAW = Path("data/raw/telco")
+TELCO_RESULTS = Path("data/processed/telco")
+
+profiles = pd.read_csv(TELCO_RAW / "telco_with_profiles.csv")
+comms_path = TELCO_RAW / "customer_communications.csv"
+comms = pd.read_csv(comms_path)
+print("Working directory:", Path.cwd())
+print("Communications file:", comms_path)
+print("Customers:", len(profiles), "| Texts:", len(comms))
+print("Mean texts / customer:", round(len(comms)/comms['customerID'].nunique(), 2))
+print("Churn rate:", (profiles["Churn"].astype(str).str.strip()=="Yes").mean().round(3))
+print("Available communication files:")
+for name in [
+    "customer_communications.csv",
+    "customer_communications_2.csv",
+    "customer_communications_3.csv",
+]:
+    path = TELCO_RAW / name
+    print(f"  {name}: {len(pd.read_csv(path)) if path.exists() else 0} rows")
+comms["communication_type"].value_counts()
+```
+
+### Why two modalities?
+
+- CRM fields summarize **stable account attributes** (contract length, price, products).
+- Texts capture **interaction content** (complaints, billing friction, support issues) that is hard to store as a few categorical columns.
+
+A model that uses only numbers may miss linguistic signal; a model that uses only text may miss precise amounts and contract structure. **Multimodal learning** combines both.
+
+## Building a common numeric representation
+
+Computers do not add “€64.90” to the sentence “my connection is unstable”.  
+We therefore build two real vectors and concatenate them.
+
+### Notation for early fusion
+
+$$
+\mathbf{x}_i^{\mathrm{tab}}\in\mathbb{R}^{p},
+\qquad
+\mathbf{x}_i^{\mathrm{txt}}\in\mathbb{R}^{k},
+\qquad
+\mathbf{x}_i
+=
+\begin{bmatrix}
+\mathbf{x}_i^{\mathrm{tab}}\\
+\mathbf{x}_i^{\mathrm{txt}}
+\end{bmatrix}
+\in\mathbb{R}^{p+k}.
+$$
+
+This concatenation is called **early fusion**: modalities are merged **before** the classifier.
+
+```{mermaid}
+flowchart TB
+  subgraph tabular [Tabular pathway]
+    A1[Continuous fields] --> A2[Standardization]
+    A3[Categorical fields] --> A4[One-hot encoding]
+    A2 --> A5["x_tab in R^p"]
+    A4 --> A5
+  end
+  subgraph textpath [Text pathway]
+    B1["Texts T_i"] --> B2[Concatenate into document d_i]
+    B2 --> B3[TF-IDF vector w_i in R^V]
+    B3 --> B4["Truncated SVD / LSA → x_txt in R^k"]
+  end
+  A5 --> C["Early fusion: x = [x_tab; x_txt]"]
+  B4 --> C
+  C --> D["Logistic regression → p̂ = σ(β0 + βᵀx)"]
+```
+
+## Pathway 1 — tabular features
+
+### Continuous variables: standardization
+
+Let $z_i$ be a continuous field (e.g. monthly charge). On the **training** sample of size $n_{\mathrm{train}}$:
+
+$$
+\hat\mu=\frac1{n_{\mathrm{train}}}\sum_{i\in\mathrm{train}}z_i,
+\qquad
+\hat\sigma
+=
+\sqrt{
+\frac1{n_{\mathrm{train}}}\sum_{i\in\mathrm{train}}(z_i-\hat\mu)^2
+}.
+$$
+
+The standardized value is
+$$
+\tilde z_i=\frac{z_i-\hat\mu}{\hat\sigma}.
+$$
+
+**Why?** Logistic regression uses a linear score $\boldsymbol\beta^\top\mathbf{x}$. Without scaling, a variable measured in thousands (total charges) can dominate one measured in tens (monthly charges) for purely dimensional reasons.
+
+> Fit $\hat\mu,\hat\sigma$ on the training set only; apply the same constants to the test set (no leakage).
+
+### Categorical variables: one-hot encoding
+
+Suppose a categorical variable $C$ has finite levels
+$$
+\mathcal{C}=\{c_1,\dots,c_M\}
+$$
+(example: $\mathcal{C}=\{\text{Month-to-month},\text{One year},\text{Two year}\}$).
+
+Define the **one-hot map** $\mathbf{e}:\mathcal{C}\to\{0,1\}^M$ by
+$$
+\mathbf{e}(c_j)
+=
+\bigl(
+\mathbf{1}\{j=1\},\mathbf{1}\{j=2\},\dots,\mathbf{1}\{j=M\}
+\bigr)^\top.
+$$
+
+**Mini-example.** If $C_i=\text{One year}$ and $M=3$ with the order above,
+$$
+\mathbf{e}(C_i)=(0,1,0)^\top.
+$$
+
+If we have several categorical variables $C^{(1)},\dots,C^{(Q)}$, we concatenate their one-hot blocks:
+$$
+\mathbf{x}_i^{\mathrm{cat}}
+=
+\bigl[
+\mathbf{e}^{(1)}(C_i^{(1)})^\top,\ \dots,\ \mathbf{e}^{(Q)}(C_i^{(Q)})^\top
+\bigr]^\top.
+$$
+
+Finally,
+$$
+\mathbf{x}_i^{\mathrm{tab}}
+=
+\bigl[
+\tilde{\mathbf{z}}_i^\top,\ 
+(\mathbf{x}_i^{\mathrm{cat}})^\top
+\bigr]^\top\in\mathbb{R}^{p}.
+$$
+
+In software this is exactly `StandardScaler` + `OneHotEncoder` inside a `ColumnTransformer`.
+
+## Pathway 2 — from text to a dense vector
+
+### Step A: one document per customer
+
+Concatenate all messages of customer $i$ (order by time / index):
+$$
+d_i = t_{i1}\ \|\ t_{i2}\ \|\ \dots\ \|\ t_{i m_i}.
+$$
+
+Tokenize $d_i$ into terms (words / bigrams). Let the training vocabulary be
+$$
+\{u_1,\dots,u_V\}.
+$$
+
+### Step B: TF–IDF (term weighting)
+
+#### Term frequency
+
+$$
+\mathrm{tf}(u,d)
+=
+\frac{\text{number of occurrences of }u\text{ in }d}
+{\text{number of tokens in }d}.
+$$
+
+#### Document frequency and IDF
+
+Let $\mathrm{df}(u)$ be the number of **training** documents containing term $u$.  
+A standard smooth IDF (as in scikit-learn) is
+$$
+\mathrm{idf}(u)
+=
+\log\frac{1+n_{\mathrm{train}}}{1+\mathrm{df}(u)}+1.
+$$
+
+Rare terms across customers get **large** IDF; ubiquitous terms (“the”, “customer”) get **small** IDF.
+
+#### TF–IDF weight
+
+$$
+w_{i,v}
+=
+\mathrm{tf}(u_v,d_i)\cdot\mathrm{idf}(u_v).
+$$
+
+Stacking these weights yields a sparse vector
+$$
+\mathbf{w}_i=(w_{i,1},\dots,w_{i,V})^\top\in\mathbb{R}^{V}.
+$$
+
+**Interpretation.** A coordinate is large when the term is frequent *for this customer* and uncommon *in the corpus*.
+
+**Mini-example.** Suppose vocabulary $\{\text{fiber},\text{slow},\text{bill}\}$ and document $d=$ “fiber slow fiber”.  
+Then raw counts are $(2,1,0)$. After length normalization and multiplying by IDFs $(1.2, 2.0, 1.5)$ one gets a vector proportional to $(2\cdot1.2,\ 1\cdot2.0,\ 0)=(2.4,2.0,0)$.
+
+### Step C: truncated SVD / LSA (dimension reduction)
+
+$V$ is typically thousands: too large, noisy, and sparse for a small $n$.  
+Collect training TF–IDF rows into a matrix
+$$
+W\in\mathbb{R}^{n_{\mathrm{train}}\times V}.
+$$
+
+Compute a rank-$k$ SVD approximation
+$$
+W \;\approx\; U_k\,\Sigma_k\,V_k^\top,
+$$
+where
+
+- $U_k\in\mathbb{R}^{n_{\mathrm{train}}\times k}$ has orthonormal columns,
+- $\Sigma_k=\mathrm{diag}(\sigma_1\ge\dots\ge\sigma_k)>0$,
+- $V_k\in\mathbb{R}^{V\times k}$ has orthonormal columns (right singular vectors / latent topics directions).
+
+A new document with TF–IDF $\mathbf{w}$ is mapped to LSA coordinates
+$$
+\mathbf{x}^{\mathrm{txt}}
+=
+\Sigma_k^{-1} V_k^\top \mathbf{w}
+\in\mathbb{R}^{k}
+$$
+(up to the exact convention used by the library; scikit-learn’s `TruncatedSVD.transform` implements an equivalent linear map).
+
+**Why this helps.**
+
+1. **Compression:** $k\ll V$ (we use $k\approx 64$).
+2. **Denoising:** tiny singular values (noise directions) are discarded.
+3. **Semantic smoothing:** terms that co-occur (e.g. “slow” / “outage” / “connection”) load on similar latent axes, so related phrasings become close in $\mathbb{R}^{k}$.
+
+This classical pipeline is **Latent Semantic Analysis (LSA)** (Deerwester et al., 1990).
+
+#### Optional remark (neural embeddings)
+
+A Sentence-BERT encoder defines
+$$
+\mathbf{x}^{\mathrm{txt}}=f_\theta(d)\in\mathbb{R}^{k}
+$$
+with a pretrained transformer $f_\theta$.  
+The **fusion mathematics below is unchanged**: only the map $d\mapsto\mathbf{x}^{\mathrm{txt}}$ differs.  
+This course defaults to TF–IDF + SVD because every step is linear/algebraic and auditable.
+
+## Putting modalities together
+
+### Early fusion vector
+
+$$
+\mathbf{x}_i
+=
+\begin{bmatrix}
+\mathbf{x}_i^{\mathrm{tab}}\\
+\mathbf{x}_i^{\mathrm{txt}}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\text{scaled numbers}\\
+\text{one-hot categories}\\
+\text{LSA text coordinates}
+\end{bmatrix}.
+$$
+
+Partition the coefficient vector conformally:
+$$
+\boldsymbol\beta
+=
+\begin{bmatrix}
+\boldsymbol\beta^{\mathrm{tab}}\\
+\boldsymbol\beta^{\mathrm{txt}}
+\end{bmatrix}.
+$$
+
+The linear predictor splits as
+$$
+\boldsymbol\beta^\top\mathbf{x}_i
+=
+\underbrace{(\boldsymbol\beta^{\mathrm{tab}})^\top\mathbf{x}_i^{\mathrm{tab}}}_{\text{CRM contribution}}
++
+\underbrace{(\boldsymbol\beta^{\mathrm{txt}})^\top\mathbf{x}_i^{\mathrm{txt}}}_{\text{text contribution}}.
+$$
+
+This is the precise sense in which “numbers and text are combined”: **additive contributions inside one linear score**.
+
+### Logistic regression
+
+#### Probability model
+
+$$
+\hat p_i
+=
+\mathbb{P}(Y_i=1\mid\mathbf{x}_i)
+=
+\sigma\!\left(\beta_0+\boldsymbol\beta^\top\mathbf{x}_i\right),
+\qquad
+\sigma(u)=\frac{1}{1+e^{-u}}.
+$$
+
+Equivalently, the log-odds are linear:
+$$
+\log\frac{\hat p_i}{1-\hat p_i}
+=
+\beta_0+\boldsymbol\beta^\top\mathbf{x}_i.
+$$
+
+#### Learning criterion (class-weighted log-likelihood)
+
+Because churn is rarer than non-churn, we use **balanced / class-weighted** logistic regression.  
+With weights $\omega_0,\omega_1>0$ (inversely related to class frequency), one maximizes
+$$
+\mathcal{L}(\beta_0,\boldsymbol\beta)
+=
+\sum_{i\in\mathrm{train}}
+\omega_{Y_i}
+\Big[
+Y_i\log\hat p_i
++(1-Y_i)\log(1-\hat p_i)
+\Big]
+-
+\frac{\lambda}{2}\|\boldsymbol\beta\|_2^2.
+$$
+
+The last term is an optional $\ell_2$ penalty (ridge).  
+scikit-learn’s `LogisticRegression(class_weight="balanced")` implements this idea.
+
+#### Decision rule
+
+For a threshold $\tau\in(0,1)$ (default $\tau=0.5$),
+$$
+\hat Y_i=\mathbf{1}\{\hat p_i\ge\tau\}.
+$$
+
+Changing $\tau$ trades false alarms against missed churners (see ROC below).
+
+### Train / test discipline
+
+Draw a stratified split
+$$
+\{1,\dots,n\}=\mathcal{I}_{\mathrm{train}}\cup\mathcal{I}_{\mathrm{test}}.
+$$
+
+**Fit on train only:** scalers, one-hot dictionaries, IDF weights, SVD factors, and $(\beta_0,\boldsymbol\beta)$.  
+**Evaluate on test:** apply the frozen transforms, then compute metrics.
+
+## Evaluation metrics (mathematics)
+
+### Confusion matrix
+
+|  | $\hat Y=0$ | $\hat Y=1$ |
+|--|:--:|:--:|
+| $Y=0$ | TN | FP |
+| $Y=1$ | FN | TP |
+
+$$
+\begin{aligned}
+\mathrm{Accuracy}
+&=\frac{TP+TN}{TP+TN+FP+FN},\\[4pt]
+\mathrm{Precision}
+&=\frac{TP}{TP+FP}
+\quad\text{(among predicted churners, how many truly churn?)},\\[4pt]
+\mathrm{Recall}
+&=\frac{TP}{TP+FN}
+\quad\text{(among true churners, how many did we catch?)},\\[4pt]
+F_1
+&=
+\frac{2\cdot\mathrm{Precision}\cdot\mathrm{Recall}}
+{\mathrm{Precision}+\mathrm{Recall}}.
+\end{aligned}
+$$
+
+Under imbalance, accuracy alone is misleading: predicting always “no churn” can look “accurate”.
+
+### ROC and AUC
+
+For each threshold $\tau$, define
+$$
+\mathrm{TPR}(\tau)=\frac{TP(\tau)}{TP(\tau)+FN(\tau)},
+\qquad
+\mathrm{FPR}(\tau)=\frac{FP(\tau)}{FP(\tau)+TN(\tau)}.
+$$
+
+The ROC curve is the parametric plot $\tau\mapsto\bigl(\mathrm{FPR}(\tau),\mathrm{TPR}(\tau)\bigr)$.  
+The **AUC** is the area under that curve:
+$$
+\mathrm{AUC}
+=
+\int_0^1 \mathrm{TPR}\,\mathrm{d}(\mathrm{FPR}).
+$$
+
+Equivalently, AUC is the probability that a random churner receives a higher score $\hat p$ than a random non-churner.
+
+## Two models we compare
+
+| Model | Features | Role |
+|--|--|--|
+| **A — tabular only** | $\mathbf{x}^{\mathrm{tab}}$ | Classical CRM baseline |
+| **B — tabular + text** | $[\mathbf{x}^{\mathrm{tab}};\mathbf{x}^{\mathrm{txt}}]$ | Multimodal model |
+
+The **lift** of text is measured by differences such as
+$$
+\Delta\mathrm{AUC}
+=
+\mathrm{AUC}(B)-\mathrm{AUC}(A),
+\qquad
+\Delta F_1
+=
+F_1(B)-F_1(A).
+$$
+
+## Live empirical results
+
+```bash
+source .venv/bin/activate
+python python/train_churn_model.py
+```
+
+```{python}
+#| label: metrics-table
+from pathlib import Path
+import json
+import pandas as pd
+
+TELCO_RESULTS = Path("data/processed/telco")
+metrics = pd.read_csv(TELCO_RESULTS / "metrics_comparison.csv")
+summary = json.loads((TELCO_RESULTS / "metrics_comparison.json").read_text())
+metrics.round(4)
+```
+
+```{python}
+#| label: metric-bars
+import matplotlib.pyplot as plt
+plot_df = metrics.set_index("model")[["accuracy","precision","recall","f1","roc_auc"]]
+ax = plot_df.T.plot(kind="bar", figsize=(8,4))
+ax.set_ylim(0, 1.05)
+ax.set_title("Tabular only vs tabular + text")
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+print("AUC lift (adding text):", round(summary.get("auc_lift_text", float("nan")), 4))
+```
+
+```{python}
+#| label: roc
+from pathlib import Path
+from IPython.display import Image
+Image(filename=str(Path("data/processed/telco/roc_curves.png")))
+```
+
+## Explainability: from coefficients to messages
+
+### Global importance (permutation)
+
+For feature $j$, randomly permute $\{x_{ij}\}_i$ on the test set, recompute AUC, and measure the drop:
+$$
+\mathrm{Imp}_j
+=
+\mathrm{AUC}_{\mathrm{original}}
+-
+\mathbb{E}\bigl[\mathrm{AUC}_{\mathrm{permute\ }j}\bigr].
+$$
+
+Large $\mathrm{Imp}_j$ means the model relied on coordinate $j$.  
+Summing importances over tabular vs text blocks answers: *does the model look more at CRM fields or at text coordinates?*
+
+```{python}
+#| label: perm
+from IPython.display import Image, display
+from pathlib import Path
+TELCO_RESULTS = Path("data/processed/telco")
+display(Image(filename=str(TELCO_RESULTS / "permutation_importance.png")))
+display(pd.read_csv(TELCO_RESULTS / "permutation_importance_top.csv").head(12))
+if (TELCO_RESULTS / "block_importance_tabular_vs_text.png").exists():
+    display(Image(filename=str(TELCO_RESULTS / "block_importance_tabular_vs_text.png")))
+```
+
+### Local explanation (LIME)
+
+For a single customer $\mathbf{x}_\star$, LIME samples neighbours $\mathbf{x}'$, gets model probabilities $\hat p(\mathbf{x}')$, and fits a **local linear surrogate**
+$$
+g(\mathbf{x}')
+=
+\alpha_0+\boldsymbol\alpha^\top\mathbf{x}'
+\approx
+\hat p(\mathbf{x}')
+$$
+with sparsity constraints on $\boldsymbol\alpha$.  
+The largest $|\alpha_j|$ are the locally influential features for that customer.
+
+```{python}
+#| label: lime
+from pathlib import Path
+import pandas as pd
+pd.read_csv(Path("data/processed/telco/lime_examples.csv"))
+```
+
+### Text-type diagnostics
+
+Beyond abstract LSA coordinates, we ask operational questions:
+
+1. If we build $\mathbf{x}^{\mathrm{txt}}$ using **only complaints** (resp. only billing emails, …), how much AUC do we gain over tabular-only?
+2. If we **remove** one communication type from the corpus, how much AUC do we lose?
+3. Which individual messages receive a high text-only churn score $\hat P(Y=1\mid t)$?
+
+```{python}
+#| label: type-xai
+from IPython.display import Image, display
+from pathlib import Path
+for name in [
+    "text_type_auc_lift.png",
+    "text_type_leave_one_out.png",
+    "text_type_mean_p_churn.png",
+]:
+    p = Path("data/processed/telco") / name
+    if p.exists():
+        display(Image(filename=str(p)))
+if Path("data/processed/telco/text_type_predictive_strength.csv").exists():
+    display(pd.read_csv("data/processed/telco/text_type_predictive_strength.csv"))
+if Path("data/processed/telco/high_churn_signal_messages.csv").exists():
+    display(pd.read_csv("data/processed/telco/high_churn_signal_messages.csv").head(8))
+```
+
+## Compact formula sheet
+
+$$
+\begin{aligned}
+\tilde z &= (z-\hat\mu)/\hat\sigma,\\
+\mathbf{e}(c_j) &= (\mathbf{1}\{j=1\},\dots,\mathbf{1}\{j=M\})^\top,\\
+w_{d,u} &= \mathrm{tf}(u,d)\cdot\mathrm{idf}(u),\\
+\mathbf{x}^{\mathrm{txt}} &= \Sigma_k^{-1}V_k^\top\mathbf{w},\\
+\mathbf{x} &= [\mathbf{x}^{\mathrm{tab}};\mathbf{x}^{\mathrm{txt}}],\\
+\hat p &= \sigma(\beta_0+\boldsymbol\beta^\top\mathbf{x}),\\
+\hat Y &= \mathbf{1}\{\hat p\ge\tau\}.
+\end{aligned}
+$$
+
+## Commands
+
+```bash
+source .venv/bin/activate
+python python/train_churn_model.py
+quarto render lessons/02e-churn-text-ml.qmd
+```
+
+## Take-home messages
+
+1. Multimodal learning starts by mapping every modality into $\mathbb{R}^\bullet$.
+2. One-hot and standardization prepare **tabular** inputs; TF–IDF + SVD prepare **text** inputs.
+3. Early fusion is literally concatenation; logistic regression then adds the two contributions in one score.
+4. Evaluate with Precision/Recall/$F_1$/AUC, not accuracy alone.
+5. XAI should connect scores both to CRM fields and to **message types / example texts**.

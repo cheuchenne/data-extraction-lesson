@@ -1,6 +1,18 @@
 jupyter
 ipykernel
 pandas
+openpyxl
 requests
-sqlalchemy
+pymupdf
+reportlab
+Pillow
 matplotlib
+seaborn
+scikit-learn
+lime
+
+# Optional. Needed only to regenerate LLM-enriched communications
+# with python/generate_communications_2.py. Not required for 2.b–2.e.
+# torch
+# transformers
+# accelerate

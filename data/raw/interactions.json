@@ -1,0 +1,149 @@
+[
+  {
+    "customer_id": 1827,
+    "company_name": "Atelier Vega",
+    "subscription": {
+      "type": "premium",
+      "monthly_amount": 49.9,
+      "status": "unpaid"
+    },
+    "contacts": [
+      {
+        "date": "2026-09-05",
+        "channel": "email",
+        "interaction_type": "payment_issue",
+        "text": "Hello, I am contacting you because my September subscription has still not been paid. Could you please check?"
+      },
+      {
+        "date": "2026-09-06",
+        "channel": "crm_note",
+        "interaction_type": "note",
+        "text": "Customer emailed about unpaid September premium subscription. Invoice INV-2026-0901 still open. Finance to confirm bank matching."
+      },
+      {
+        "date": "2026-09-08",
+        "channel": "reminder",
+        "interaction_type": "reminder",
+        "text": "Friendly reminder: invoice INV-2026-0901 for EUR 49.90 is due on 15 September 2026."
+      }
+    ]
+  },
+  {
+    "customer_id": 1841,
+    "company_name": "Dubois & Fils",
+    "subscription": {
+      "type": "standard",
+      "monthly_amount": 29.9,
+      "status": "paid"
+    },
+    "contacts": [
+      {
+        "date": "2026-09-01",
+        "channel": "crm_note",
+        "interaction_type": "note",
+        "text": "Payment for September received. No follow-up needed."
+      }
+    ]
+  },
+  {
+    "customer_id": 1903,
+    "company_name": "Shah Consulting",
+    "subscription": {
+      "type": "starter",
+      "monthly_amount": 19.9,
+      "status": "paid"
+    },
+    "contacts": []
+  },
+  {
+    "customer_id": 1918,
+    "company_name": "Berg Logistics",
+    "subscription": {
+      "type": "premium",
+      "monthly_amount": 49.9,
+      "status": "overdue"
+    },
+    "contacts": [
+      {
+        "date": "2026-09-03",
+        "channel": "ticket",
+        "interaction_type": "complaint",
+        "text": "We received a reminder although our August invoice was paid. Please stop sending reminders until this is clarified."
+      },
+      {
+        "date": "2026-09-04",
+        "channel": "crm_note",
+        "interaction_type": "note",
+        "text": "Complaint about reminder. August invoice is paid; September invoice INV-2026-0904 is overdue since 1 September."
+      }
+    ]
+  },
+  {
+    "customer_id": 2044,
+    "company_name": "Laurent Design",
+    "subscription": {
+      "type": "standard",
+      "monthly_amount": 29.9,
+      "status": "paid"
+    },
+    "contacts": [
+      {
+        "date": "2026-09-02",
+        "channel": "email",
+        "interaction_type": "question",
+        "text": "Could you send a copy of the September invoice for our accountant?"
+      }
+    ]
+  },
+  {
+    "customer_id": 2110,
+    "company_name": "Keller Studio",
+    "subscription": {
+      "type": "starter",
+      "monthly_amount": 19.9,
+      "status": "unpaid"
+    },
+    "contacts": [
+      {
+        "date": "2026-09-07",
+        "channel": "ticket",
+        "interaction_type": "payment_issue",
+        "text": "I think the starter plan was charged twice. Can someone check my last two invoices?"
+      }
+    ]
+  },
+  {
+    "customer_id": 2235,
+    "company_name": "Rossi Media",
+    "subscription": {
+      "type": "premium",
+      "monthly_amount": 49.9,
+      "status": "paid"
+    },
+    "contacts": [
+      {
+        "date": "2026-08-20",
+        "channel": "email",
+        "interaction_type": "question",
+        "text": "We would like to add two extra user seats next month. What is the process?"
+      }
+    ]
+  },
+  {
+    "customer_id": 2301,
+    "company_name": "Northwind Retail",
+    "subscription": {
+      "type": "standard",
+      "monthly_amount": 29.9,
+      "status": "paid"
+    },
+    "contacts": [
+      {
+        "date": "2026-09-09",
+        "channel": "ticket",
+        "interaction_type": "question",
+        "text": "Please confirm that our standard plan renews automatically in October."
+      }
+    ]
+  }
+]

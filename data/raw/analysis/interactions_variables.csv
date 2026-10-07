@@ -1,0 +1,6 @@
+variable,type,definition
+customer_id,identifier,Identifier of the customer billed on this invoice.
+date,date,Date of one CRM contact.
+channel,factor,"Channel of the CRM contact, for example email."
+interaction_type,factor,"Kind of CRM contact: reminder, complaint, payment_issue, and so on."
+text,identifier,Free-text body of the CRM contact.

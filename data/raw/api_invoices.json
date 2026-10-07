@@ -1,0 +1,86 @@
+{
+  "company": "HarborLink",
+  "as_of": "2026-09-12",
+  "invoices": [
+    {
+      "invoice_id": "INV-2026-0901",
+      "customer_id": 1827,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-15",
+      "amount": 49.9,
+      "currency": "EUR",
+      "status": "unpaid",
+      "order_id": "ORD-2026-1827-09"
+    },
+    {
+      "invoice_id": "INV-2026-0902",
+      "customer_id": 1841,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-15",
+      "amount": 29.9,
+      "currency": "EUR",
+      "status": "paid",
+      "order_id": "ORD-2026-1841-09"
+    },
+    {
+      "invoice_id": "INV-2026-0903",
+      "customer_id": 1903,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-15",
+      "amount": 19.9,
+      "currency": "EUR",
+      "status": "paid",
+      "order_id": "ORD-2026-1903-09"
+    },
+    {
+      "invoice_id": "INV-2026-0904",
+      "customer_id": 1918,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-01",
+      "amount": 49.9,
+      "currency": "EUR",
+      "status": "overdue",
+      "order_id": "ORD-2026-1918-09"
+    },
+    {
+      "invoice_id": "INV-2026-0905",
+      "customer_id": 2044,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-15",
+      "amount": 29.9,
+      "currency": "EUR",
+      "status": "paid",
+      "order_id": "ORD-2026-2044-09"
+    },
+    {
+      "invoice_id": "INV-2026-0906",
+      "customer_id": 2110,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-15",
+      "amount": 19.9,
+      "currency": "EUR",
+      "status": "unpaid",
+      "order_id": "ORD-2026-2110-09"
+    },
+    {
+      "invoice_id": "INV-2026-0907",
+      "customer_id": 2235,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-15",
+      "amount": 49.9,
+      "currency": "EUR",
+      "status": "paid",
+      "order_id": "ORD-2026-2235-09"
+    },
+    {
+      "invoice_id": "INV-2026-0908",
+      "customer_id": 2301,
+      "invoice_date": "2026-08-28",
+      "due_date": "2026-09-15",
+      "amount": 29.9,
+      "currency": "EUR",
+      "status": "paid",
+      "order_id": "ORD-2026-2301-09"
+    }
+  ]
+}

@@ -1,0 +1,763 @@
+source_row,customerID,n_texts,text_index,communication_type,template_text,text,model,backend,temperature
+345,0021-IKXGC,5,1,billing_renewal,"**Subject:** Your monthly bill — $72.10
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet) is billed at **$72.10**. Payment is by electronic check via paperless billing. Total charged to date: **$72.10**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","Navigating the Telecommunications Industry: A Daily Checklist
+
+Table of Contents:
+1. Introduction
+2. Understanding the Daily Checklist
+3. Types of Daily Checklists and Common Elements
+4. Telecommunications Industry Checklists
+    4.1. Billing Rates and Fees
+    4.2. Renewal or Refund Dates
+    4.3. Equipment Returns or Repairs
+    4.4. Termination of Services
+    4.5. Customer Re-enrollment",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+345,0021-IKXGC,5,2,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet.
+**Agent:** Confirmed. You’re on a month-to-month plan at $72.10, paid by electronic check.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","Communication Type: customer_service
+
+FORMAT: You may keep an Agent/Customer dialog OR rewrite as a single email/message, but speaker roles must stay coherent. If you keep a dialog, label turns clearly as **Agent:** / **Customer:**. If you convert to one email/message, state clearly who writes it (company agent OR customer), and that writer must stay in role: a company agent may help/confirm services; a customer may ask questions or report issues — a company must NOT write a customer complaint as if it were the company",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+345,0021-IKXGC,5,3,crm_note,"Female customer (~1 months). fiber-optic Internet. Month-to-month contract, electronic check, $72.10/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","To improve a realistic and natural version of a customer communication for a telecommunications company, try the following:
+
+1. Rewrite in different words — do NOT copy the draft almost verbatim. Vary tone and wording to create a conversation rather than a strict sales pitch.
+
+2. Keep all hard facts consistent with the profile (services, contract, payment method, tenure, exact dollar amounts when present in the draft).
+
+3. Do NOT invent new services, prices, tenure, or personal details that are absent from the profile / draft.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+345,0021-IKXGC,5,4,support,"**Agent:** Support here — happy to help with fiber-optic Internet connectivity.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (fiber-optic Internet). Basic diagnostics look fine; tell me if anything still seems off.","Sir,
+
+I am a customer support agent working for your reliable telecom services provider, and I am in touch with customer _______ regarding my fiber-optic Internet connectivity service. Based on the company support's fiber-optic Internet FAQ manual, the basic diagnostics look fine with no discrepancies or issues.
+
+However, I noticed that my monthly charge on my subscription has increased recently, and it seems my service is running slow. I wanted to ensure that I receive the highest available bandwidth, but do you offer a special",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+345,0021-IKXGC,5,5,promotion,"**Subject:** Optional add-on for your fiber-optic Internet
+
+Hello,
+
+Customers on month-to-month plans sometimes add online security. If you’re interested, we can show the exact price impact on your $72.10 monthly charge.
+
+Best regards,
+Offers Team","Subject: Optional Add-on for Your Fiber-Optic Internet
+
+Hello,
+
+Customers on month-to-month plans may be interested in our affordable add-on for your fiber-optic internet service. We can show you the exact potential impact of the service on your $72.10 monthly fee. Best regards,
+
+Offers Team
+
+Note: This is a placeholder draft for a potential customer add-on to your fiber-optic internet service. The draft below will contain all hard facts about services, terms, ten",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6306,0186-CAERR,2,1,crm_note,"Male customer (~71 months). fiber-optic Internet; online security on. One-year contract, automatic bank transfer, $116.30/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","To enrich a DRAFT of a crm_note communication targeted towards the male customer with the specified profile above, follow these steps:
+
+1. Rewrite the crm_note in different words to maintain the informal tone:
+
+- Replace ""Customer"" with ""Client"" to make the message sound like an information summary or a quick welcome. - Replace ""you"" with ""your"" or ""yourself"" when referring to the sender or the company. - Avoid the use of technical jargon or industry-specific words to ensure that the message sounds common",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6306,0186-CAERR,2,2,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet; online security on.
+**Agent:** Confirmed. You’re on a one-year plan at $116.30, paid by automatic bank transfer.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","Customer: Hi, please help me clarify my setup. I am on a one-year contract for online security and I pay by bank transfer.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+60,0434-CSFON,3,1,crm_note,"Female customer (~47 months). fiber-optic Internet; device protection on. Month-to-month contract, electronic check, $100.50/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","To enrich a DRAFT telco customer communication to make it more natural and varied, while maintaining its faithfulness to the company's facts, follow these steps:
+
+1. Rewrite the draft using different words instead of a template. For example, instead of referring to customers as ""subscribers,"" use the expression ""customers who have contracts with the company."" When mentioning costs, use numbers instead of phrases such as ""monthly fee"" or ""annual payment.""
+
+2. Keep all hard facts constant with the company's profile (services",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+60,0434-CSFON,3,2,support,"**Agent:** Support here — happy to help with fiber-optic Internet connectivity.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (fiber-optic Internet; device protection on). Basic diagnostics look fine; tell me if anything still seems off.","[Support agent]
+Hello, and thank you for reaching out. I'm glad to assist you with your fiber-optic Internet connectivity. Please give me more information about your account so that I can further assess the issue.
+
+Again, a quick check on my account showed me that your monthly billing for fiber-optic Internet is approximately $4707.10, with total service fees of approximately $100.50. I'll be happy to let you know if there are any significant anomalies or updates",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+60,0434-CSFON,3,3,promotion,"**Subject:** Optional add-on for your fiber-optic Internet
+
+Hello,
+
+Customers on month-to-month plans sometimes add online security. If you’re interested, we can show the exact price impact on your $100.50 monthly charge.
+
+Best regards,
+Offers Team","[Subject:] Optional add-on for your fiber-optic Internet
+
+Dear valued customer,
+
+We hope you are finding your monthly service of fiber-optic Internet satisfactory and are noticing the added convenience and safety it offers over your other internet providers. The exact add-on price of $20.47 per month on your current, month-to-month internet plan (after the 90-day sign-up period; no credit check required) is equivalent to $247.45 over the term of",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+931,0454-OKRCT,3,1,support,"**Agent:** Support here — happy to help with fiber-optic Internet connectivity.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (fiber-optic Internet; online backup on). Basic diagnostics look fine; tell me if anything still seems off.","DRAFT text to enrich:
+Agent: Support here, my colleague. Could you please check for any outdated software on my end that might be affecting my fiber-optic internet connection?
+Customer: Sure, I think I may have missed some update notifications lately. Let me confirm if this is the issue.
+Agent: Great, I'd like to make sure it's a hardware or software-related issue. Can you please run the required check and send me the report over email with the details?
+Customer: Of course, here's",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+931,0454-OKRCT,3,2,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet; online backup on.
+**Agent:** Confirmed. You’re on a two-year plan at $80.60, paid by automatic bank transfer.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","FORMAT: Company Customer Service Agent
+
+AGENT (V. O.): Hey there, how can I assist you today?
+
+CUSTOMER: I'm just checking my fiber-optic Internet setup. I paid around $80.60 a month for the service, paid my bill through automatic transfer, and it hasn't been compromised in the slightest.
+
+AGENT (V. O.): Got it. You're on a two-year plan at $80.60, paid by regular bank transfer. Can you",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+931,0454-OKRCT,3,3,complaint,"**Customer:** I had a minor issue with my fiber-optic Internet service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on fiber-optic Internet; online backup on at $80.60. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","Dear [Customer],
+
+I was wondering if you could provide some more details on your fiber-optic Internet service? I had a minor issue recently and would like to notify your technical support department about the issue.
+
+I understand that this matter has already been logged and is already monitored by the company, so I would request an immediate update on the situation. Your online backup service is also causing issues, which we are experiencing as we speak, invoice details:
+
+[Note: A table showing the invoice lines with dollar amounts per row.]",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6509,0616-ATFGB,4,1,crm_note,"Male customer (~1 months). DSL Internet; no phone. Month-to-month contract, electronic check, $25.05/mo. Recent tone suggests friction (billing clarity or service expectations). Keep replies concrete; offer a calm review of the current plan before suggesting changes.","Communication Type: crm_note
+
+Formats (Mandatory): Please keep this as a CRM note only — it is a short internal prose note written by a company employee into the company's CRM system. Do NOT turn it into an email, letter, chat, or an Agent/Customer dialog. Please, keep concise and factual sentences of similar length to the draft.
+
+Customer Profile (Source of Truth):
+The customer is a male senior citizen who does not have any phone services. He has a partner and he resides",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6509,0616-ATFGB,4,2,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** I want to double-check what I’m paying for — my setup should be DSL Internet; no phone.
+**Agent:** Confirmed: DSL Internet; no phone. You’re on a month-to-month plan at $25.05, paid by electronic check.
+**Customer:** Okay, thanks for clarifying.
+**Agent:** Glad to help.","Communication type: customer_service
+
+FORMAT: It is preferable to stick with the standard grammar, punctuation, and sentence structure conventions, but you are free to experiment with new ideas, vocabulary, and word choices.
+
+From: [Your Company Name]
+Subject: Dear [Customer Name],
+
+We are thrilled to inform you that we have double-checked that your setup includes DSL Internet, no phone, and paid by electronic check. Our monthly service charges will be about $25, but we kindly request that",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6509,0616-ATFGB,4,3,billing_renewal,"**Subject:** Your bill — $25.05
+
+Hello,
+
+Your month-to-month plan (DSL Internet; no phone) is billed at **$25.05**. Payment method: electronic check (standard billing). Total charged to date: **$25.05**.
+
+If anything on this bill looks incorrect, reply and we will review it with you.
+
+Best regards,
+Billing Team","TOM,
+Thanks for allowing me to rewrite your bill for you. Here's a polished version in different terms with some added language to make it more authentic and varied.
+
+[Header]
+[Brand Logo in upper right-hand corner]
+
+Communication Type: Billing Renewal
+FORMAT: Keep this billing/renewal email to the customer consistent with your organization's internal messaging and brand standards.
+Customer Profile (Source: Company's internal database): 
+The customer is male aged 60, Senior",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6509,0616-ATFGB,4,4,complaint,"**Customer:** I’m frustrated — for $25.05 a month on DSL Internet, I expected fewer issues / clearer billing.
+**Agent:** I’m sorry about that. I see you’re on a month-to-month plan (DSL Internet; no phone). I can review the latest charge and service details with you now.
+**Customer:** Please do — I need this sorted.
+**Agent:** Understood. I’ll walk through the account step by step.","CUSTOMER
+(Writing an email about frustrating Internet and bill inaction)
+
+DEAR [AGENT NAME],
+
+I am a Senior Citizen and have recently subscribed to the [COMPANY NAME]'s month-to-month DSL Internet service for [CURRENT DATE] on [CURRENT PLACE/ADDRESS]. However, ever since signing up for this service, I've had difficulty accessing my network because of intermittent connectivity. Unfortunately, [CURRENT INCLEMENT WEATHER] have resulted",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+3405,0744-GKNGE,2,1,billing_renewal,"**Subject:** Your monthly bill — $86.80
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet; online security on) is billed at **$86.80**. Payment is by automatic bank transfer via paperless billing. Total charged to date: **$5327.25**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","SUBJECT: Your Monthly Bill — $86.80
+
+Hey,
+
+Your month-to-month plan (fiber-optic Internet; online security; on-demand streaming TV/movie; 1-2 months’ online backup; on-site technical support; 1 year’s device protection; automatic bank transfer via paperless billing) is billed at $86.80 per month. Payment is by automatic bank transfer via paperless billing, and total charged to date (32 months) is $53",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+3405,0744-GKNGE,2,2,complaint,"**Customer:** I had a minor issue with my fiber-optic Internet service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on fiber-optic Internet; online security on at $86.80. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","Customer: Hello, I want to enrich my fiber-optic Internet service for $86.80 on a month-to-month basis.
+
+Agent: Yes, we'd be happy to assist you. Can you please state your full name and the address where your phone service or Internet connection is located? (Include suburbs)
+
+Customer: (Address)
+123 Main Street, Suite 101
+Western City, VA 12345
+
+Agent: Thank you for providing us with this information.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5703,0795-XCCTE,3,1,support,"**Agent:** Support here — happy to help with phone service settings.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (no Internet service). Basic diagnostics look fine; tell me if anything still seems off.","**Agent:** Support, happy to help with your phone service. Would you like to review basic diagnostics in your account?
+**Customer:** Quick check, please.
+**Agent:** Looking at your account, it appears to have a basic phone setup with a DTMF phone button. Is that accurate?
+
+Rules:
+1. Rewrite in different words, and respect the FORMAT rules above, but do not copy the draft. Vary tone and wording to feel less templated.
+2. Keep all hard facts consistent with the profile provided",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5703,0795-XCCTE,3,2,crm_note,"Male customer (~72 months). no Internet service. Two-year contract, automatic bank transfer, $25.40/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","Customer: I am a retired senior citizen, the customer, with no Internet service or partner, who does not have dependents, who owns a two-year lease for phone lines, has a monthly charge of approximately $25.40, and has been with the company for 72 months.
+
+Employee: Hello, my name is ___________, and I would like to welcome you as our newest valued customer. I understand you are the customer of our company in the state of _______________ (your area code and city here), which",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5703,0795-XCCTE,3,3,promotion,"**Subject:** Optional add-on for your no Internet service
+
+Hello,
+
+Customers on two-year plans sometimes add a simpler plan review. If you’re interested, we can show the exact price impact on your $25.40 monthly charge.
+
+Best regards,
+Offers Team","To the [insert brand name] promotion,
+
+[Customer name] proudly serves as [insert customer segment description] for [insert customer segment description]. [Customer name] is a [insert age range]-year old male, [insert occupation/title] for [insert company], and has been with [insert company name] for [insert contract duration] months. He has multiple phone lines, no Internet service, and [insert preferred communication method or services received in previous six months].
+
+To enhance your customer experience and save on Internet bills, the company is happy to",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6994,0804-YGEQV,5,1,complaint,"**Customer:** I had a minor issue with my no Internet service service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on no Internet service at $24.45. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","Communication Type: DRAFT Email
+
+Formats: You may keep an Agent/Customer dialog OR rewrite as messages, but roles must stay coherent. The complaint itself must come from the customer or be clearly quoted as the customer's words. The company/agent may apologize and help. The company must not author the complaint, and it should not contradict the customer profile.
+
+Customer profile (source of truth):
+- Customer is female, age 35, born in 1988, marries, has partner, age 3",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6994,0804-YGEQV,5,2,support,"**Agent:** Support here — happy to help with phone service settings.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (no Internet service). Basic diagnostics look fine; tell me if anything still seems off.","Communication Type: Support
+
+FORMAT: Agent/Customer dialogOR rewrite as a single email/message, but speaker roles must stay coherent. If you keep a dialog, label turns clearly as Agent: or Customer:. If you convert to one email/message, state clearly who writes it. Company support may offer help and updates; customer may describe problems — never reverse those roles.
+
+Customer Profile:
+The customer is female. The customer is not a senior citizen. The customer has a partner. The customer has dependents. The customer has phone service.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6994,0804-YGEQV,5,3,crm_note,"Female customer (~43 months). no Internet service. One-year contract, automatic bank transfer, $24.45/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","Customer Profile (Source of Truth)
+The customer is female, aged 43, with two children. She is in the final 12 months of her one-year contract and pays via automatic bank transfer. She has an average monthly bill of $24.45, making a total charge of approximately $993.15 since joining the company. The customer's current monthly service fees are for landline telephone, internet, and television. Technical support is not applicable.
+
+Customer Requests
+The customer has been with our company",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6994,0804-YGEQV,5,4,billing_renewal,"**Subject:** Your monthly bill — $24.45
+
+Hello,
+
+Your one-year plan (no Internet service) is billed at **$24.45**. Payment is by automatic bank transfer via paperless billing. Total charged to date: **$993.15**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","DRAFT text to enhance reader experience:
+
+**Subject:** Your monthly bill — $24.45
+
+It's a pleasure serving you for almost a year now.
+
+Although your two-year contract with us came to an end, we wanted to make our good memories with you and ensure the proper disposal of our bills.
+
+To help us achieve that, we’d like to offer you a 20% discount on billing renewal. Don’t hesitate to respond to this email if you need",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+6994,0804-YGEQV,5,5,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — no Internet service.
+**Agent:** Confirmed. You’re on a one-year plan at $24.45, paid by automatic bank transfer.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","DRAFT TEXT:
+
+Agent: Hi, thanks for reaching out to us. Do you have a question or something? [Spoke with mild natural ambiguity]
+Customer: Just wondering about your setup. We are on a one-year plan at $24.45, paid by automatic bank transfer.
+
+Agent: We're glad to hear that everything's fine. Is that everything?
+Customer: No, that's not the full payment. I'm not sure how that fits in. It's just a small number.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5385,0843-WTBXE,3,1,billing_renewal,"**Subject:** Your bill — $85.45
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet; streaming TV on) is billed at **$85.45**. Payment method: automatic bank transfer (standard billing). Total charged to date: **$4517.25**.
+
+If anything on this bill looks incorrect, reply and we will review it with you.
+
+Best regards,
+Billing Team","[Company name]
+[Customer’s Full Name]
+[Customer’s Address]
+[City, State ZIP Code]
+[Date]
+
+[Billing_renewal]
+[Customer's Last Name]
+[Customer's First Name]
+[Customer's Company]
+[Customer's Company Name]
+[Customer's Street Address]
+[City, State ZIP Code]
+
+[Company_name]
+[Customer's First Name]
+[Customer's Last Name]
+[Customer's Company Name",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5385,0843-WTBXE,3,2,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** I want to double-check what I’m paying for — my setup should be fiber-optic Internet; streaming TV on.
+**Agent:** Confirmed: fiber-optic Internet; streaming TV on. You’re on a month-to-month plan at $85.45, paid by automatic bank transfer.
+**Customer:** Okay, thanks for clarifying.
+**Agent:** Glad to help.","Communication type: Customer service
+
+FORMAT: Agents and customers stay in same dialog or in single email/message while all roles remain consistent. Agent: Do you have a question or concern regarding the setup of your internet service and streaming TV options? Customer: Yes, I'd like to clarify the pricing for both services and what's included with each. Agent: Sure, based on the details provided in your profile, I understand the setup of your internet service and streaming TV options. Let me quickly clarify the pricing for each. Customer: That's great to",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5385,0843-WTBXE,3,3,crm_note,"Male customer (~53 months). fiber-optic Internet; streaming TV on. Month-to-month contract, automatic bank transfer, $85.45/mo. Recent tone suggests friction (billing clarity or service expectations). Keep replies concrete; offer a calm review of the current plan before suggesting changes.","DRAFT
+Male Customer (Age: 53 Years)
+
+- Fiber-optic Internet (Month-to-Month)
+- Streaming TV on Netflix & Hulu (3 Months Old)
+- In-Home Pager (5 Months Old)
+- Month-to-Month Banking (On-Line, Automatic Transfer)
+
+Service Expectations
+- Customized Pricing (Based on Data)
+- Increased Account Representation (Ongoing Interaction with Sales Team and Account Managers",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+522,0913-XWSCN,4,1,billing_renewal,"**Subject:** Your monthly bill — $85.50
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet; streaming movies on) is billed at **$85.50**. Payment is by automatic bank transfer via standard billing. Total charged to date: **$4713.40**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","Subject: Your monthly bill — $85.50
+
+Dear valued customer,
+
+Your monthly bill — $85.50 — has been prepared in accordance with your profile, which indicates that you are a male, age 42, a senior citizen, with dependents and own two telephones. Your partner is a woman who also lives with you. The average usage monthly for this plan is 3.2 minutes. You have opted for a broadband internet connection, fiber-optic television, secure online backup",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+522,0913-XWSCN,4,2,promotion,"**Subject:** Optional add-on for your fiber-optic Internet
+
+Hello,
+
+Customers on month-to-month plans sometimes add online security. If you’re interested, we can show the exact price impact on your $85.50 monthly charge.
+
+Best regards,
+Offers Team","Subject: Optional Add-on for Fiber-Optic Internet
+
+Dear valued customer,
+
+We are excited to offer you the opportunity to receive a complimentary installation of optional online security services to enhance the security and performance of your fiber-optic internet services! Let's dive right into the details.
+
+Your monthly charge on your fiber-optic Internet subscription is approximately $85.50, after subtracting $4713.40 in charges that have accumulated in the past 55 months. Since",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+522,0913-XWSCN,4,3,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet; streaming movies on.
+**Agent:** Confirmed. You’re on a month-to-month plan at $85.50, paid by automatic bank transfer.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet; streaming movies on.
+**Agent:** Confirmed. You’re on a month-to-month plan at $85.50, paid by automatic bank transfer.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+522,0913-XWSCN,4,4,crm_note,"Male customer (~55 months). fiber-optic Internet; streaming movies on. Month-to-month contract, automatic bank transfer, $85.50/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","Draft:
+To our valued [Customer] customer,
+
+As your long-term partner, we are constantly monitoring and assessing the customer profile and service data to ensure we offer you a reliable and secure customer experience.
+
+As a regular customer of our company, we are interested to know how you are finding your service offerings during your latest billing cycle.
+
+Recent data shows that you opted for [Product/Service], and our company has been meeting or exceeding expectations. This [monthly_charge] has been affordable and flexible to meet",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5751,0932-YIXYU,4,1,support,"**Agent:** Support here — happy to help with phone service settings.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (no Internet service). Basic diagnostics look fine; tell me if anything still seems off.","Support
+
+Great! Thank you for providing all the information that needs to be provided to the company for an agent's support during phone service troubleshooting. Can you please review these details and confirm if everything mentioned is accurate and reflects a true-to-life situation?
+
+1. Your account has a basic diagnostics report but your service is provided with 5 packages (Basic 1, 2, 3, 4, and 5). All payments must be in one account with no billing disputes, so select and click on package 4",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5751,0932-YIXYU,4,2,promotion,"**Subject:** Optional add-on for your no Internet service
+
+Hello,
+
+Customers on two-year plans sometimes add a simpler plan review. If you’re interested, we can show the exact price impact on your $20.25 monthly charge.
+
+Best regards,
+Offers Team","CUSTOMER COMMUNICATION
+
+To add a streamlined add-on plan review for customers on a two-year plan, please find enclosed:
+
+Subject: Optional add-on for no Internet service
+
+Hello,
+
+Dear [Customer Name],
+
+As you are a valued [Company Name] customer, we are excited to offer you an innovative, no-cost plan review to consider. Please fill out the form below, and our team will contact you with details on pricing.
+
+Customer Profile:
+The customer is [",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5751,0932-YIXYU,4,3,crm_note,"Female customer (~47 months). no Internet service. Two-year contract, automatic credit card, $20.25/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","CUSTOMER PROFILE
+
+Customer: Female
+
+Age: ~47 months
+
+Address: 450 Main Street, Unit 2A
+
+Occupation: Retired executive
+
+Education/Experience: B.S. Computer Science, 25 years of experience in the tech industry
+
+Energy Level: Highly energetic, very motivated
+
+Billing Cycle: Two-year contract, automatic credit card payment
+
+Contract: Good candidate for gentle education on optional add-ons later; no",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5751,0932-YIXYU,4,4,complaint,"**Customer:** I had a minor issue with my no Internet service service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on no Internet service at $20.25. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","[Client Name]
+[Company or Agent Name]
+[Customer Name]
+
+[Date]
+
+[Communication Type]: Draft Complaint TL
+
+Formats:
+As a Customer, I want to have my minor issue with my no Internet service service addressed as soon as possible. [Agent Name]
+
+Provenance: 
+I am a female and a single person living in a residential building with 2x single line phone. I subscribe to a prepaid monthly auto-credit-card payment plan for Internet service",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+2543,0952-KMEEH,2,1,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** I want to double-check what I’m paying for — my setup should be fiber-optic Internet; online security on.
+**Agent:** Confirmed: fiber-optic Internet; online security on. You’re on a month-to-month plan at $98.15, paid by mailed check.
+**Customer:** Okay, thanks for clarifying.
+**Agent:** Glad to help.","Customer Profile:
+
+Dear Sir/Madam,
+
+Thank you for taking the time to address my questions regarding my recent setup. Your quick response has been greatly appreciated.
+
+I am writing to clarify a few details related to my fiber-optic Internet connection and online security service with the company you represent.
+
+I use online security services on my account. As a customer with my current plan, I pay monthly in advance by mailed check as per the terms of your contract.
+
+My current monthly payments are $98.15,",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+2543,0952-KMEEH,2,2,billing_renewal,"**Subject:** Your bill — $98.15
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet; online security on) is billed at **$98.15**. Payment method: mailed check (standard billing). Total charged to date: **$1230.25**.
+
+If anything on this bill looks incorrect, reply and we will review it with you.
+
+Best regards,
+Billing Team","Billing Customer: [name],
+
+Please find the enriched version of your bill, charging the fee of $98.15:
+
+Dear Customer,
+
+Monthly payment plan: fiber-optic Internet; online security program.
+Total charges during your plan: $1230.25. Based on your membership contract, we have charged:
+
+1. $98.15 for fiber-optic Internet service on a billing cycle of 24 months.
+Payment method: mailed check,",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+402,0979-PHULV,4,1,promotion,"**Subject:** A quick option for your account
+
+Hello,
+
+Based on your month-to-month fiber-optic Internet service, you may want to look at online security. No obligation — reply if you’d like a short overview of costs before your next bill.
+
+Best regards,
+Offers Team","Dear valued account holder,
+
+Based on your monthly fiber-optic Internet service, we kindly refer you to our online security service, offering advanced protection from hackers and cyber threats. Since joining the company, we have noticed that you have subscribe for both online security and streaming services. Given the current regulatory requirement, you may benefit from enrolling your online security service as well.
+
+While this package represents a low-cost option, please be assured that you will have the benefits of state-of-the-art technology that is fully",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+402,0979-PHULV,4,2,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** I want to double-check what I’m paying for — my setup should be fiber-optic Internet; device protection on.
+**Agent:** Confirmed: fiber-optic Internet; device protection on. You’re on a month-to-month plan at $99.45, paid by automatic credit card.
+**Customer:** Okay, thanks for clarifying.
+**Agent:** Glad to help.","Dear [Customer],
+
+We deeply value your business and hope this message finds you in good health and spirits. We strive to provide the best value possible for your fiber-optic Internet, device protection, and streaming service needs, and we hope to extend this value in perpetuity.
+
+In addition to our core products, we would like to offer you enhanced service options that would address some of the challenges you may be facing in your wireless network. As you are aware, our monthly wireless data plan includes unlimited WiFi use, mobile hotspot support",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+402,0979-PHULV,4,3,crm_note,"Male customer (~69 months). fiber-optic Internet; device protection on. Month-to-month contract, automatic credit card, $99.45/mo. Recent tone suggests friction (billing clarity or service expectations). Keep replies concrete; offer a calm review of the current plan before suggesting changes.","Communication Type: CRM Note
+
+FORMAT (mandatory): Use a CRM note only as a short internal communication between a company employee and the company. Do not turn it into an email, letter, chat, or Agent/Customer dialog. Prefer short sentences (similar length to the draft). Keep the hard facts consistent with the profile of the customer and avoid adding new details or inferring facts that the customer is missing from the profile. The tone should be one of transparency and clarity; avoid being overly formal or preachy. Finally, follow",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+402,0979-PHULV,4,4,billing_renewal,"**Subject:** Your bill — $99.45
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet; device protection on) is billed at **$99.45**. Payment method: automatic credit card (paperless billing). Total charged to date: **$7007.60**.
+
+If anything on this bill looks incorrect, reply and we will review it with you.
+
+Best regards,
+Billing Team","Subject: Your bill — $99.45
+
+Hello,
+
+Your month-to-month plan (fixed fiber-optic Internet; device protection for your computer; streaming TV service for two accounts; streaming movie service for one account) is billed at $99.45. Payment method: automatic credit card (paperless billing). Total charged to date: $7007.60. If anything on this bill seems incorrect, reply and we will review it with you. Best regards,
+
+Your Billing Team
+
+R",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4328,1101-SSWAG,5,1,billing_renewal,"**Subject:** Your monthly bill — $51.10
+
+Hello,
+
+Your month-to-month plan (DSL Internet) is billed at **$51.10**. Payment is by electronic check via paperless billing. Total charged to date: **$711.15**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","[Subject: Your monthly bill — $51.10]
+
+[Hello, [Customer’s Name]][Customer Address],
+
+Your monthly bill (DSL Internet) is billed at $51.10 and totals $711.15. Your payment is made automatically by electronic check in your preferred payment method. We apologize if there is any inconvenience caused due to the delay in processing.
+
+Should you have any questions or concerns, please do not hesitate to contact us. We value your business and strive",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4328,1101-SSWAG,5,2,complaint,"**Customer:** I had a minor issue with my DSL Internet service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on DSL Internet at $51.10. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","COMCOM-0004890
+
+[Customer Profile]
+The above name of my family is [Customer Name] and my partner, Mr. John Doe, is a senior citizen. Mr. Doe has two dependent children, [Dependent Child 1 Name] and [Dependent Child 1 Age] and [Dependent Child 2 Name] and [Dependent Child 2 Age]. The family currently subscribes to XYZ TV, which we have been using for two years. Mr. Doe's XYZ TV bill is",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4328,1101-SSWAG,5,3,crm_note,"Female customer (~15 months). DSL Internet. Month-to-month contract, electronic check, $51.10/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","Enriched customer communication for a female customer with DSL Internet, a month-to-month contract, electronic check payments, $51.10/mo. Total billing invoices, a rating of Good candidate for gentle education on optional add-ons later, and a monthly billing cycle are:
+
+Formatted as: CRM Note
+Crm note of
+customer_profile, (sourced from the Company Employee into the CRM system)
+for the customer_identifier (do_not_confuse_for_the_customer_",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4328,1101-SSWAG,5,4,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — DSL Internet.
+**Agent:** Confirmed. You’re on a month-to-month plan at $51.10, paid by electronic check.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","CUSTOMER SECURITY AGENT TO AGENT:
+
+Hi, thank you for contacting us regarding your DSL Internet setup. As per your profile, you are on a month-to-month plan at a fixed price of $51.10 paid by electronic check.
+
+If you require any further assistance or clarification, please let me know at [Insert Customer's Contact Information]. You may have a good day, agent.
+
+I hope this email finds you in good health and spirits.
+
+You're welcome.
+
+Your Customer",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4328,1101-SSWAG,5,5,promotion,"**Subject:** Optional add-on for your DSL Internet
+
+Hello,
+
+Customers on month-to-month plans sometimes add online security. If you’re interested, we can show the exact price impact on your $51.10 monthly charge.
+
+Best regards,
+Offers Team","Customer [Name] [Gender] [Age] [Location]
+The customer is female, aged 33, living in the city with a household income of $80,000 per year. This customer has a partnership, which she does not disclose. She has no dependents, but subscribe to the company's online security service, device protection service, and technical support service. She does not subscribe to the company's streaming TV service or streaming movie service. Her previous service was DSL Internet. Her billing cycle is month-to",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+734,1173-NOEYG,5,1,support,"**Agent:** Support here — happy to help with fiber-optic Internet connectivity.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (fiber-optic Internet; device protection on). Basic diagnostics look fine; tell me if anything still seems off.","Customer: Good afternoon. I have been experiencing trouble receiving fiber-optic Internet connectivity, and I was wondering if you could help assess the diagnostic results and whether anything unexpected is preventing the connection from establishing.
+
+Agent: That's exactly what I would like to do. Can you walk me through your account information to make it easy for me to understand your scenario?
+
+Customer: Sure, I'll walk you through. My account information can be found here on our website: https://my.company.com/account
+
+Agent: Great.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+734,1173-NOEYG,5,2,complaint,"**Customer:** I had a minor issue with my fiber-optic Internet service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on fiber-optic Internet; device protection on at $90.15. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","Formatted according to Rules 1-7, revised based on feedback:
+
+Complaint:
+**Customer:** I am displeased by my minor fiber-optic Internet service issue. Please have the device protection service on at $90.15. I previously logged an incident for the same issue. It has since resolved.
+**Agent:** Thank you for reporting and flagging this issue. We were recently notified and have investigated this incident. Upon reviewing our records, we noted that your account qualifies for Device Protection at",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+734,1173-NOEYG,5,3,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet; device protection on.
+**Agent:** Confirmed. You’re on a month-to-month plan at $90.15, paid by automatic bank transfer.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet; device protection on.
+**Agent:** Confirmed. You’re on a month-to-month plan at $90.15, paid by automatic bank transfer.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+734,1173-NOEYG,5,4,billing_renewal,"**Subject:** Your monthly bill — $90.15
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet; device protection on) is billed at **$90.15**. Payment is by automatic bank transfer via standard billing. Total charged to date: **$2423.40**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","Subject: Your monthly bill — $90.15
+
+Dear valued customer,
+
+Your month-to-month plan (fiber-optic Internet; device protection) is billed at $90.15 per month. Your current total charge (over two-year plan) is approximately $2423.40.
+
+We are glad to inform you that this amount is almost stable since we joined the company, with an average expense of about $95 per month over two years.
+
+At present, our customer base",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+734,1173-NOEYG,5,5,crm_note,"Female customer (~27 months). fiber-optic Internet; device protection on. Month-to-month contract, automatic bank transfer, $90.15/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","TO BE CONDUCTED DIRECTLY WITH CUSTOMER,
+FEMLE (age 27) - FICLETERS OF TRAP-FOLDER CORP.
+FIBER-OPTIC INTERNET; DEVICE PROTECTION (ON/OFF) ON
+
+[INTRODUCTION OF COMPANY]
+The following communication highlights the recent ongoing onboarding and educational process for our valued customer, FEMALE (age 27). Fiber-optic Internet; device protection (on/off",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4874,1193-RTSLK,5,1,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** I want to double-check what I’m paying for — my setup should be fiber-optic Internet; online security on.
+**Agent:** Confirmed: fiber-optic Internet; online security on. You’re on a month-to-month plan at $83.90, paid by automatic credit card.
+**Customer:** Okay, thanks for clarifying.
+**Agent:** Glad to help.","**Agent:** Hi, thanks for contacting support. How can I help you? **Customer:** I would like to double-check the payment methods we use as they have become inconvenient in terms of our month-to-month contract. The setup fee is paid by automatic credit card. Have you double-checked your confirmation email about the payment method",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4874,1193-RTSLK,5,2,billing_renewal,"**Subject:** Your bill — $83.90
+
+Hello,
+
+Your month-to-month plan (fiber-optic Internet; online security on) is billed at **$83.90**. Payment method: automatic credit card (paperless billing). Total charged to date: **$3233.60**.
+
+If anything on this bill looks incorrect, reply and we will review it with you.
+
+Best regards,
+Billing Team","COMMAND (mandatory): This message represents an actual billing renewal for a current customer with fiber-optic Internet (DOWN_LINK), online security package ($69.99/month), online backup ($5.95/month), and device protection ($24.99/year), all auto-billed via paperless billing.
+
+COMPANY BILLING TEAM
+
+Based on the text material above, generate the response to the following quesion or instruction: Rewrite the billing renewal communication to",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4874,1193-RTSLK,5,3,complaint,"**Customer:** I’m frustrated — for $83.90 a month on fiber-optic Internet, I expected fewer issues / clearer billing.
+**Agent:** I’m sorry about that. I see you’re on a month-to-month plan (fiber-optic Internet; online security on). I can review the latest charge and service details with you now.
+**Customer:** Please do — I need this sorted.
+**Agent:** Understood. I’ll walk through the account step by step.","Communication Type: Complaint
+
+FORMAT: The content and format can be tailored based on company policy. Use a conversation approach with formal language.
+
+Customer Profiles:
+The customer profile provides details about the customer and their preferences. Based on our source of truth, the customer is female and aged over 45, single, and lives with a partner. They do not have dependents, and their primary device is a single phone line. The customer subscribes to fiber-optic Internet service and has a single phone line. The customer has a",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4874,1193-RTSLK,5,4,support,"**Agent:** Support here — I can help with fiber-optic Internet connectivity.
+**Customer:** Yes, please. It’s been unreliable and I’m on month-to-month at $83.90.
+**Agent:** Thanks — I’ve opened a support case for fiber-optic Internet; online security on. I’ll confirm the next check and update you.","Former Agency Customer Support
+
+[Company Support]
+
+Dear [Agent/Customer],
+
+I hope this email finds you well. Allow me to begin by apologizing for the inconvenience caused by our recent outage. Our engineers have identified the source of the issue as the faulty cables on the existing fibre-optic network. I would like to inform you that we are currently working on replacing those cables with new, improved ones, to ensure stable and seamless service delivery. Our engineers have been dispatched to the affected area, and",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+4874,1193-RTSLK,5,5,crm_note,"Female customer (~38 months). fiber-optic Internet; online security on. Month-to-month contract, automatic credit card, $83.90/mo. Recent tone suggests friction (billing clarity or service expectations). Keep replies concrete; offer a calm review of the current plan before suggesting changes.","Dear [Customer Name],
+
+I hope this communication finds you well. After careful analysis and deliberation, we at [Company Name] have modified our services to better meet your needs. I am writing to express my appreciation for your loyalty to our company.
+
+Your satisfaction is the top priority for our team, and that is why we have introduced the following changes:
+
+- [Service] now offers uninterrupted Internet service, which eliminates intermittent disruptions to your devices.
+- We have increased the internet speed, providing you with reliable, high",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5633,1222-LRYKO,3,1,crm_note,"Male customer (~6 months). no Internet service. Month-to-month contract, mailed check, $26.35/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","TITLE
+Letter to our valued customer [DEPARTMENT]
+
+FINAL TEXT
+Dear [Customer],
+
+Thank you for being a loyal [COMPANY NAME] customer for [NUMBER] months. We are thrilled to hear your satisfaction with our services and appreciate your continued commitment to our brand. As you may know, your monthly billing total may vary due to special events, such as account changes, new phone lines, or add-ons, such as internet, VoIP, or streaming. If the billing total differs",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5633,1222-LRYKO,3,2,support,"**Agent:** Support here — happy to help with phone service settings.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (no Internet service). Basic diagnostics look fine; tell me if anything still seems off.","Agent: Good morning. Is this phone?
+
+Customer: Yeah, I have it here in front of me.
+
+Agent: Wonderful. As I mentioned to you a few moments ago, your account is being serviced by basic voice. Now, when you call back, can you hear me clearly on this end?
+
+Customer: Yes, I can.
+
+Agent: Wonderful. Let's look at the details on your account now. We can proceed by making basic corrections, should you prefer that?
+
+Customer: No, that's fine.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+5633,1222-LRYKO,3,3,complaint,"**Customer:** I had a minor issue with my no Internet service service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on no Internet service at $26.35. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","Communication Type: Complaint
+
+FORMAT: Your messaging should come from your typical, everyday, customer. You may substitute names to maintain your anonymity, and the complaint itself must come from the customer (or be quoted clearly as the customer). Your company/agent must never speak to the complaint unless it's to acknowledge the issue or explain the company/agent's solution.
+
+Customer Profile (Source of Truth):
+The customer is male, 35-44 years old, of Spanish descent, unemployed",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+2148,1345-GKDZZ,4,1,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — no Internet service.
+**Agent:** Confirmed. You’re on a month-to-month plan at $19.55, paid by mailed check.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — no Internet service.
+**Agent:** Confirmed. You’re on a month-to-month plan at $19.55, paid by mailed check.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+2148,1345-GKDZZ,4,2,billing_renewal,"**Subject:** Your monthly bill — $19.55
+
+Hello,
+
+Your month-to-month plan (no Internet service) is billed at **$19.55**. Payment is by mailed check via standard billing. Total charged to date: **$128.60**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","Communication Type: billing_renewal
+
+FORMAT (mandatory): Keep this as a company billing/renewal email to the customer. Clear company sender (e.g. Billing Team). Do NOT make it a dialog.
+
+Customer Profile (source of truth — do not contradict it):
+
+The customer is male, aged 30-65, and has a median income of 40k. The customer has been with the company for 2 years.
+
+DRAFT Text to enrich:
+
+**",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+2148,1345-GKDZZ,4,3,crm_note,"Male customer (~6 months). no Internet service. Month-to-month contract, mailed check, $19.55/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","To enrich a draft crm_note for a recent customer who opts-out of paperless billing but has a month-to-month contract, follow these rules for variation and rejection of generic copy.
+
+Format (mandatory): Keep the same length as in the draft. Do NOT turn into an email, letter, chat, or Agent/Customer dialog. 
+
+Customer profile (source of truth): 
+The customer is male, ages 25-65 with a median annual income of $100,000. The customer has",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+2148,1345-GKDZZ,4,4,support,"**Agent:** Support here — happy to help with phone service settings.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (no Internet service). Basic diagnostics look fine; tell me if anything still seems off.","Agent: Good afternoon/afternoon. Before we begin, I want to confirm that you are using a phone service provided by our company? ( customer nods)
+Customer: Yes, that's correct.
+Agent: Great. Thank you for letting me know this right away. Now, do you have any specific concerns or problems that are currently affecting your telephone connectivity? (customer pauses)
+Customer: Yes, to be honest, my home internet is really spotty at the moment, and the streaming TV services have some connectivity issues too. As for the",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+7021,1699-HPSBG,2,1,crm_note,"Male customer (~12 months). DSL Internet; tech support on. One-year contract, electronic check, $59.80/mo. Recent tone suggests friction (billing clarity or service expectations). Keep replies concrete; offer a calm review of the current plan before suggesting changes.","CUSTOMER PROFILE (FRESH)
+Male customer
+Source of truth: customer records
+Customer profile:
+The customer is a male aged 30-50 years old who is married with no children. He does not have any dependents or pets. The customer has a single phone line, a DSL internet connection, and a single phone number for all his services with the company. The customer's current monthly billing amount is approximately $59.80, and he has been with the company for 12 months.
+D",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+7021,1699-HPSBG,2,2,billing_renewal,"**Subject:** Your bill — $59.80
+
+Hello,
+
+Your one-year plan (DSL Internet; tech support on) is billed at **$59.80**. Payment method: electronic check (paperless billing). Total charged to date: **$727.80**.
+
+If anything on this bill looks incorrect, reply and we will review it with you.
+
+Best regards,
+Billing Team","DRAFT TEXT:
+
+**Subject:** Your bill - $59.80
+
+Hello,
+
+Your one-year plan (DSL Internet; tech support on) is billed at $59.80. Payment method: electronic check (paperless billing). Total charged to date: $727.80. If anything on this bill looks incorrect, please reply and we will review it with you.
+
+If anything on this bill looks incorrect, do not reply, and please let us know if you have any concerns",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+3859,1732-FEKLD,3,1,complaint,"**Customer:** I had a minor issue with my fiber-optic Internet service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on fiber-optic Internet; online backup on at $94.75. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","Formatted to the standard word count of 1000, following the guidelines set by the previous writer.
+
+Communication Type: Complaint
+
+FORMAT: 
+You may keep an Agent/Customer dialog, but the roles must remain consistent. The complaint itself must have the exact words stated in the original.
+
+Customer Profile (Source of Truth):
+The customer is female, aged 30, married, and has one child. They are currently on fiber-optic Internet with a three-year contract and pay approximately $",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2
+3859,1732-FEKLD,3,2,promotion,"**Subject:** Optional add-on for your fiber-optic Internet
+
+Hello,
+
+Customers on one-year plans sometimes add online security. If you’re interested, we can show the exact price impact on your $94.75 monthly charge.
+
+Best regards,
+Offers Team","[Subject: Optional add-on for your fiber-optic Internet]
+
+Dear [Customer],
+
+We’re always willing to give you more for your investment. We’re thrilled to offer the added convenience of online security at a lower monthly rate. Our online security solutions have been designed to complement our exceptional fiber-optic service and take a step towards our shared responsibility for your online security.
+
+Add to your current 7-day 250 GB subscription to our industry-leading Cybersecurity Pack. Our services are designed",TinyLlama/TinyLlama-1.1B-Chat-v1.0,local,1.2

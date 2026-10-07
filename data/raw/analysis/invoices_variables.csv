@@ -1,0 +1,10 @@
+variable,type,definition
+invoice_id,identifier,Unique identifier of one invoice (one billing cycle for one customer).
+customer_id,identifier,Identifier of the customer billed on this invoice.
+subscription_id,identifier,Identifier of that customer's HarborLink subscription.
+order_id,identifier,Identifier of the billing order behind this invoice.
+invoice_date,date,Date the invoice was issued.
+due_date,date,Date by which the invoice should be paid.
+amount,numeric,"Amount billed on this invoice, in euros."
+status,factor,Payment status stored on the invoice workbook. It should agree with payment_status; both are kept so a mismatch can be checked.
+period,date,"Billing month of the invoice, written YYYY-MM."

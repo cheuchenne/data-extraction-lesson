@@ -1,0 +1,174 @@
+source_row,customerID,n_texts,text_index,communication_type,template_text,text,model,backend
+5238,7841-FCRQD,3,1,billing_renewal,"**Subject:** Your monthly bill — $53.75
+
+Hello,
+
+Your one-year plan (DSL Internet; online backup on) is billed at **$53.75**. Payment is by automatic credit card via paperless billing. Total charged to date: **$1857.30**.
+
+Reply if you have any questions about this bill.
+
+Best regards,
+Billing Team","Dear valued customer,
+
+I hope this message finds you well.
+
+As we approach your renewal period for our DSL Internet service along with the inclusion of our online backup feature, I am pleased to inform you of the following:
+
+- Your monthly bill comes to **$53.75**.
+- We utilize a secure paperless billing process, ensuring confidentiality and convenience.
+- To date, your account balance stands at **$1857.30**.
+
+Should you require assistance with any aspect of your subscription, please feel free to reach out to us directly. 
+
+Thank you once again for choosing our services over the past 33 months. If there are any further updates or adjustments you wish to discuss, I would be happy to assist you.
+
+Warm regards,
+
+Billing Team",Qwen/Qwen2.5-1.5B-Instruct,local
+5238,7841-FCRQD,3,2,crm_note,"Female customer (~33 months). DSL Internet; online backup on. One-year contract, automatic credit card, $53.75/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","**CRM Note**
+
+• Female customer (~33 months), DSL Internet & online backup on. One-year contract, automated credit card payments, $53.75/month. Recent contact focused on ongoing usage and satisfaction. Consider gently educating on optional add-ons during next follow-up without pressuring the customer. Maintain onboarding tone throughout.",Qwen/Qwen2.5-1.5B-Instruct,local
+5238,7841-FCRQD,3,3,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — DSL Internet; online backup on.
+**Agent:** Confirmed. You’re on a one-year plan at $53.75, paid by automatic credit card.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","Subject: Confirmation of Service Setup and Billing Information
+
+Hi there,
+
+Just wanted to confirm my current service setup—DSL internet and online backup on. Everything seems to be working fine!
+
+Thanks again,
+[Your Name]",Qwen/Qwen2.5-1.5B-Instruct,local
+912,3865-YIOTT,2,1,support,"**Agent:** Support here — happy to help with fiber-optic Internet connectivity.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (fiber-optic Internet; online security on). Basic diagnostics look fine; tell me if anything still seems off.","**Support:** 
+Hello! Just wanted to see how everything’s going with your fiber-optic Internet connection. Is there anything specific I can check? 
+
+**Customer:** Yes, please take a quick look at my connection status.",Qwen/Qwen2.5-1.5B-Instruct,local
+912,3865-YIOTT,2,2,complaint,"**Customer:** I had a minor issue with my fiber-optic Internet service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on fiber-optic Internet; online security on at $106.10. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","**Customer:** Hey there, just noticed something about my Internet speed recently. Thought you might want to note it down.
+**Agent:** Thank you for bringing this to our attention. Fiber-optic Internet costs $106.10 per month. We've logged the issue and will investigate further if it persists.
+**Customer:** No problem, appreciate that.
+**Agent:** Gotta take care of those pesky issues before they escalate. Hope everything else is good.
+**Customer:** Yeah, sounds good.
+**Agent:** Sounds good to me. If you need anything, feel free to reach out anytime. Enjoy your day!",Qwen/Qwen2.5-1.5B-Instruct,local
+204,9142-KZXOP,2,1,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** Just confirming my setup — fiber-optic Internet.
+**Agent:** Confirmed. You’re on a month-to-month plan at $68.85, paid by automatic credit card.
+**Customer:** Perfect, thanks.
+**Agent:** You’re welcome. Have a good day.","Hi,
+
+I just wanted to confirm everything looks set up correctly—fiber optic internet, right?
+
+Thanks!",Qwen/Qwen2.5-1.5B-Instruct,local
+204,9142-KZXOP,2,2,crm_note,"Male customer (~44 months). fiber-optic Internet. Month-to-month contract, automatic credit card, $68.85/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","**CRM Note**
+
+• Customer is Male (~44 Months), Uses Fiber-Optic Internet, Subscribed to Month-to-Month Contract, Pays by Credit Card Monthly at $68.85, Total Charges Since Joining Company Amounted to Approximately $2958.95. Recently contacted regarding routine updates rather than complaints. Encouraged for future educational opportunities on additional services without inducing urgency. Maintain an approachable, informative tone during onboarding processes.",Qwen/Qwen2.5-1.5B-Instruct,local
+6074,3797-VTIDR,3,1,billing_renewal,"**Subject:** Your bill — $23.45
+
+Hello,
+
+Your month-to-month plan (DSL Internet; no phone) is billed at **$23.45**. Payment method: electronic check (paperless billing). Total charged to date: **$23.45**.
+
+If anything on this bill looks incorrect, reply and we will review it with you.
+
+Best regards,
+Billing Team","Subject: Confirm your current internet usage charges
+
+Dear [Customer],
+
+I hope this message finds you well. My apologies if I missed something last time! 
+
+We’re sending out our monthly bills today for your DSL Internet service. As you know, your contract is month-to-month, which means there’s no change to your base rate of $23.45 per month. With the option for paperless billing, your invoice was generated automatically via e-check. Over these past one month, we’ve processed approximately $23.45 toward your account.
+
+Please let us know if there’s anything here that appears amiss. We’d be happy to go over each line item with you.
+
+Best regards,  
+[Billing Team]",Qwen/Qwen2.5-1.5B-Instruct,local
+6074,3797-VTIDR,3,2,support,"**Agent:** Support here — I can help with DSL Internet connectivity.
+**Customer:** Yes, please. It’s been unreliable and I’m on month-to-month at $23.45.
+**Agent:** Thanks — I’ve opened a support case for DSL Internet; no phone. I’ll confirm the next check and update you.",Support here — I hope this helps! Your DSL Internet service has been inconsistent and you're still with us on a month-to-month plan. Can you let me know if there are any specific issues you'd like addressed right away?,Qwen/Qwen2.5-1.5B-Instruct,local
+6074,3797-VTIDR,3,3,customer_service,"**Agent:** Hi, thanks for contacting support. How can I help?
+**Customer:** I want to double-check what I’m paying for — my setup should be DSL Internet; no phone.
+**Agent:** Confirmed: DSL Internet; no phone. You’re on a month-to-month plan at $23.45, paid by electronic check.
+**Customer:** Okay, thanks for clarifying.
+**Agent:** Glad to help.","Hi there,
+
+Thanks for reaching out about your current setup. It seems everything checks out:
+
+- Your internet service is DSL
+- You don't have a landline phone 
+- Your contract term is month-to-month, costing $23.45 each month
+- Payment is made via an electronic check 
+
+Is there anything specific you'd like to know?",Qwen/Qwen2.5-1.5B-Instruct,local
+2253,0336-PIKEI,3,1,crm_note,"Male customer (~72 months). DSL Internet; online security on. Two-year contract, automatic bank transfer, $74.40/mo. Recent contact was routine, not a complaint. Good candidate for gentle education on optional add-ons later; no pressure—keep onboarding tone light and check satisfaction after another billing cycle.","Customer: Male | Age ~80 | Senior Citizen Partner
+
+- Phone Service Subscription
+- One Single Phone Line
+- DSL Internet Service
+- Subscribed to Company’s Online Security, Backup, Device Protection, Technical Support, and Streaming TV Services
+- Two-Year Contract
+- Payment via Automatic Bank Transfer
+- Monthly Charge: Approximately $74.40
+- Total Charged: $5360.75 Since Joining the Company
+- Has Been With the Company for ~72 Months
+
+Recent Contact was Routine; Not Complaining  
+Good Candidate for Gentle Education on Optional Add-Ons Later  
+Keep Onboarding Tone Light & Check Satisfaction After Another Billing Cycle",Qwen/Qwen2.5-1.5B-Instruct,local
+2253,0336-PIKEI,3,2,support,"**Agent:** Support here — happy to help with DSL Internet connectivity.
+**Customer:** Quick check on my connection, please.
+**Agent:** Looking at your account now (DSL Internet; online security on). Basic diagnostics look fine; tell me if anything still seems off.","Hi there,
+
+I just wanted to check on my DSL Internet connection again. Everything looks good based on my recent assessment.
+
+Thanks!
+Best regards,
+[Senior Citizen]",Qwen/Qwen2.5-1.5B-Instruct,local
+2253,0336-PIKEI,3,3,complaint,"**Customer:** I had a minor issue with my DSL Internet service and wanted it noted.
+**Agent:** Thanks for flagging it. You’re on DSL Internet; online security on at $74.40. I’ve logged the report and we can follow up if it continues.
+**Customer:** Okay, appreciated.
+**Agent:** You’re welcome.","Hi there! Just wanted to check in about my DSL Internet connection lately. Everything seems okay, thanks!
+
+I noticed something concerning during my recent checks:
+
+- My online security subscription cost was incorrect at $74.40 per month instead of the expected price of [insert correct price here].
+- After confirming this, I received a bill amounting to $5360.75 overall since joining your company, which appears higher than what should have been due.
+
+Could you please confirm these charges? I’d appreciate an update soon, thank you!
+
+--- 
+
+*Customer:* 
+
+---
+
+Thank you very much for checking into this matter right away. It’s really important for me to know everything’s running smoothly. Could you tell me why there was a slight adjustment to the online security fee?
+
+Regarding the total bill being a bit over, it looks like it could have been a mistake in pricing, isn't it? Is there anything else I need to understand to get everything aligned correctly?
+
+Again, thanks for addressing this quickly—everything works well except for these few details, and I want to ensure there aren’t any hidden costs that haven’t been mentioned yet.
+
+---
+
+*Agent:* Hi there! Thank you for bringing this to our attention. We’ll double-check the pricing for the online security service and also review the bill to see if there might be any adjustments needed based on our records.
+
+We’ll resolve this as soon as possible to prevent confusion for you going forward. If you don’t mind, we can send out another invoice showing the corrected information shortly after.
+
+Thanks again for bringing this to us, and let me know if there’s anything else we can assist with until then.
+
+--- 
+
+*Customer:* Great, thanks so much for catching those errors and resolving them swiftly! I appreciate the promptness in taking care of this matter.
+
+If there’s anything else related to my account, feel free to reach out—I’m always happy to provide feedback and questions.
+
+Have a great day!
+
+--- 
+
+*Agent:* Of course! Don’t hesitate to contact us anytime if you have more concerns. Your satisfaction is our priority. Have a good one too!",Qwen/Qwen2.5-1.5B-Instruct,local
