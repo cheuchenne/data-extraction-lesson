@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -135,6 +169,18 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">From Structured Data to a Predictive Model</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lessons/02f-campaign-targeting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Economic Optimization of Customer Targeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lessons/02g-cloud-automl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Comparing Local Models with Cloud AutoML</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -145,11 +191,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#section-2.b-from-business-information-to-analysis-ready-data" id="toc-section-2.b-from-business-information-to-analysis-ready-data" class="nav-link active" data-scroll-target="#section-2.b-from-business-information-to-analysis-ready-data"><span class="header-section-number">0.1</span> Section 2.b — From business information to analysis-ready data</a></li>
-  <li><a href="#section-2.c-one-analysis-table-from-several-sources" id="toc-section-2.c-one-analysis-table-from-several-sources" class="nav-link" data-scroll-target="#section-2.c-one-analysis-table-from-several-sources"><span class="header-section-number">0.2</span> Section 2.c — One analysis table from several sources</a></li>
-  <li><a href="#section-2.d-exploratory-analysis-and-data-visualisation" id="toc-section-2.d-exploratory-analysis-and-data-visualisation" class="nav-link" data-scroll-target="#section-2.d-exploratory-analysis-and-data-visualisation"><span class="header-section-number">0.3</span> Section 2.d — Exploratory analysis and data visualisation</a></li>
-  <li><a href="#section-2.e-from-structured-data-to-a-predictive-model" id="toc-section-2.e-from-structured-data-to-a-predictive-model" class="nav-link" data-scroll-target="#section-2.e-from-structured-data-to-a-predictive-model"><span class="header-section-number">0.4</span> Section 2.e — From structured data to a predictive model</a></li>
-  <li><a href="#how-to-follow-the-lessons" id="toc-how-to-follow-the-lessons" class="nav-link" data-scroll-target="#how-to-follow-the-lessons"><span class="header-section-number">0.5</span> How to follow the lessons</a></li>
+  <li><a href="#chapter-1-loading-integrating-and-exploring-data" id="toc-chapter-1-loading-integrating-and-exploring-data" class="nav-link active" data-scroll-target="#chapter-1-loading-integrating-and-exploring-data">Chapter 1 — Loading, integrating and exploring data</a></li>
+  <li><a href="#chapter-2-from-business-information-to-analysis-ready-data" id="toc-chapter-2-from-business-information-to-analysis-ready-data" class="nav-link" data-scroll-target="#chapter-2-from-business-information-to-analysis-ready-data">Chapter 2 — From business information to analysis-ready data</a></li>
+  <li><a href="#chapter-3-one-analysis-table-from-several-sources" id="toc-chapter-3-one-analysis-table-from-several-sources" class="nav-link" data-scroll-target="#chapter-3-one-analysis-table-from-several-sources">Chapter 3 — One analysis table from several sources</a></li>
+  <li><a href="#chapter-4-exploratory-analysis-and-data-visualisation" id="toc-chapter-4-exploratory-analysis-and-data-visualisation" class="nav-link" data-scroll-target="#chapter-4-exploratory-analysis-and-data-visualisation">Chapter 4 — Exploratory analysis and data visualisation</a></li>
+  <li><a href="#chapter-5-from-structured-data-to-a-predictive-model" id="toc-chapter-5-from-structured-data-to-a-predictive-model" class="nav-link" data-scroll-target="#chapter-5-from-structured-data-to-a-predictive-model">Chapter 5 — From structured data to a predictive model</a></li>
+  <li><a href="#chapter-6-economic-optimization-of-customer-targeting" id="toc-chapter-6-economic-optimization-of-customer-targeting" class="nav-link" data-scroll-target="#chapter-6-economic-optimization-of-customer-targeting">Chapter 6 — Economic optimization of customer targeting</a></li>
+  <li><a href="#chapter-7-comparing-local-models-with-cloud-automl" id="toc-chapter-7-comparing-local-models-with-cloud-automl" class="nav-link" data-scroll-target="#chapter-7-comparing-local-models-with-cloud-automl">Chapter 7 — Comparing local models with cloud AutoML</a></li>
+  <li><a href="#how-to-follow-a-chapter" id="toc-how-to-follow-a-chapter" class="nav-link" data-scroll-target="#how-to-follow-a-chapter">How to follow a chapter</a></li>
   </ul>
 </nav>
     </div>
@@ -176,31 +225,169 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This repository is the teaching material for <strong>Sections 2.b, 2.c, 2.d and 2.e</strong>.</p>
-<p>The HarborLink documents (2.b–2.d) use one fictitious subscription company. Those datasets are entirely synthetic. Section 2.e then uses a customer-level telco table plus generated communications to train a predictive model.</p>
-<section id="section-2.b-from-business-information-to-analysis-ready-data" class="level2" data-number="0.1">
-<h2 data-number="0.1" class="anchored" data-anchor-id="section-2.b-from-business-information-to-analysis-ready-data"><span class="header-section-number">0.1</span> Section 2.b — From business information to analysis-ready data</h2>
-<p>How can we transform information produced in everyday business activities into structured data that Python can load?</p>
-<p>Main document: <code>lessons/02b-data-loading.qmd</code></p>
+<p>This book has seven chapters. This page is chapter 1. It says what each chapter does, which file to open, and which Python packages that chapter needs.</p>
+<p>Open the <code>.qmd</code> file to run the cells. Open the <code>.html</code> file to read the same lesson. Install every package once, from the project folder:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="chapter-1-loading-integrating-and-exploring-data" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-1-loading-integrating-and-exploring-data">Chapter 1 — Loading, integrating and exploring data</h2>
+<p>This page is the map of the book. It does not load data and it does not fit a model.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Lesson</td>
+<td><code>index.qmd</code></td>
+</tr>
+<tr class="even">
+<td>Reading page</td>
+<td><code>index.html</code></td>
+</tr>
+<tr class="odd">
+<td>Packages</td>
+<td>None. The later chapters use the packages below.</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="section-2.c-one-analysis-table-from-several-sources" class="level2" data-number="0.2">
-<h2 data-number="0.2" class="anchored" data-anchor-id="section-2.c-one-analysis-table-from-several-sources"><span class="header-section-number">0.2</span> Section 2.c — One analysis table from several sources</h2>
-<p>Join the HarborLink extracts into one invoice-level DataFrame (<code>lessons/02c-exploratory-analysis.qmd</code>).</p>
+<section id="chapter-2-from-business-information-to-analysis-ready-data" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-2-from-business-information-to-analysis-ready-data">Chapter 2 — From business information to analysis-ready data</h2>
+<p>A company keeps the same facts in several places: a spreadsheet, a CSV file, a JSON file, a database, a small web service, and a PDF. This chapter loads each one into a table.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Lesson</td>
+<td><code>lessons/02b-data-loading.qmd</code></td>
+</tr>
+<tr class="even">
+<td>Reading page</td>
+<td><code>lessons/02b-data-loading.html</code></td>
+</tr>
+<tr class="odd">
+<td>Practice notebook</td>
+<td><code>notebooks/02b-data-loading.ipynb</code></td>
+</tr>
+<tr class="even">
+<td>Packages</td>
+<td><code>pandas</code>, <code>openpyxl</code>, <code>requests</code>, <code>pymupdf</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="section-2.d-exploratory-analysis-and-data-visualisation" class="level2" data-number="0.3">
-<h2 data-number="0.3" class="anchored" data-anchor-id="section-2.d-exploratory-analysis-and-data-visualisation"><span class="header-section-number">0.3</span> Section 2.d — Exploratory analysis and data visualisation</h2>
-<p>Explore and visualise that table with pandas, matplotlib and seaborn (<code>lessons/02d-eda-visualisation.qmd</code>).</p>
+<section id="chapter-3-one-analysis-table-from-several-sources" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-3-one-analysis-table-from-several-sources">Chapter 3 — One analysis table from several sources</h2>
+<p>The files from chapter 2 are separate. This chapter joins them into one row per invoice, and writes a short dictionary of the columns.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Lesson</td>
+<td><code>lessons/02c-exploratory-analysis.qmd</code></td>
+</tr>
+<tr class="even">
+<td>Reading page</td>
+<td><code>lessons/02c-exploratory-analysis.html</code></td>
+</tr>
+<tr class="odd">
+<td>Practice notebook</td>
+<td><code>notebooks/02c-exploratory-analysis.ipynb</code></td>
+</tr>
+<tr class="even">
+<td>Packages</td>
+<td><code>pandas</code>, <code>requests</code>, <code>openpyxl</code>, <code>matplotlib</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="section-2.e-from-structured-data-to-a-predictive-model" class="level2" data-number="0.4">
-<h2 data-number="0.4" class="anchored" data-anchor-id="section-2.e-from-structured-data-to-a-predictive-model"><span class="header-section-number">0.4</span> Section 2.e — From structured data to a predictive model</h2>
-<p>Once a table is ready, how do we turn numbers <strong>and</strong> text into a probability of churn?</p>
-<p>Main document: <code>lessons/02e-churn-text-ml.qmd</code></p>
-<p>Practice notebook: <code>notebooks/02e-churn-text-ml.ipynb</code></p>
-<p>The session formalizes early fusion (tabular fields + TF–IDF / SVD text), logistic regression, evaluation metrics, and explanations (permutation importance, LIME).</p>
+<section id="chapter-4-exploratory-analysis-and-data-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-4-exploratory-analysis-and-data-visualisation">Chapter 4 — Exploratory analysis and data visualisation</h2>
+<p>The invoice table is ready. This chapter draws the graphs that show who the customers are, what they pay, and which invoices are late.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Lesson</td>
+<td><code>lessons/02d-eda-visualisation.qmd</code></td>
+</tr>
+<tr class="even">
+<td>Reading page</td>
+<td><code>lessons/02d-eda-visualisation.html</code></td>
+</tr>
+<tr class="odd">
+<td>Practice notebook</td>
+<td><code>notebooks/02d-eda-visualisation.ipynb</code></td>
+</tr>
+<tr class="even">
+<td>Packages</td>
+<td><code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>seaborn</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="how-to-follow-the-lessons" class="level2" data-number="0.5">
-<h2 data-number="0.5" class="anchored" data-anchor-id="how-to-follow-the-lessons"><span class="header-section-number">0.5</span> How to follow the lessons</h2>
-<p>Open the Quarto file for the session and execute the Python cells in order. The HarborLink demonstrations do not require an ERP, a CRM, API keys or an internet connection. The modelling session reads local CSV files already present in <code>data/raw/telco/</code>.</p>
+<section id="chapter-5-from-structured-data-to-a-predictive-model" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-5-from-structured-data-to-a-predictive-model">Chapter 5 — From structured data to a predictive model</h2>
+<p>Which customers are likely to leave? This chapter fits a logistic regression on the customer table. It then fits the same kind of model with the customer messages added. Both models are scored on customers they did not see during the fit.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Lesson</td>
+<td><code>lessons/02e-churn-text-ml.qmd</code></td>
+</tr>
+<tr class="even">
+<td>Reading page</td>
+<td><code>lessons/02e-churn-text-ml.html</code></td>
+</tr>
+<tr class="odd">
+<td>Packages</td>
+<td><code>pandas</code>, <code>numpy</code>, <code>scikit-learn</code>, <code>matplotlib</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="chapter-6-economic-optimization-of-customer-targeting" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-6-economic-optimization-of-customer-targeting">Chapter 6 — Economic optimization of customer targeting</h2>
+<p>A churn probability is not yet a decision. Contacting a customer costs money. Losing a customer costs money too. This chapter chooses whom to contact so that the expected cost is as small as possible, including when a budget limits the total spend.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Lesson</td>
+<td><code>lessons/02f-campaign-targeting.qmd</code></td>
+</tr>
+<tr class="even">
+<td>Reading page</td>
+<td><code>lessons/02f-campaign-targeting.html</code></td>
+</tr>
+<tr class="odd">
+<td>Packages</td>
+<td><code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>scipy</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="chapter-7-comparing-local-models-with-cloud-automl" class="level2">
+<h2 class="anchored" data-anchor-id="chapter-7-comparing-local-models-with-cloud-automl">Chapter 7 — Comparing local models with cloud AutoML</h2>
+<p>The same customers can be sent to a cloud service that trains its own model. This chapter compares those probabilities with the logistic regressions from chapter 5, then repeats the campaign decision from chapter 6. Reading the page does not start a paid job.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Lesson</td>
+<td><code>lessons/02g-cloud-automl.qmd</code></td>
+</tr>
+<tr class="even">
+<td>Reading page</td>
+<td><code>lessons/02g-cloud-automl.html</code></td>
+</tr>
+<tr class="odd">
+<td>Packages</td>
+<td><code>pandas</code>, <code>numpy</code>, <code>scikit-learn</code>, <code>matplotlib</code>, <code>scipy</code></td>
+</tr>
+<tr class="even">
+<td>Paid run only</td>
+<td><code>google-cloud-aiplatform</code>, <code>google-cloud-storage</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="how-to-follow-a-chapter" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-follow-a-chapter">How to follow a chapter</h2>
+<p>Open the chapter and run the cells from top to bottom. Chapters 2, 3, and 4 use the HarborLink company. The data are synthetic. They do not need an external account. Chapters 5, 6, and 7 read the telco files already stored in <code>data/raw/telco/</code> and <code>data/processed/telco/</code>.</p>
+<p>Every chapter with code uses the kernel named <code>data-extraction-lesson</code>. <code>jupyter</code> and <code>ipykernel</code> install that kernel. They are listed in <code>requirements.txt</code>.</p>
 
 
 </section>

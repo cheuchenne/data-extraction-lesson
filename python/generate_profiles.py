@@ -1,4 +1,4 @@
-"""Rebuild telco_with_profiles.csv from the public IBM Telco churn table.
+"""Rebuild telco_customers.csv from the public IBM Telco churn table.
 
     python python/generate_profiles.py
 """
@@ -158,7 +158,6 @@ def main() -> None:
     print("Number of variables:", len(df.columns))
     print("\nExample profile:\n")
     print(customer_profile(df.iloc[0]))
-    df["CustomerProfile"] = df.apply(customer_profile, axis=1)
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(OUTPUT_FILE, index=False)
     print("\nProfiles generated:", len(df))

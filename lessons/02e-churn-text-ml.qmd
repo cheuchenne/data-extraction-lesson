@@ -1,607 +1,689 @@
 ---
 title: "From Structured Data to a Predictive Model"
-subtitle: "Multimodal churn classification"
+subtitle: "A workshop on customer churn"
 jupyter: data-extraction-lesson
+fig-width: 7
+fig-height: 4.4
 ---
 
-After the HarborLink extraction and exploratory sessions, this lesson uses a
-customer-level table together with textual communications. The goal is no longer
-to describe the data, but to **score a binary outcome** with a transparent
-multimodal model.
+A telecommunications company wants to know which customers are likely to leave. Leaving is called **customer churn**. The company already stores a structured record for each customer: contract, services, tenure and charges, together with a label that says whether that customer churned. It also has written communications: complaints, billing messages, support conversations and internal notes.
 
-The communications files `customer_communications.csv`,
-`customer_communications_2.csv` and `customer_communications_3.csv` are kept
-under `data/raw/telco/` so we can later decide which corpus is the most useful.
-The live cells below use the full template file
-`customer_communications.csv`.
+This workshop is a guided investigation of one question.
 
-## Learning objectives
+**Do the communications contain useful information beyond the structured customer record, once we judge the models on customers they did not see during fitting?**
 
-By the end of this session you should be able to:
+You will compare three approaches on the same test customers:
 
-1. Write the multimodal churn model as a map from **heterogeneous raw data** to a probability $\hat p_i\in(0,1)$.
-2. Explain, with formulae, **standardization**, **one-hot encoding**, **TF–IDF** and **truncated SVD (LSA)**.
-3. Formalize **early fusion** (concatenation of tabular and text vectors).
-4. State the **logistic regression** likelihood and the decision rule.
-5. Define **TP/FP/TN/FN**, Precision, Recall, $F_1$, ROC and AUC.
-6. Interpret **global** and **local** explanations (permutation importance, LIME, text-type diagnostics).
+1.  **Tabular model.** Use only the structured customer record.
+2.  **Combined model.** Use the structured record and numerical summaries of the communications.
+3.  **Text-only model.** Use only those numerical summaries.
 
-## The prediction problem
+The model in all three cases is a **logistic regression**: a simple, standard way to turn customer information into a score between 0 and 1. We keep the model the same so that the comparison is about the information, not about a change of algorithm. A logistic regression is a good way to see a complete prediction workflow. It is not automatically the best model for every churn problem.
 
-### Observed data for customer $i$
+Three roles stay separate throughout the session.
 
-For each customer $i=1,\dots,n$ we observe:
+-   The **computer** calculates scores and performance measures.
+-   The **analyst** checks whether the procedure is fair and what the measures mean.
+-   The **business** decides whether to act, whom to contact, and at what cost.
 
-1. **Structured CRM fields**
-   - continuous: e.g. $\mathrm{tenure}_i$, $\mathrm{MonthlyCharges}_i$, $\mathrm{TotalCharges}_i$;
-   - categorical: e.g. $\mathrm{Contract}_i$, $\mathrm{InternetService}_i$, $\mathrm{PaymentMethod}_i$, …
-2. **A collection of textual communications**
-   $$
-   \mathcal{T}_i=\{t_{i1},\dots,t_{i m_i}\},
-   $$
-   where each $t_{ij}$ is a billing email, support dialog, complaint, CRM note, etc.
-3. **A binary label**
-   $$
-   Y_i\in\{0,1\},
-   \qquad
-   Y_i=1 \Leftrightarrow \text{customer }i\text{ churns}.
-   $$
+```{=html}
+<!--
+Two hours of practice will help you ask those questions. It will not replace a data scientist.
 
-We treat CRM fields and texts as **given inputs**. The goal is to learn a function
-$$
-f:\ \text{(CRM fields of }i\text{)},\ \mathcal{T}_i\ \longmapsto\ \hat p_i=\widehat{\mathbb{P}}(Y_i=1\mid \text{data of }i).
-$$
+## Suggested timing
 
-```{python}
-#| label: data-glimpse
-from pathlib import Path
-import os
-import pandas as pd
+| Stage | What you will do | Guide |
+|---|---|---:|
+| 1 | Define the business question | 10 min |
+| 2 | Prepare the environment and load the data | 10 min |
+| 3 | Fit the tabular model | 20 min |
+| 4 | Read the first set of results | 15 min |
+| 5 | Turn communications into numbers | 20 min |
+| 6 | Attach those numbers to the customer table | 10 min |
+| 7 | Fit the combined model and compare | 20 min |
+| 8 | Fit the text-only model and interpret | 15 min |
 
-if not Path("data/raw/telco/telco_with_profiles.csv").exists():
-    os.chdir(Path("..").resolve())
-
-TELCO_RAW = Path("data/raw/telco")
-TELCO_RESULTS = Path("data/processed/telco")
-
-profiles = pd.read_csv(TELCO_RAW / "telco_with_profiles.csv")
-comms_path = TELCO_RAW / "customer_communications.csv"
-comms = pd.read_csv(comms_path)
-print("Working directory:", Path.cwd())
-print("Communications file:", comms_path)
-print("Customers:", len(profiles), "| Texts:", len(comms))
-print("Mean texts / customer:", round(len(comms)/comms['customerID'].nunique(), 2))
-print("Churn rate:", (profiles["Churn"].astype(str).str.strip()=="Yes").mean().round(3))
-print("Available communication files:")
-for name in [
-    "customer_communications.csv",
-    "customer_communications_2.csv",
-    "customer_communications_3.csv",
-]:
-    path = TELCO_RAW / name
-    print(f"  {name}: {len(pd.read_csv(path)) if path.exists() else 0} rows")
-comms["communication_type"].value_counts()
+The times are a guide. Run the cells from top to bottom. Read the output, then the paragraph under it.
+-->
 ```
 
-### Why two modalities?
-
-- CRM fields summarize **stable account attributes** (contract length, price, products).
-- Texts capture **interaction content** (complaints, billing friction, support issues) that is hard to store as a few categorical columns.
-
-A model that uses only numbers may miss linguistic signal; a model that uses only text may miss precise amounts and contract structure. **Multimodal learning** combines both.
-
-## Building a common numeric representation
-
-Computers do not add “€64.90” to the sentence “my connection is unstable”.  
-We therefore build two real vectors and concatenate them.
-
-### Notation for early fusion
-
-$$
-\mathbf{x}_i^{\mathrm{tab}}\in\mathbb{R}^{p},
-\qquad
-\mathbf{x}_i^{\mathrm{txt}}\in\mathbb{R}^{k},
-\qquad
-\mathbf{x}_i
-=
-\begin{bmatrix}
-\mathbf{x}_i^{\mathrm{tab}}\\
-\mathbf{x}_i^{\mathrm{txt}}
-\end{bmatrix}
-\in\mathbb{R}^{p+k}.
-$$
-
-This concatenation is called **early fusion**: modalities are merged **before** the classifier.
-
-```{mermaid}
-flowchart TB
-  subgraph tabular [Tabular pathway]
-    A1[Continuous fields] --> A2[Standardization]
-    A3[Categorical fields] --> A4[One-hot encoding]
-    A2 --> A5["x_tab in R^p"]
-    A4 --> A5
-  end
-  subgraph textpath [Text pathway]
-    B1["Texts T_i"] --> B2[Concatenate into document d_i]
-    B2 --> B3[TF-IDF vector w_i in R^V]
-    B3 --> B4["Truncated SVD / LSA → x_txt in R^k"]
-  end
-  A5 --> C["Early fusion: x = [x_tab; x_txt]"]
-  B4 --> C
-  C --> D["Logistic regression → p̂ = σ(β0 + βᵀx)"]
-```
-
-## Pathway 1 — tabular features
-
-### Continuous variables: standardization
-
-Let $z_i$ be a continuous field (e.g. monthly charge). On the **training** sample of size $n_{\mathrm{train}}$:
-
-$$
-\hat\mu=\frac1{n_{\mathrm{train}}}\sum_{i\in\mathrm{train}}z_i,
-\qquad
-\hat\sigma
-=
-\sqrt{
-\frac1{n_{\mathrm{train}}}\sum_{i\in\mathrm{train}}(z_i-\hat\mu)^2
-}.
-$$
-
-The standardized value is
-$$
-\tilde z_i=\frac{z_i-\hat\mu}{\hat\sigma}.
-$$
-
-**Why?** Logistic regression uses a linear score $\boldsymbol\beta^\top\mathbf{x}$. Without scaling, a variable measured in thousands (total charges) can dominate one measured in tens (monthly charges) for purely dimensional reasons.
-
-> Fit $\hat\mu,\hat\sigma$ on the training set only; apply the same constants to the test set (no leakage).
-
-### Categorical variables: one-hot encoding
-
-Suppose a categorical variable $C$ has finite levels
-$$
-\mathcal{C}=\{c_1,\dots,c_M\}
-$$
-(example: $\mathcal{C}=\{\text{Month-to-month},\text{One year},\text{Two year}\}$).
-
-Define the **one-hot map** $\mathbf{e}:\mathcal{C}\to\{0,1\}^M$ by
-$$
-\mathbf{e}(c_j)
-=
-\bigl(
-\mathbf{1}\{j=1\},\mathbf{1}\{j=2\},\dots,\mathbf{1}\{j=M\}
-\bigr)^\top.
-$$
-
-**Mini-example.** If $C_i=\text{One year}$ and $M=3$ with the order above,
-$$
-\mathbf{e}(C_i)=(0,1,0)^\top.
-$$
-
-If we have several categorical variables $C^{(1)},\dots,C^{(Q)}$, we concatenate their one-hot blocks:
-$$
-\mathbf{x}_i^{\mathrm{cat}}
-=
-\bigl[
-\mathbf{e}^{(1)}(C_i^{(1)})^\top,\ \dots,\ \mathbf{e}^{(Q)}(C_i^{(Q)})^\top
-\bigr]^\top.
-$$
-
-Finally,
-$$
-\mathbf{x}_i^{\mathrm{tab}}
-=
-\bigl[
-\tilde{\mathbf{z}}_i^\top,\ 
-(\mathbf{x}_i^{\mathrm{cat}})^\top
-\bigr]^\top\in\mathbb{R}^{p}.
-$$
-
-In software this is exactly `StandardScaler` + `OneHotEncoder` inside a `ColumnTransformer`.
-
-## Pathway 2 — from text to a dense vector
-
-### Step A: one document per customer
-
-Concatenate all messages of customer $i$ (order by time / index):
-$$
-d_i = t_{i1}\ \|\ t_{i2}\ \|\ \dots\ \|\ t_{i m_i}.
-$$
-
-Tokenize $d_i$ into terms (words / bigrams). Let the training vocabulary be
-$$
-\{u_1,\dots,u_V\}.
-$$
-
-### Step B: TF–IDF (term weighting)
-
-#### Term frequency
-
-$$
-\mathrm{tf}(u,d)
-=
-\frac{\text{number of occurrences of }u\text{ in }d}
-{\text{number of tokens in }d}.
-$$
-
-#### Document frequency and IDF
-
-Let $\mathrm{df}(u)$ be the number of **training** documents containing term $u$.  
-A standard smooth IDF (as in scikit-learn) is
-$$
-\mathrm{idf}(u)
-=
-\log\frac{1+n_{\mathrm{train}}}{1+\mathrm{df}(u)}+1.
-$$
-
-Rare terms across customers get **large** IDF; ubiquitous terms (“the”, “customer”) get **small** IDF.
-
-#### TF–IDF weight
-
-$$
-w_{i,v}
-=
-\mathrm{tf}(u_v,d_i)\cdot\mathrm{idf}(u_v).
-$$
-
-Stacking these weights yields a sparse vector
-$$
-\mathbf{w}_i=(w_{i,1},\dots,w_{i,V})^\top\in\mathbb{R}^{V}.
-$$
-
-**Interpretation.** A coordinate is large when the term is frequent *for this customer* and uncommon *in the corpus*.
-
-**Mini-example.** Suppose vocabulary $\{\text{fiber},\text{slow},\text{bill}\}$ and document $d=$ “fiber slow fiber”.  
-Then raw counts are $(2,1,0)$. After length normalization and multiplying by IDFs $(1.2, 2.0, 1.5)$ one gets a vector proportional to $(2\cdot1.2,\ 1\cdot2.0,\ 0)=(2.4,2.0,0)$.
-
-### Step C: truncated SVD / LSA (dimension reduction)
-
-$V$ is typically thousands: too large, noisy, and sparse for a small $n$.  
-Collect training TF–IDF rows into a matrix
-$$
-W\in\mathbb{R}^{n_{\mathrm{train}}\times V}.
-$$
-
-Compute a rank-$k$ SVD approximation
-$$
-W \;\approx\; U_k\,\Sigma_k\,V_k^\top,
-$$
-where
-
-- $U_k\in\mathbb{R}^{n_{\mathrm{train}}\times k}$ has orthonormal columns,
-- $\Sigma_k=\mathrm{diag}(\sigma_1\ge\dots\ge\sigma_k)>0$,
-- $V_k\in\mathbb{R}^{V\times k}$ has orthonormal columns (right singular vectors / latent topics directions).
-
-A new document with TF–IDF $\mathbf{w}$ is mapped to LSA coordinates
-$$
-\mathbf{x}^{\mathrm{txt}}
-=
-\Sigma_k^{-1} V_k^\top \mathbf{w}
-\in\mathbb{R}^{k}
-$$
-(up to the exact convention used by the library; scikit-learn’s `TruncatedSVD.transform` implements an equivalent linear map).
-
-**Why this helps.**
-
-1. **Compression:** $k\ll V$ (we use $k\approx 64$).
-2. **Denoising:** tiny singular values (noise directions) are discarded.
-3. **Semantic smoothing:** terms that co-occur (e.g. “slow” / “outage” / “connection”) load on similar latent axes, so related phrasings become close in $\mathbb{R}^{k}$.
-
-This classical pipeline is **Latent Semantic Analysis (LSA)** (Deerwester et al., 1990).
-
-#### Optional remark (neural embeddings)
-
-A Sentence-BERT encoder defines
-$$
-\mathbf{x}^{\mathrm{txt}}=f_\theta(d)\in\mathbb{R}^{k}
-$$
-with a pretrained transformer $f_\theta$.  
-The **fusion mathematics below is unchanged**: only the map $d\mapsto\mathbf{x}^{\mathrm{txt}}$ differs.  
-This course defaults to TF–IDF + SVD because every step is linear/algebraic and auditable.
-
-## Putting modalities together
-
-### Early fusion vector
-
-$$
-\mathbf{x}_i
-=
-\begin{bmatrix}
-\mathbf{x}_i^{\mathrm{tab}}\\
-\mathbf{x}_i^{\mathrm{txt}}
-\end{bmatrix}
-=
-\begin{bmatrix}
-\text{scaled numbers}\\
-\text{one-hot categories}\\
-\text{LSA text coordinates}
-\end{bmatrix}.
-$$
-
-Partition the coefficient vector conformally:
-$$
-\boldsymbol\beta
-=
-\begin{bmatrix}
-\boldsymbol\beta^{\mathrm{tab}}\\
-\boldsymbol\beta^{\mathrm{txt}}
-\end{bmatrix}.
-$$
-
-The linear predictor splits as
-$$
-\boldsymbol\beta^\top\mathbf{x}_i
-=
-\underbrace{(\boldsymbol\beta^{\mathrm{tab}})^\top\mathbf{x}_i^{\mathrm{tab}}}_{\text{CRM contribution}}
-+
-\underbrace{(\boldsymbol\beta^{\mathrm{txt}})^\top\mathbf{x}_i^{\mathrm{txt}}}_{\text{text contribution}}.
-$$
-
-This is the precise sense in which “numbers and text are combined”: **additive contributions inside one linear score**.
-
-### Logistic regression
-
-#### Probability model
-
-$$
-\hat p_i
-=
-\mathbb{P}(Y_i=1\mid\mathbf{x}_i)
-=
-\sigma\!\left(\beta_0+\boldsymbol\beta^\top\mathbf{x}_i\right),
-\qquad
-\sigma(u)=\frac{1}{1+e^{-u}}.
-$$
-
-Equivalently, the log-odds are linear:
-$$
-\log\frac{\hat p_i}{1-\hat p_i}
-=
-\beta_0+\boldsymbol\beta^\top\mathbf{x}_i.
-$$
-
-#### Learning criterion (class-weighted log-likelihood)
-
-Because churn is rarer than non-churn, we use **balanced / class-weighted** logistic regression.  
-With weights $\omega_0,\omega_1>0$ (inversely related to class frequency), one maximizes
-$$
-\mathcal{L}(\beta_0,\boldsymbol\beta)
-=
-\sum_{i\in\mathrm{train}}
-\omega_{Y_i}
-\Big[
-Y_i\log\hat p_i
-+(1-Y_i)\log(1-\hat p_i)
-\Big]
--
-\frac{\lambda}{2}\|\boldsymbol\beta\|_2^2.
-$$
-
-The last term is an optional $\ell_2$ penalty (ridge).  
-scikit-learn’s `LogisticRegression(class_weight="balanced")` implements this idea.
-
-#### Decision rule
-
-For a threshold $\tau\in(0,1)$ (default $\tau=0.5$),
-$$
-\hat Y_i=\mathbf{1}\{\hat p_i\ge\tau\}.
-$$
-
-Changing $\tau$ trades false alarms against missed churners (see ROC below).
-
-### Train / test discipline
-
-Draw a stratified split
-$$
-\{1,\dots,n\}=\mathcal{I}_{\mathrm{train}}\cup\mathcal{I}_{\mathrm{test}}.
-$$
-
-**Fit on train only:** scalers, one-hot dictionaries, IDF weights, SVD factors, and $(\beta_0,\boldsymbol\beta)$.  
-**Evaluate on test:** apply the frozen transforms, then compute metrics.
-
-## Evaluation metrics (mathematics)
-
-### Confusion matrix
-
-|  | $\hat Y=0$ | $\hat Y=1$ |
-|--|:--:|:--:|
-| $Y=0$ | TN | FP |
-| $Y=1$ | FN | TP |
-
-$$
-\begin{aligned}
-\mathrm{Accuracy}
-&=\frac{TP+TN}{TP+TN+FP+FN},\\[4pt]
-\mathrm{Precision}
-&=\frac{TP}{TP+FP}
-\quad\text{(among predicted churners, how many truly churn?)},\\[4pt]
-\mathrm{Recall}
-&=\frac{TP}{TP+FN}
-\quad\text{(among true churners, how many did we catch?)},\\[4pt]
-F_1
-&=
-\frac{2\cdot\mathrm{Precision}\cdot\mathrm{Recall}}
-{\mathrm{Precision}+\mathrm{Recall}}.
-\end{aligned}
-$$
-
-Under imbalance, accuracy alone is misleading: predicting always “no churn” can look “accurate”.
-
-### ROC and AUC
-
-For each threshold $\tau$, define
-$$
-\mathrm{TPR}(\tau)=\frac{TP(\tau)}{TP(\tau)+FN(\tau)},
-\qquad
-\mathrm{FPR}(\tau)=\frac{FP(\tau)}{FP(\tau)+TN(\tau)}.
-$$
-
-The ROC curve is the parametric plot $\tau\mapsto\bigl(\mathrm{FPR}(\tau),\mathrm{TPR}(\tau)\bigr)$.  
-The **AUC** is the area under that curve:
-$$
-\mathrm{AUC}
-=
-\int_0^1 \mathrm{TPR}\,\mathrm{d}(\mathrm{FPR}).
-$$
-
-Equivalently, AUC is the probability that a random churner receives a higher score $\hat p$ than a random non-churner.
-
-## Two models we compare
-
-| Model | Features | Role |
-|--|--|--|
-| **A — tabular only** | $\mathbf{x}^{\mathrm{tab}}$ | Classical CRM baseline |
-| **B — tabular + text** | $[\mathbf{x}^{\mathrm{tab}};\mathbf{x}^{\mathrm{txt}}]$ | Multimodal model |
-
-The **lift** of text is measured by differences such as
-$$
-\Delta\mathrm{AUC}
-=
-\mathrm{AUC}(B)-\mathrm{AUC}(A),
-\qquad
-\Delta F_1
-=
-F_1(B)-F_1(A).
-$$
-
-## Live empirical results
-
-```bash
+::: callout-note
+## Optional prompt for an AI assistant
+
+"Explain the difference between training data and test data using the customer churn example."
+
+Use an assistant to understand a command or a result. Check the answer against the tables in this document. An assistant can be wrong. Do not paste real customer communications into an external service unless your organization has authorized that use. The texts in this workshop are synthetic teaching texts.
+:::
+
+## Stage 1 — Define the business question
+
+### What churn means
+
+`Churn` is the target. In this dataset it is a text field with two values: `Yes` if the customer left, and `No` if the customer stayed. A **binary** variable has two outcomes. The business question is richer than the label. The company would like a **score for each customer**, somewhere between 0 and 1, that ranks customers by how similar they are to historical customers who left.
+
+A score is not yet a decision. A score of 0.80 does not, by itself, mean "call this customer" or "offer a discount." The company still has to choose an action, a budget and a rule for how high a score must be before someone is contacted. That rule is called a **cutoff**.
+
+Predicting a score is different from predicting only yes or no. The score can be sorted. The company can contact the 200 customers with the highest scores, or it can contact everyone above a cutoff. Those are business choices. The model supplies the ranking.
+
+### What information is available
+
+Two files are used.
+
+**Dataset A, the customer table.** This is the public Telco Customer Churn dataset published on Kaggle: <https://www.kaggle.com/datasets/blastchar/telco-customer-churn>. One row is one customer. The prepared file in this project is `data/raw/telco/telco_customers.csv`. It contains the public fields. The identifier is `customerID`. The target is `Churn`.
+
+The structured fields fall into a few groups:
+
+| Group | Columns |
+|------------------------------------|------------------------------------|
+| Identifier | `customerID` |
+| Who the customer is | `gender`, `SeniorCitizen`, `Partner`, `Dependents` |
+| Phone | `tenure`, `PhoneService`, `MultipleLines` |
+| Internet and add-on services | `InternetService`, `OnlineSecurity`, `OnlineBackup`, `DeviceProtection`, `TechSupport`, `StreamingTV`, `StreamingMovies` |
+| Contract and charges | `Contract`, `PaperlessBilling`, `PaymentMethod`, `MonthlyCharges`, `TotalCharges` |
+| Outcome | `Churn` |
+
+**Dataset B, the communications.** The file is `data/raw/telco/customer_communications.csv`. One row is one message. A customer can have several messages. The link to the customer table is `customerID`. The same folder contains two much smaller files of rewritten notes. They cover only a handful of customers, so this workshop uses the full file.
+
+The communications were **generated for this course** from the customer records. They are not an export from a live call centre. A complaint about repeated outages *could*, in a real archive, reveal dissatisfaction that no contract field records. Whether *these* texts contain that kind of information is something we will measure, not something we will assume.
+
+The same folder has no date on the messages. We will return to that limitation when we build the text features.
+
+### The question we will answer
+
+On customers the model has not seen, does adding the communications change the quality of the ranking? The text-only model asks a related question: how far do the communications go by themselves?
+
+
+### A question to write down before any model
+
+If you could contact only 10 percent of the base, whom would you contact first, and which facts would you want in front of you? Keep that sentence. <!--The last stage asks you to compare it with what the models actually used.-->
+
+## Stage 2 — Prepare the Python environment and load the data
+
+### What the environment is
+
+The **Python environment** has to comply with the requirements of the workshop. We will use pandas to hold tables, scikit-learn to fit the model, and matplotlib to draw the charts. An environment keeps those versions together so the same commands can be repeated on another day.
+
+The project instructions already live in `README.md` and `requirements.txt`. Use those. Do not create a second environment file.
+
+### Open a terminal in the project folder
+
+The project folder is the folder that contains `_quarto.yml`, `requirements.txt`, `lessons/` and `data/`. In Cursor or VS Code, open a terminal there. On macOS or Linux:
+
+``` bash
+cd /path/to/data-extraction-lesson
+python3 -m venv .venv
 source .venv/bin/activate
-python python/train_churn_model.py
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+python -m ipykernel install --user \
+  --name data-extraction-lesson \
+  --display-name "Python (data-extraction-lesson)"
 ```
 
-```{python}
-#| label: metrics-table
-from pathlib import Path
-import json
-import pandas as pd
+On Windows, activate the environment with `.venv\Scripts\activate` instead of `source .venv/bin/activate`.
 
-TELCO_RESULTS = Path("data/processed/telco")
-metrics = pd.read_csv(TELCO_RESULTS / "metrics_comparison.csv")
-summary = json.loads((TELCO_RESULTS / "metrics_comparison.json").read_text())
-metrics.round(4)
-```
+If the instructor has already prepared the machines, you only need to activate the existing environment:
 
-```{python}
-#| label: metric-bars
-import matplotlib.pyplot as plt
-plot_df = metrics.set_index("model")[["accuracy","precision","recall","f1","roc_auc"]]
-ax = plot_df.T.plot(kind="bar", figsize=(8,4))
-ax.set_ylim(0, 1.05)
-ax.set_title("Tabular only vs tabular + text")
-plt.xticks(rotation=0)
-plt.tight_layout()
-plt.show()
-print("AUC lift (adding text):", round(summary.get("auc_lift_text", float("nan")), 4))
-```
-
-```{python}
-#| label: roc
-from pathlib import Path
-from IPython.display import Image
-Image(filename=str(Path("data/processed/telco/roc_curves.png")))
-```
-
-## Explainability: from coefficients to messages
-
-### Global importance (permutation)
-
-For feature $j$, randomly permute $\{x_{ij}\}_i$ on the test set, recompute AUC, and measure the drop:
-$$
-\mathrm{Imp}_j
-=
-\mathrm{AUC}_{\mathrm{original}}
--
-\mathbb{E}\bigl[\mathrm{AUC}_{\mathrm{permute\ }j}\bigr].
-$$
-
-Large $\mathrm{Imp}_j$ means the model relied on coordinate $j$.  
-Summing importances over tabular vs text blocks answers: *does the model look more at CRM fields or at text coordinates?*
-
-```{python}
-#| label: perm
-from IPython.display import Image, display
-from pathlib import Path
-TELCO_RESULTS = Path("data/processed/telco")
-display(Image(filename=str(TELCO_RESULTS / "permutation_importance.png")))
-display(pd.read_csv(TELCO_RESULTS / "permutation_importance_top.csv").head(12))
-if (TELCO_RESULTS / "block_importance_tabular_vs_text.png").exists():
-    display(Image(filename=str(TELCO_RESULTS / "block_importance_tabular_vs_text.png")))
-```
-
-### Local explanation (LIME)
-
-For a single customer $\mathbf{x}_\star$, LIME samples neighbours $\mathbf{x}'$, gets model probabilities $\hat p(\mathbf{x}')$, and fits a **local linear surrogate**
-$$
-g(\mathbf{x}')
-=
-\alpha_0+\boldsymbol\alpha^\top\mathbf{x}'
-\approx
-\hat p(\mathbf{x}')
-$$
-with sparsity constraints on $\boldsymbol\alpha$.  
-The largest $|\alpha_j|$ are the locally influential features for that customer.
-
-```{python}
-#| label: lime
-from pathlib import Path
-import pandas as pd
-pd.read_csv(Path("data/processed/telco/lime_examples.csv"))
-```
-
-### Text-type diagnostics
-
-Beyond abstract LSA coordinates, we ask operational questions:
-
-1. If we build $\mathbf{x}^{\mathrm{txt}}$ using **only complaints** (resp. only billing emails, …), how much AUC do we gain over tabular-only?
-2. If we **remove** one communication type from the corpus, how much AUC do we lose?
-3. Which individual messages receive a high text-only churn score $\hat P(Y=1\mid t)$?
-
-```{python}
-#| label: type-xai
-from IPython.display import Image, display
-from pathlib import Path
-for name in [
-    "text_type_auc_lift.png",
-    "text_type_leave_one_out.png",
-    "text_type_mean_p_churn.png",
-]:
-    p = Path("data/processed/telco") / name
-    if p.exists():
-        display(Image(filename=str(p)))
-if Path("data/processed/telco/text_type_predictive_strength.csv").exists():
-    display(pd.read_csv("data/processed/telco/text_type_predictive_strength.csv"))
-if Path("data/processed/telco/high_churn_signal_messages.csv").exists():
-    display(pd.read_csv("data/processed/telco/high_churn_signal_messages.csv").head(8))
-```
-
-## Compact formula sheet
-
-$$
-\begin{aligned}
-\tilde z &= (z-\hat\mu)/\hat\sigma,\\
-\mathbf{e}(c_j) &= (\mathbf{1}\{j=1\},\dots,\mathbf{1}\{j=M\})^\top,\\
-w_{d,u} &= \mathrm{tf}(u,d)\cdot\mathrm{idf}(u),\\
-\mathbf{x}^{\mathrm{txt}} &= \Sigma_k^{-1}V_k^\top\mathbf{w},\\
-\mathbf{x} &= [\mathbf{x}^{\mathrm{tab}};\mathbf{x}^{\mathrm{txt}}],\\
-\hat p &= \sigma(\beta_0+\boldsymbol\beta^\top\mathbf{x}),\\
-\hat Y &= \mathbf{1}\{\hat p\ge\tau\}.
-\end{aligned}
-$$
-
-## Commands
-
-```bash
+``` bash
 source .venv/bin/activate
-python python/train_churn_model.py
+```
+
+Then either run the cells of this document from top to bottom, or render it from the project folder:
+
+``` bash
 quarto render lessons/02e-churn-text-ml.qmd
 ```
 
-## Take-home messages
+The document asks for the kernel named **Python (data-extraction-lesson)**.
 
-1. Multimodal learning starts by mapping every modality into $\mathbb{R}^\bullet$.
-2. One-hot and standardization prepare **tabular** inputs; TF–IDF + SVD prepare **text** inputs.
-3. Early fusion is literally concatenation; logistic regression then adds the two contributions in one score.
-4. Evaluate with Precision/Recall/$F_1$/AUC, not accuracy alone.
-5. XAI should connect scores both to CRM fields and to **message types / example texts**.
+### Workshop settings
+
+The next cell finds the project folder, loads the workshop commands, and sets the choices that must stay fixed for a fair comparison.
+
+-   `RANDOM_STATE` is a fixed starting number. It makes the split and the model repeatable.
+-   `TEST_SIZE` is the share of customers held out for testing. `0.25` means about one quarter.
+-   `N_TEXT_COMPONENTS` is *k*, the number of numerical text columns. You can change it later. You do not need the algebra that produces those columns.
+-   `TEXT_MODE` controls the text step. `"RUN"` computes it. `"SAVE"` computes it and stores it. `"LOAD"` reads a stored result and continues. On the machine used to prepare this workshop the text step took a little over two seconds, so the default is `"RUN"`. Use `"LOAD"` if you have already saved a matching result and want to skip the computation. `"LOAD"` fails with an explanation if no matching file exists. It will not invent a result.
+-   `DECISION_THRESHOLD` is the cutoff. Scores at or above this value are flagged as predicted churn. The comparison later in the workshop uses `0.5`.
+
+```{python}
+from pathlib import Path
+import os
+import sys
+
+import pandas as pd
+
+# Replace these two paths, the column roles and the two feature lists
+# with another tabular file and another text file of the same kind.
+TABULAR_FILE = "data/raw/telco/telco_customers.csv"
+TEXT_FILE = "data/raw/telco/customer_communications.csv"
+
+if not Path(TABULAR_FILE).exists():
+    os.chdir(Path("..").resolve())
+if str(Path.cwd()) not in sys.path:
+    sys.path.insert(0, str(Path.cwd()))
+
+import python.workshop_churn as workshop
+
+workshop.ID_COLUMN = "customerID"
+workshop.TARGET_COLUMN = "Churn"
+workshop.POSITIVE_LABEL = "Yes"
+workshop.TEXT_COLUMN = "text"
+workshop.TEXT_ORDER_COLUMN = "text_index"
+workshop.TEXT_TYPE_COLUMN = "communication_type"
+
+workshop.NUMERIC_FEATURES = [
+    "tenure",
+    "MonthlyCharges",
+    "TotalCharges",
+]
+workshop.CATEGORICAL_FEATURES = [
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod",
+]
+
+workshop.RANDOM_STATE = 42
+workshop.TEST_SIZE = 0.25
+workshop.N_TEXT_COMPONENTS = 64
+workshop.TEXT_MODE = "RUN"
+workshop.DECISION_THRESHOLD = 0.5
+
+# Other modes for the text step:
+# workshop.TEXT_MODE = "SAVE"  # compute the text columns and save them
+# workshop.TEXT_MODE = "LOAD"  # read saved columns; they must match this split and this k
+# workshop.TEXT_MODE = "RUN"   # compute now, and do not read or write the saved file
+
+pd.set_option("display.max_columns", 8)
+pd.set_option("display.max_colwidth", 80)
+pd.set_option("display.float_format", lambda value: f"{value:.3f}")
+
+print("Working directory:", Path.cwd())
+workshop.active_settings()
+```
+
+The calculations themselves live in `python/workshop_churn.py`. You can open that file if you want to see the steps. You do not need to edit it.
+
+Confirm that the packages import:
+
+```{python}
+import sklearn
+import matplotlib
+
+print("pandas", pd.__version__)
+print("scikit-learn", sklearn.__version__)
+print("matplotlib", matplotlib.__version__)
+```
+
+::: callout-note
+## Optional prompt
+
+"Explain in simple business terms what this Python command does."
+
+:::
+
+### Load the two datasets
+
+`load_datasets()` reads the two files named in the settings cell. It checks that `Churn` contains only `Yes` and `No`. If a numeric field such as total charge is blank, it replaces that blank with zero and prints how many replacements it made. Zero is a fixed rule, not an average computed from other customers.
+
+```{python}
+customers, communications = workshop.load_datasets(TABULAR_FILE, TEXT_FILE)
+workshop.data_overview(customers, communications)
+```
+
+A row of the customer table is one customer. A row of the communications file is one message. The two files cannot be stacked side by side as they stand: most customers have more than one message, so a direct match would repeat the customer once per message. The model would then treat copies of the same person as if they were different people. Later we will build **one row of text numbers per customer**, and only then attach those numbers.
+
+```{python}
+customers.head(3)
+```
+
+`head(3)` shows the first three customers.
+
+```{python}
+communications[[
+    workshop.ID_COLUMN,
+    workshop.TEXT_ORDER_COLUMN,
+    workshop.TEXT_TYPE_COLUMN,
+    workshop.TEXT_COLUMN,
+]].head(3)
+```
+
+`customerID` is the shared identifier. `text_index` orders one customer's messages. It is not a calendar date. `communication_type` says what kind of message it is. `text` is the message.
+
+```{python}
+workshop.target_counts(customers)
+```
+
+```{python}
+workshop.text_type_counts(communications)
+```
+
+<!--
+```{python}
+#| eval: false
+workshop.total_charge_check()
+```
+
+The public source file has a few blank total charges. The tenure row in this table tells you who those customers are. The prepared file used in the models already stores those totals as numbers. The loading command reported how many blanks it still found there.
+-->
+
+```{python}
+workshop.timing_summary(communications)
+```
+
+If this table shows no date or time column, the file cannot tell us whether a message was written before the customer left. `text_index` only puts one customer's messages in order. We will not claim that this kind of timing problem has been removed.
+
+## Stage 3 — Build the first logistic regression on the tabular data
+
+### The idea, before the command
+
+Historical customers have characteristics and a known outcome. A logistic regression looks for a weighted combination of those characteristics that separates, as well as a simple weighted sum can, the customers who left from the customers who stayed. For a new customer it turns that weighted sum into a score between 0 and 1.
+
+<!--
+We ask the model to pay extra attention to customers who churn, because they are fewer than the customers who stay. The technical name is **balanced class weights**. The practical consequence is important: the score is a ranking signal. After we see the scores, we will compare their average with the actual churn rate before anyone reads a score of 0.70 as "a 70 percent chance."
+-->
+
+### One split, used for every model
+
+**Training data** are the customers the model learns from. **Test data** are held out and used only to judge the result. If we judged the model on the customers it learned from, we would measure memory as well as prediction.
+
+The split is **stratified** on `Churn`: the share of churners is kept similar in both groups. 
+<!--
+It is done once, at customer level, and then reused. Splitting messages instead of customers could put one person in both groups.
+-->
+
+`customerID` is not a predictor. It names a person, and it would let a model memorize individuals rather than learn a pattern that applies to someone new. `Churn` is not a predictor. It is the answer.
+
+Numeric fields are `tenure`, `MonthlyCharges` and `TotalCharges`. They are rescaled using the training customers only, then the same rescaling is applied to the test customers. A charge of 70 and a tenure of 70 are different facts; rescaling stops a field with large units from dominating for that reason alone.
+
+Fields such as contract and payment method are categories. Each category (present in the training data) becomes a set of yes/no columns. The technical name is **one-hot encoding**. 
+
+<!--
+A contract with three levels becomes three yes/no columns. The list of levels is taken from the training customers. An unseen level in the test set would be recorded as all zeros rather than stopping the workshop.
+-->
+
+`TotalCharges` and `tenure` describe related facts about the same history. The model may use both. That does not make each one a separate cause of churn.
+
+```{python}
+split = workshop.prepare_train_test(customers)
+workshop.split_summary(split)
+```
+
+### Fit the tabular model
+
+`run_tabular_model()` fits the logistic regression on the training customers and scores both groups. The cutoff is the value in `DECISION_THRESHOLD`.
+
+```{python}
+tabular = workshop.run_tabular_model(split)
+workshop.show_metrics(tabular)
+```
+
+The table has a training row and a test row. Accuracy, precision, recall and F1 use the cutoff. **ROC-AUC** does not. It summarizes the ranking across cutoffs. We will define each measure in the next stage, using the test row as the one that speaks about prediction.
+
+<!--
+::: callout-note
+## Optional prompt
+
+"Explain in simple business terms what this Python command does: `tabular = workshop.run_tabular_model(split)`."
+:::
+-->
+
+
+## Stage 4 — Understand and evaluate the first model
+
+### A rule that ignores the customer record
+
+Most customers stay. A rule that predicts "stay" for everyone will therefore be right quite often, while finding none of the customers who leave. That rule is the reference for accuracy.
+
+```{python}
+always_stay = workshop.baseline_always_negative(split)
+workshop.show_metrics(always_stay)
+```
+
+```{python}
+workshop.explain_accuracy(tabular, always_stay)
+```
+
+**Accuracy** is the share of test customers whose yes/no flag matches what actually happened. **Recall** is the share of churners the model flags. **Precision** is the share of flagged customers who really churned. **F1** is a single compromise between precision and recall. It is convenient, and it hides the trade-off, so we still read precision and recall separately.
+
+No one of these numbers describes the model.
+
+### Who was flagged
+
+A **confusion matrix** crosses the actual outcome with the flag. The plain-language counts below are the test customers. In technical shorthand, flagged churners are true positives, flagged stayers are false positives, missed churners are false negatives, and unflagged stayers are true negatives.
+
+```{python}
+workshop.confusion_table(tabular)
+```
+
+```{python}
+workshop.plot_confusion(tabular)
+```
+
+```{python}
+workshop.explain_confusion(tabular)
+```
+
+If the company contacts every flagged customer, recall is the share of leavers it will find, and precision is the share of those contacts who were going to leave. The rest of the contacts are false alarms. Which of those is more expensive is a business question. The model does not answer it.
+
+### Ranking, across cutoffs
+
+**ROC-AUC** measures how often a randomly chosen churner receives a higher score than a randomly chosen stayer. A value of 0.5 means the ranking is no better than chance. A value of 1 means every churner is ranked above every stayer. The curve shows that trade-off as the cutoff moves: the horizontal axis is the share of stayers who are flagged, and the vertical axis is the share of churners who are flagged.
+
+```{python}
+workshop.plot_roc([tabular])
+```
+
+```{python}
+workshop.explain_train_test(tabular)
+```
+
+Use the test ROC-AUC when you talk about customers the model had not seen. One split is one careful experiment. A data scientist would repeat the split, or use another validation design, before a deployment decision. We do not search for settings that look best on the test customers. Doing that would spend the test set during fitting, and the comparison would no longer be honest.
+
+### The scores themselves
+
+```{python}
+workshop.plot_probabilities(tabular)
+```
+
+```{python}
+workshop.explain_scores(tabular)
+```
+
+The dashed line is the cutoff. Moving it changes who is flagged. It does not refit the model.
+
+```{python}
+tabular_lower_cutoff = workshop.apply_threshold(tabular, 0.30)
+workshop.show_metrics(tabular_lower_cutoff)
+```
+
+```{python}
+workshop.explain_threshold_change(tabular, tabular_lower_cutoff)
+```
+
+You can change `0.30` and run those two cells again. Leave `DECISION_THRESHOLD` at `0.5` for the comparison of the three models, so they are judged with the same rule.
+
+::: callout-note
+## Optional prompt
+
+"What does ROC-AUC tell me about this model, and what does it not tell me?"
+:::
+
+## Stage 5 — Turn communications into numerical features
+
+### Why the model cannot read the notes directly
+
+A logistic regression adds weighted fields. It cannot add the sentence "the line has been unreliable" to a monthly charge. We first turn each customer's messages into numbers.
+
+The existing procedure has three parts.
+
+1.  **One document per customer.** The customer's messages are joined in `text_index` order. A customer with no messages would keep an empty document and would stay in the table.
+2.  **TF-IDF**, short for term frequency–inverse document frequency. Each word, and each two-word phrase, receives a score. The score is high when the expression is common in this customer's document and uncommon across the other training documents. Very common English words are set aside. 
+<!--
+An expression that appears in only one training document is set aside as well. 
+-->
+The training step keeps up to 5,000 expressions.
+3.  **LSA**, latent semantic analysis. A compression method based on **singular value decomposition (SVD)** reduces those thousands of scores to *k* numbers, named `text_1`, `text_2`, and so on, up to `text_k`. Customers who use related wording end up with similar numbers. You do not need SVD to use the result. You do need to know that *k* is `N_TEXT_COMPONENTS` in the settings cell.
+
+These columns are a numerical summary of patterns in the writing. They are not complaint counts, and they do not have business names such as "billing anger."
+
+The word list and the compression are learned from the **training customers only**. The same learned step is then applied to the test customers. If the test customers were allowed to influence the word list, information from the test set would leak into the model and the evaluation would look better than it is.
+
+```{mermaid}
+flowchart LR
+  A[Several messages per customer] --> B[One document per customer]
+  B --> C[Word scores, TF-IDF]
+  C --> D["text_1 to text_k, LSA"]
+```
+
+### A three-line illustration
+
+The next cell is a teaching example. The three lines are not customer records, and they are not fed into the churn models. It uses every word because the example is tiny. The real step uses the restrictions described above, and it uses 64 columns rather than two.
+
+```{python}
+illustration = workshop.illustrate_text_encoding()
+illustration["word_scores"]
+```
+
+```{python}
+illustration["compressed"]
+```
+
+The word-score table is wide enough to read in full. The compressed table is the same idea as `text_1` and `text_2` in the real pipeline: several word scores become a few numbers. The similarity printed above the table tells you which teaching lines use the more overlapping wording.
+
+### Run the text step
+
+This cell uses `TEXT_MODE` and `N_TEXT_COMPONENTS` from the settings cell. `"RUN"` computes the columns. `"SAVE"` computes them and writes `data/processed/text_model_cache/`. `"LOAD"` reads a saved file only when the split, the text file, the number of columns and the processing rules match. A mismatch stops with an instruction. It does not substitute an older or unrelated file.
+
+To recompute and store a new file, set `workshop.TEXT_MODE = "SAVE"` in the settings cell and run again from that cell downward. To force a fresh computation without reading the saved file, set `workshop.TEXT_MODE = "RUN"`.
+
+```{python}
+text_features = workshop.build_text_features(split, communications)
+workshop.text_feature_summary(text_features)
+```
+
+```{python}
+workshop.preview_text_features(text_features)
+```
+
+The preview shows `customerID` and the first text columns. The summary reports how many training documents were used to fit TF-IDF and LSA, and it must report that zero test documents were used for that fit. "Share of training word-score variation retained" says how much of the variation in the word scores the *k* columns keep. The rest is discarded as smaller detail. That percentage is a description of the compression, not a measure of churn prediction.
+
+::: callout-note
+## Optional prompt
+
+"Help me understand why adding customer communications might improve a churn prediction model. Also explain how a text file could make the model look better for a reason a manager should not trust."
+:::
+
+## Stage 6 — Combine the structured fields and the text columns
+
+The text columns can now be treated as ordinary numeric predictors. `combine_with_text()` attaches them to the training customers and the test customers by `customerID`.
+
+The checks underneath the command are the ones that protect the comparison.
+
+-   The number of rows after the match must equal the number before it. A larger number would mean a duplicated customer. A smaller number would mean a lost customer.
+-   A customer with no text stays in the table. The text columns are filled with zeros. Zero here means "no document was available." It is not a neutral topic score. In the file used today, check whether that count is zero.
+-   `customerID` is the match key only. It is not given to the logistic regression as a predictor.
+-   `Churn` stays the outcome. It is not copied into the predictors.
+
+The combined table holds two kinds of information: the structured account fields, and a numerical summary of the free-text messages. They enter the model as one list of columns. The technical name for joining them before the model is **early fusion**. The idea is simply that the model sees both blocks at once.
+
+```{python}
+combined_data = workshop.combine_with_text(split, text_features)
+combined_data["check"]
+```
+
+## Stage 7 — Fit and evaluate the combined model
+
+The command below fits a second logistic regression. The model family, the cutoff, the training customers and the test customers are the same as in Stage 3. The new ingredient is the block of text columns. Those columns were produced by a text step fitted on the training customers only.
+
+```{python}
+combined = workshop.run_combined_model(combined_data)
+workshop.show_metrics(combined)
+```
+
+```{python}
+workshop.explain_train_test(combined)
+```
+
+```{python}
+workshop.plot_probabilities(combined)
+```
+
+```{python}
+workshop.explain_score_shape(combined)
+```
+
+Compare this histogram with the tabular one. Scores that sit between the two ends mean the cutoff still changes who would be contacted. A pile of scores at 0 and at 1 would mean the model is very sure about most customers.
+
+### The tabular model and the combined model on the same test customers
+
+```{python}
+workshop.compare_models([tabular, combined])
+```
+
+```{python}
+workshop.plot_roc([tabular, combined])
+```
+
+Read the test ROC-AUC column as the ranking comparison. Read recall and precision as the comparison at the shared cutoff of 0.5. A gain in ranking is one fact. A gain large enough to pay for collecting and processing communications is a second fact. A reason for the business to change a retention process is a third fact. The table can support the first. It does not settle the second or the third.
+
+We still have to fit the text-only model before drawing the full comparison. The checks below confirm that these two models used the same test customers and that the text step did not learn from them.
+
+```{python}
+workshop.evaluation_checks(split, [tabular, combined], text_features)
+```
+
+## Stage 8 — Fit and evaluate the text-only model
+
+The third model uses the text columns and no structured fields. Same training customers, same test customers, same cutoff, same kind of logistic regression.
+
+```{python}
+text_only = workshop.run_text_only_model(combined_data)
+workshop.show_metrics(text_only)
+```
+
+### The three models together
+
+```{python}
+workshop.compare_models([tabular, combined, text_only])
+```
+
+```{python}
+workshop.plot_metric_bars([tabular, combined, text_only])
+```
+
+```{python}
+workshop.plot_roc([tabular, combined, text_only])
+```
+
+```{python}
+workshop.evaluation_checks(split, [tabular, combined, text_only], text_features)
+```
+
+```{python}
+workshop.explain_model_comparison([tabular, combined, text_only])
+```
+
+::: callout-important
+If a test ROC-AUC sits at the top of the scale, treat that as a warning before you take the number to a meeting. Text alone should not rank the customers perfectly. A gain for the combined model, if the table shows one, can be a limited addition to the structured fields.
+:::
+
+Several outcomes were possible, and a manager should be able to name them.
+
+-   Text alone can contain information about dissatisfaction that the structured fields miss.
+-   The structured fields can contain predictive information that the messages never state.
+-   Using both can help when the two sources are complementary.
+-   The combined model can also fail to beat the simpler ones. Nothing in the method guarantees an improvement.
+
+
+<!--
+On **this** file, use the table and the sentence above, not a prior belief about text.
+
+The comparison is not a causal finding. A higher score does not show that a contract, a price or a complaint made the customer leave. It shows how well a score, built from the fields we allowed, ranks historical churners above historical stayers on this test set.
+-->
+
+### All of the test results on one page
+
+```{python}
+workshop.compare_models([always_stay, tabular, combined, text_only])
+```
+
+### What a manager should ask before anyone uses a score
+
+Return to the sentence you wrote in Stage 1. Then ask at least these questions.
+
+1.  Does the model improve performance on customers it did not see during fitting? The test rows are the evidence in this workshop. One split still leaves uncertainty.
+2.  Is any improvement large enough to pay for collecting, storing and processing the communications?
+3.  Are the scores reliable enough for the decision, or are they only a ranking? The average score and the cutoff discussion in Stage 4 are the start of that question, not the end of it.
+4.  What action follows a high score? A call, an offer, a service fix and a decision to do nothing are different actions with different costs.
+5.  Were the notes available before the outcome? This file has no message date, so it cannot answer that.
+6.  Did any field, including the wording of a note, already contain the outcome?
+7.  What has to be settled on data quality, privacy, fairness and operations before a score is allowed to change how customers are treated?
+
+A data scientist remains responsible for the validation design, the monitoring and the failure cases. The useful outcome of this workshop is that you can tell a careful analysis from a score that has not earned the decision yet.
+
+::: callout-note
+## Optional prompt
+
+"What questions should I ask a data scientist before deploying this churn model?"
+
+Compare the answer with the seven questions above.
+:::
+
+## Save the test scores
+
+The next workshop decides whom to contact. It needs each test customer's score. It does not need the fitted model.
+
+The cell below writes the combined model's test scores. Those customers were not used to fit the model. The same function accepts `tabular` or `text_only` if you want that model's scores instead.
+
+`SCORE_FILE` is the path of the file this cell writes, folder and file name together. The example is `data/processed/telco/test_probabilities_with_text.csv`. For another dataset, set `SCORE_FILE` to another path, for example `data/processed/mydata/scores.csv`. In the next workshop, set `SCORE_FILE` to that same path. The scores are loaded from the path written there. They are not loaded from `data/processed/telco/` unless that is the path you set.
+
+The file has one row per test customer.
+
+- `customer_id` is the identifier, whatever that column was called in the source table.
+- `p0` is the test score.
+- `observed_outcome` is 1 when the target equals the positive label, and 0 otherwise.
+
+```{python}
+SCORE_FILE = "data/processed/telco/test_probabilities_with_text.csv"
+workshop.save_scores(combined, SCORE_FILE)
+```
+
+## Troubleshooting
+
+Run the cells from the top if you change a setting. Later cells remember the earlier results until you rerun them.
+
+**The command cannot find the data, or it mentions `_quarto.yml`.** The terminal or the notebook is not in the project folder. That folder contains `_quarto.yml`, `lessons/` and `data/`. Start the terminal there, or rerun the settings cell, which moves up one folder when it cannot see the customer file.
+
+**`ModuleNotFoundError` for pandas, sklearn or matplotlib.** The environment is missing a package or is not the one this document uses. Activate `.venv`, run `pip install -r requirements.txt`, and select the kernel **Python (data-extraction-lesson)**. If that kernel is missing, rerun the `ipykernel install` command in Stage 2.
+
+**A message says a CSV file was not found.** The settings cell names the two files. The example uses `data/raw/telco/telco_customers.csv` and `data/raw/telco/customer_communications.csv`. Replace those two paths when you use another table and another text file of the same kind. The public source file is `data/raw/telco/WA_Fn-UseC_-Telco-Customer-Churn.csv`.
+
+**A message mentions the identifier.** The match between the tabular file and the text file has failed, or an identifier was about to be used as a predictor. Read the full message. Do not delete the identifier from the file; the models need it as a match key and refuse it as a predictor.
+
+**`LOAD` says no saved text features were found, or that the saved file does not match.** `LOAD` is doing what it should. Set `TEXT_MODE` to `"RUN"` to compute the step now, or to `"SAVE"` to compute it and write a file that matches the current seed, split, text file and value of `N_TEXT_COMPONENTS`. Then rerun from the settings cell. Changing *k* requires a new run. An old file for a different *k* is not reused.
+
+**A later cell says a name is not defined.** An earlier cell did not run. Run from the settings cell downward.
+
+**The next workshop cannot find the score file.** Rerun the save cell. Then set `SCORE_FILE` in the next workshop to the same folder and file name, for example `data/processed/mydata/scores.csv`.
+
+**An error message is unclear.**
+
+::: callout-note
+## Optional prompt
+
+"Explain this error message and suggest the smallest safe correction."
+
+Paste the error, not a customer extract. Apply the smallest change that the message itself describes, then rerun the affected cell.
+:::
+
+## Run the workshop from the start
+
+1.  Open a terminal in the project folder and activate `.venv`.
+2.  Open `lessons/02e-churn-text-ml.qmd` and select the kernel **Python (data-extraction-lesson)**.
+3.  Run every cell from top to bottom. Leave the settings at the printed defaults on the first pass.
+4.  Read each table or chart, then the paragraph under it. The sentences produced by the `explain_` commands use the numbers just calculated.
+5.  At the end, read the seven questions in Stage 8 against the final comparison table.
+6.  The last modelling cell writes the combined model's test scores to `SCORE_FILE`. The next workshop loads them when its `SCORE_FILE` is that same path. For another dataset, change both, for example to `data/processed/mydata/scores.csv`.
+
+To produce the HTML document instead of running the cells by hand:
+
+``` bash
+source .venv/bin/activate
+quarto render lessons/02e-churn-text-ml.qmd
+```
+
+Run that command from the project folder.

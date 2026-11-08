@@ -1,0 +1,14 @@
+{
+  "source_model": "logistic regression on structured fields plus text columns",
+  "fit_uses_training_rows_only": true,
+  "random_state": 42,
+  "test_size": 0.25,
+  "n_text_components": 64,
+  "class_weight": "balanced",
+  "n_test": 1761,
+  "test_roc_auc": 0.9077425376221666,
+  "probability_file": "test_probabilities_with_text.csv",
+  "p0": "predicted probability of churn on the test customers, if there is no campaign",
+  "p1": "synthetic campaign probability written by campaign_scenario.py; not an estimated causal effect",
+  "observed_outcome": "historical churn indicator, 1 for the positive label; not an input to the targeting rule"
+}

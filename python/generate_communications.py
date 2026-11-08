@@ -1,12 +1,14 @@
-"""Generate short customer communications from telco_with_profiles.csv.
+"""Generate short customer communications from telco_customers.csv.
 
 Run from the project root:
 
     python python/generate_communications.py
 
 For each selected customer:
-  - CustomerProfile is the principal textual input
-  - Churn is private context (never mentioned in the texts)
+  - Account facts are written the same way for both outcomes
+  - Churn changes only how often one message mentions a service problem
+  - The same service sentences are used for both outcomes
+  - The word "churn" is never written into a message
 """
 
 from __future__ import annotations
@@ -23,6 +25,7 @@ PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
+from generate_profiles import customer_profile  # noqa: E402
 from telco_paths import COMMS_FILE, PROFILES_FILE  # noqa: E402
 
 OUTPUT_FILE = COMMS_FILE
@@ -162,141 +165,142 @@ def missing_addon(facts: dict) -> str | None:
 
 
 # ---------------------------------------------------------------------------
-# Text generation (Churn = hidden tone only)
+# Text generation
+#
+# Account facts are written the same way for both outcomes. Churn is used
+# only as a probability: one message, when the customer has a complaint,
+# a support contact or a CRM note, may include a service sentence. The same
+# sentences are available for both outcomes. A negative sentence is more
+# common for customers who leave and still occurs for customers who stay.
 # ---------------------------------------------------------------------------
 
-def generate_customer_service(facts: dict, churn: str) -> str:
-    summary = service_summary(facts)
-    price = money(facts["monthly"])
-    if churn == "Yes":
-        return (
-            f"**Agent:** Hi, thanks for contacting support. How can I help?\n"
-            f"**Customer:** I want to double-check what I’m paying for — "
-            f"my setup should be {summary}.\n"
-            f"**Agent:** Confirmed: {summary}. You’re on a {facts['contract']} "
-            f"plan at {price}, paid by {facts['payment']}.\n"
-            f"**Customer:** Okay, thanks for clarifying.\n"
-            f"**Agent:** Glad to help."
-        )
-    return (
-        f"**Agent:** Hi, thanks for contacting support. How can I help?\n"
-        f"**Customer:** Just confirming my setup — {summary}.\n"
-        f"**Agent:** Confirmed. You’re on a {facts['contract']} plan at {price}, "
-        f"paid by {facts['payment']}.\n"
-        f"**Customer:** Perfect, thanks.\n"
-        f"**Agent:** You’re welcome. Have a good day."
+# Shared wording. None of these sentences is reserved for one outcome.
+NEGATIVE_NOTES = (
+    "the line dropped during the week",
+    "the latest bill was higher than expected",
+    "support was slow to call back",
+    "there was a short outage on the service",
+)
+ROUTINE_NOTES = (
+    "there was no issue to report",
+    "the service has been fine",
+    "the last bill matched the plan",
+    "this was a routine question",
+)
+
+# Chance that the single service sentence is a negative note.
+# The gap is large enough to add information, and small enough that many
+# customers who leave have a routine note and many who stay have a negative one.
+P_NEGATIVE_NOTE = {"Yes": 0.75, "No": 0.18}
+CARRIER_TYPES = ("complaint", "support", "crm_note")
+
+
+def experience_clause(churn: str, rng: random.Random) -> str:
+    """Draw one service sentence. The lists do not depend on the outcome."""
+    p_negative = P_NEGATIVE_NOTE.get(churn, P_NEGATIVE_NOTE["No"])
+    pool = NEGATIVE_NOTES if rng.random() < p_negative else ROUTINE_NOTES
+    return rng.choice(pool)
+
+
+_AGENTS = (
+    "Alex", "Jordan", "Sam", "Riley", "Casey", "Morgan", "Taylor", "Drew",
+)
+_CLOSINGS = (
+    "Thanks again.",
+    "We can pick this up if you write back.",
+    "Call us if something else comes up.",
+    "I will leave the account as it is unless you say otherwise.",
+)
+
+
+def _choice(style: random.Random, options: tuple[str, ...]) -> str:
+    return options[style.randrange(len(options))]
+
+
+def _trailer(style: random.Random) -> str:
+    agent = _choice(style, _AGENTS)
+    closing = _choice(style, _CLOSINGS)
+    ref = style.randrange(100000, 999999)
+    aside = _choice(style, (
+        f"{agent} took this on the phone queue.",
+        f"{agent} handled this by email.",
+        f"{agent} copied the chat into the account.",
+        f"A colleague of {agent} reviewed the wording before it was stored.",
+        f"The contact was tagged for the morning desk.",
+        f"The contact was tagged for the afternoon desk.",
+        f"Callback window offered: later the same day.",
+        f"No callback was requested.",
+    ))
+    return f"\n\n— {agent}, ref {ref}. {aside} {closing}"
+
+
+def generate_customer_service(facts: dict, note: str | None, style: random.Random) -> str:
+    body = (
+        "**Agent:** Hi, thanks for contacting support. How can I help?\n"
+        "**Customer:** I want to confirm the services on my account.\n"
+        "**Agent:** I have the account open. Tell me what you would like to check.\n"
+        "**Customer:** Thanks, that was the only question.\n"
+        "**Agent:** You are welcome."
     )
+    return body + _trailer(style)
 
 
-def generate_billing_renewal(facts: dict, churn: str) -> str:
+def generate_billing_renewal(facts: dict, note: str | None, style: random.Random) -> str:
     monthly = money(facts["monthly"])
     total = money(facts["total"])
     billing = "paperless billing" if facts["paperless"] else "standard billing"
-    if churn == "Yes":
-        return (
-            f"**Subject:** Your bill — {monthly}\n\n"
-            f"Hello,\n\n"
-            f"Your {facts['contract']} plan ({service_summary(facts)}) is billed at "
-            f"**{monthly}**. Payment method: {facts['payment']} ({billing}). "
-            f"Total charged to date: **{total}**.\n\n"
-            f"If anything on this bill looks incorrect, reply and we will review it "
-            f"with you.\n\n"
-            f"Best regards,\nBilling Team"
-        )
-    return (
+    body = (
         f"**Subject:** Your monthly bill — {monthly}\n\n"
         f"Hello,\n\n"
-        f"Your {facts['contract']} plan ({service_summary(facts)}) is billed at "
-        f"**{monthly}**. Payment is by {facts['payment']} via {billing}. "
+        f"Your current plan is billed at **{monthly}** ({billing}). "
         f"Total charged to date: **{total}**.\n\n"
         f"Reply if you have any questions about this bill.\n\n"
         f"Best regards,\nBilling Team"
     )
+    return body + _trailer(style)
 
 
-def generate_promotion(facts: dict, churn: str) -> str:
-    offer = missing_addon(facts) or "a simpler plan review"
-    if churn == "Yes":
-        return (
-            f"**Subject:** A quick option for your account\n\n"
-            f"Hello,\n\n"
-            f"Based on your {facts['contract']} {facts['internet']} service, "
-            f"you may want to look at {offer}. No obligation — reply if you’d like "
-            f"a short overview of costs before your next bill.\n\n"
-            f"Best regards,\nOffers Team"
-        )
-    return (
-        f"**Subject:** Optional add-on for your {facts['internet']}\n\n"
+def generate_promotion(facts: dict, note: str | None, style: random.Random) -> str:
+    offer = missing_addon(facts) or "a plan review"
+    body = (
+        f"**Subject:** An optional add-on\n\n"
         f"Hello,\n\n"
-        f"Customers on {facts['contract']} plans sometimes add {offer}. "
-        f"If you’re interested, we can show the exact price impact on your "
+        f"Some customers add {offer}. "
+        f"If you are interested, we can show the price impact on your "
         f"{money(facts['monthly'])} monthly charge.\n\n"
         f"Best regards,\nOffers Team"
     )
+    return body + _trailer(style)
 
 
-def generate_complaint(facts: dict, churn: str) -> str:
-    monthly = money(facts["monthly"])
-    if churn == "Yes":
-        return (
-            f"**Customer:** I’m frustrated — for {monthly} a month on "
-            f"{facts['internet']}, I expected fewer issues / clearer billing.\n"
-            f"**Agent:** I’m sorry about that. I see you’re on a "
-            f"{facts['contract']} plan ({service_summary(facts)}). "
-            f"I can review the latest charge and service details with you now.\n"
-            f"**Customer:** Please do — I need this sorted.\n"
-            f"**Agent:** Understood. I’ll walk through the account step by step."
-        )
-    return (
-        f"**Customer:** I had a minor issue with my {facts['internet']} service "
-        f"and wanted it noted.\n"
-        f"**Agent:** Thanks for flagging it. You’re on {service_summary(facts)} "
-        f"at {monthly}. I’ve logged the report and we can follow up if it continues.\n"
-        f"**Customer:** Okay, appreciated.\n"
-        f"**Agent:** You’re welcome."
+def generate_complaint(facts: dict, note: str | None, style: random.Random) -> str:
+    detail = note or "a question about the account"
+    body = (
+        f"**Customer:** I am calling about the service. What I wanted noted: {detail}.\n"
+        f"**Agent:** Thanks for calling. I have logged that and can review the latest charge with you.\n"
+        f"**Customer:** Please keep the note on the account.\n"
+        f"**Agent:** Done. We can follow up if you contact us again."
     )
+    return body + _trailer(style)
 
 
-def generate_support(facts: dict, churn: str) -> str:
-    if facts["internet"] == "no Internet service":
-        topic = "phone service settings"
-    else:
-        topic = f"{facts['internet']} connectivity"
-    if churn == "Yes":
-        return (
-            f"**Agent:** Support here — I can help with {topic}.\n"
-            f"**Customer:** Yes, please. It’s been unreliable and I’m on "
-            f"{facts['contract']} at {money(facts['monthly'])}.\n"
-            f"**Agent:** Thanks — I’ve opened a support case for "
-            f"{service_summary(facts)}. I’ll confirm the next check and update you."
-        )
-    return (
-        f"**Agent:** Support here — happy to help with {topic}.\n"
-        f"**Customer:** Quick check on my connection, please.\n"
-        f"**Agent:** Looking at your account now ({service_summary(facts)}). "
-        f"Basic diagnostics look fine; tell me if anything still seems off."
+def generate_support(facts: dict, note: str | None, style: random.Random) -> str:
+    detail = note or "a general check of the service"
+    body = (
+        f"**Agent:** Support here. I can help with the service on your account.\n"
+        f"**Customer:** The reason for the call: {detail}.\n"
+        f"**Agent:** I have opened a note and recorded that."
     )
+    return body + _trailer(style)
 
 
-def generate_crm_note(facts: dict, churn: str) -> str:
-    tenure = facts["tenure"] or "?"
-    base = (
-        f"{facts['gender'].capitalize()} customer (~{tenure} months). "
-        f"{service_summary(facts)}. {facts['contract'].capitalize()} contract, "
-        f"{facts['payment']}, {money(facts['monthly'])}/mo."
+def generate_crm_note(facts: dict, note: str | None, style: random.Random) -> str:
+    detail = note or "no extra service comment"
+    body = (
+        f"Customer contact logged. Latest contact: {detail}. "
+        f"Monthly charge on the account is {money(facts['monthly'])}."
     )
-    if churn == "Yes":
-        return (
-            f"{base} Recent tone suggests friction (billing clarity or service "
-            f"expectations). Keep replies concrete; offer a calm review of the "
-            f"current plan before suggesting changes."
-        )
-    return (
-        f"{base} Recent contact was routine, not a complaint. "
-        f"Good candidate for gentle education on optional add-ons later; "
-        f"no pressure—keep onboarding tone light and check satisfaction "
-        f"after another billing cycle."
-    )
+    return body + _trailer(style)
 
 
 GENERATORS = {
@@ -310,15 +314,27 @@ GENERATORS = {
 
 
 def generate_texts_for_customer(profile: str, churn: str, rng: random.Random) -> list[dict]:
-    """Generate 2–5 varied communications for one customer."""
+    """Generate 2–5 communications for one customer.
+
+    At most one message carries a service sentence. Billing, promotion and
+    ordinary service confirmation never do. The sentence is not a label:
+    both outcomes can receive a negative note or a routine note.
+    """
     facts = parse_profile(profile)
     n_texts = rng.randint(2, 5)
     types = rng.sample(COMMUNICATION_TYPES, k=n_texts)
+    if not any(comm_type in CARRIER_TYPES for comm_type in types):
+        types[0] = rng.choice(CARRIER_TYPES)
+    carrier_indexes = [index for index, comm_type in enumerate(types) if comm_type in CARRIER_TYPES]
+    carrier = rng.choice(carrier_indexes) if carrier_indexes else None
+    note = experience_clause(churn, rng) if carrier is not None else None
+    # Wording is chosen after the service sentence, so the sentence itself
+    # stays on the same customers when the surrounding lines change.
+    style = random.Random(rng.randrange(2**31 - 1))
 
     texts = []
-    for comm_type in types:
-        body = GENERATORS[comm_type](facts, churn)
-        # Safety: never leak churn wording into outputs.
+    for index, comm_type in enumerate(types):
+        body = GENERATORS[comm_type](facts, note if index == carrier else None, style)
         assert "churn" not in body.lower()
         texts.append({"communication_type": comm_type, "text": body})
     return texts
@@ -338,8 +354,8 @@ def main() -> None:
         )
 
     df = pd.read_csv(profiles_path)
-    if "CustomerProfile" not in df.columns or "Churn" not in df.columns:
-        raise ValueError("Expected columns CustomerProfile and Churn.")
+    if "Churn" not in df.columns:
+        raise ValueError("Expected column Churn.")
 
     if N_CUSTOMERS is None:
         selected_rows = list(range(len(df)))
@@ -355,7 +371,7 @@ def main() -> None:
 
     for i, source_row in enumerate(selected_rows, start=1):
         row = df.iloc[source_row]
-        profile = row["CustomerProfile"]
+        profile = customer_profile(row)
         churn = str(row["Churn"]).strip()
 
         # Independent RNG stream per customer so full-file order is stable

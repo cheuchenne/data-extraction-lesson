@@ -13,6 +13,8 @@ book:
     - lessons/02c-exploratory-analysis.qmd
     - lessons/02d-eda-visualisation.qmd
     - lessons/02e-churn-text-ml.qmd
+    - lessons/02f-campaign-targeting.qmd
+    - lessons/02g-cloud-automl.qmd
 
 format:
   html:

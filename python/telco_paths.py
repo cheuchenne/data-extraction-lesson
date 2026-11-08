@@ -11,7 +11,7 @@ TELCO_RAW = ROOT / "data" / "raw" / "telco"
 TELCO_RESULTS = ROOT / "data" / "processed" / "telco"
 
 IBM_TELCO_FILE = TELCO_RAW / "WA_Fn-UseC_-Telco-Customer-Churn.csv"
-PROFILES_FILE = TELCO_RAW / "telco_with_profiles.csv"
+PROFILES_FILE = TELCO_RAW / "telco_customers.csv"
 COMMS_FILE = TELCO_RAW / "customer_communications.csv"
 COMMS_FILE_2 = TELCO_RAW / "customer_communications_2.csv"
 COMMS_FILE_3 = TELCO_RAW / "customer_communications_3.csv"

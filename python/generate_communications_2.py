@@ -34,6 +34,7 @@ PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
+from generate_profiles import customer_profile  # noqa: E402
 from telco_paths import COMMS_FILE, COMMS_LLM_FILE, PROFILES_FILE, TELCO_RESULTS  # noqa: E402
 
 BENCHMARK_FILE = COMMS_FILE
@@ -134,7 +135,10 @@ payment method, tenure, exact dollar amounts when present in the draft).
 3. Do NOT invent new services, prices, tenure, or personal details that are \
 absent from the profile / draft.
 4. Do NOT mention churn, retention risk, or that the customer will/will not leave.
-5. Keep the same communication type and general situation as the draft.
+5. Keep the same communication type and general situation as the draft. \
+If the draft already reports a service problem, you may keep a mild version of that problem. \
+If the draft does not report a problem, do not add one. \
+Do not introduce wording that would be used for only one future outcome.
 6. Stay reasonably short (do not write a long essay). For crm_note, stay short.
 7. Return ONLY the final communication text itself. \
 Do NOT add any meta commentary, titles, or prefaces such as \
@@ -439,7 +443,7 @@ def main() -> None:
     for pending_i, (idx, row) in enumerate(pending_rows):
         source_row = int(row["source_row"])
         cid = row["customerID"]
-        profile = str(profiles.iloc[source_row]["CustomerProfile"])
+        profile = customer_profile(profiles.iloc[source_row])
         template_text = str(row["text"])
         communication_type = str(row["communication_type"])
 

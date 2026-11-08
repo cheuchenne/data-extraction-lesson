@@ -1,6 +1,7 @@
 jupyter
 ipykernel
 pandas
+numpy
 openpyxl
 requests
 pymupdf
@@ -9,10 +10,13 @@ Pillow
 matplotlib
 seaborn
 scikit-learn
+scipy
 lime
+google-cloud-aiplatform
+google-cloud-storage
 
 # Optional. Needed only to regenerate LLM-enriched communications
-# with python/generate_communications_2.py. Not required for 2.b–2.e.
+# with python/generate_communications_2.py. Not required for chapters 1–7.
 # torch
 # transformers
 # accelerate

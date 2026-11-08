@@ -1,35 +1,92 @@
 ---
 title: "Loading, integrating and exploring data"
+number-sections: false
 ---
 
-This repository is the teaching material for **Sections 2.b, 2.c, 2.d and 2.e**.
+This book has seven chapters. This page is chapter 1. It says what each chapter does, which file to open, and which Python packages that chapter needs.
 
-The HarborLink documents (2.b–2.d) use one fictitious subscription company. Those datasets are entirely synthetic. Section 2.e then uses a customer-level telco table plus generated communications to train a predictive model.
+Open the `.qmd` file to run the cells. Open the `.html` file to read the same lesson. Install every package once, from the project folder:
 
-## Section 2.b — From business information to analysis-ready data
+```bash
+pip install -r requirements.txt
+```
 
-How can we transform information produced in everyday business activities into structured data that Python can load?
+## Chapter 1 — Loading, integrating and exploring data
 
-Main document: `lessons/02b-data-loading.qmd`
+This page is the map of the book. It does not load data and it does not fit a model.
 
-## Section 2.c — One analysis table from several sources
+| | |
+|---|---|
+| Lesson | `index.qmd` |
+| Reading page | `index.html` |
+| Packages | None. The later chapters use the packages below. |
 
-Join the HarborLink extracts into one invoice-level DataFrame (`lessons/02c-exploratory-analysis.qmd`).
+## Chapter 2 — From business information to analysis-ready data
 
-## Section 2.d — Exploratory analysis and data visualisation
+A company keeps the same facts in several places: a spreadsheet, a CSV file, a JSON file, a database, a small web service, and a PDF. This chapter loads each one into a table.
 
-Explore and visualise that table with pandas, matplotlib and seaborn (`lessons/02d-eda-visualisation.qmd`).
+| | |
+|---|---|
+| Lesson | `lessons/02b-data-loading.qmd` |
+| Reading page | `lessons/02b-data-loading.html` |
+| Practice notebook | `notebooks/02b-data-loading.ipynb` |
+| Packages | `pandas`, `openpyxl`, `requests`, `pymupdf` |
 
-## Section 2.e — From structured data to a predictive model
+## Chapter 3 — One analysis table from several sources
 
-Once a table is ready, how do we turn numbers **and** text into a probability of churn?
+The files from chapter 2 are separate. This chapter joins them into one row per invoice, and writes a short dictionary of the columns.
 
-Main document: `lessons/02e-churn-text-ml.qmd`
+| | |
+|---|---|
+| Lesson | `lessons/02c-exploratory-analysis.qmd` |
+| Reading page | `lessons/02c-exploratory-analysis.html` |
+| Practice notebook | `notebooks/02c-exploratory-analysis.ipynb` |
+| Packages | `pandas`, `requests`, `openpyxl`, `matplotlib` |
 
-Practice notebook: `notebooks/02e-churn-text-ml.ipynb`
+## Chapter 4 — Exploratory analysis and data visualisation
 
-The session formalizes early fusion (tabular fields + TF–IDF / SVD text), logistic regression, evaluation metrics, and explanations (permutation importance, LIME).
+The invoice table is ready. This chapter draws the graphs that show who the customers are, what they pay, and which invoices are late.
 
-## How to follow the lessons
+| | |
+|---|---|
+| Lesson | `lessons/02d-eda-visualisation.qmd` |
+| Reading page | `lessons/02d-eda-visualisation.html` |
+| Practice notebook | `notebooks/02d-eda-visualisation.ipynb` |
+| Packages | `pandas`, `numpy`, `matplotlib`, `seaborn` |
 
-Open the Quarto file for the session and execute the Python cells in order. The HarborLink demonstrations do not require an ERP, a CRM, API keys or an internet connection. The modelling session reads local CSV files already present in `data/raw/telco/`.
+## Chapter 5 — From structured data to a predictive model
+
+Which customers are likely to leave? This chapter fits a logistic regression on the customer table. It then fits the same kind of model with the customer messages added. Both models are scored on customers they did not see during the fit.
+
+| | |
+|---|---|
+| Lesson | `lessons/02e-churn-text-ml.qmd` |
+| Reading page | `lessons/02e-churn-text-ml.html` |
+| Packages | `pandas`, `numpy`, `scikit-learn`, `matplotlib` |
+
+## Chapter 6 — Economic optimization of customer targeting
+
+A churn probability is not yet a decision. Contacting a customer costs money. Losing a customer costs money too. This chapter chooses whom to contact so that the expected cost is as small as possible, including when a budget limits the total spend.
+
+| | |
+|---|---|
+| Lesson | `lessons/02f-campaign-targeting.qmd` |
+| Reading page | `lessons/02f-campaign-targeting.html` |
+| Packages | `pandas`, `numpy`, `matplotlib`, `scipy` |
+
+## Chapter 7 — Comparing local models with cloud AutoML
+
+The same customers can be sent to a cloud service that trains its own model. This chapter compares those probabilities with the logistic regressions from chapter 5, then repeats the campaign decision from chapter 6. Reading the page does not start a paid job.
+
+| | |
+|---|---|
+| Lesson | `lessons/02g-cloud-automl.qmd` |
+| Reading page | `lessons/02g-cloud-automl.html` |
+| Packages | `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `scipy` |
+| Paid run only | `google-cloud-aiplatform`, `google-cloud-storage` |
+
+## How to follow a chapter
+
+Open the chapter and run the cells from top to bottom. Chapters 2, 3, and 4 use the HarborLink company. The data are synthetic. They do not need an external account. Chapters 5, 6, and 7 read the telco files already stored in `data/raw/telco/` and `data/processed/telco/`.
+
+Every chapter with code uses the kernel named `data-extraction-lesson`. `jupyter` and `ipykernel` install that kernel. They are listed in `requirements.txt`.

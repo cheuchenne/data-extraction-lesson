@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; One Analysis Table from Several Sources – AI and Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lessons/02d-eda-visualisation.html" rel="next">
+<link href="../lessons/02b-data-loading.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lessons/02c-exploratory-analysis.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">One Analysis Table from Several Sources</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">AI and Data Science</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Loading, integrating and exploring data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02b-data-loading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">From Business Information to Analysis-Ready Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02c-exploratory-analysis.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">One Analysis Table from Several Sources</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02d-eda-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exploratory Analysis and Data Visualisation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02e-churn-text-ml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">From Structured Data to a Predictive Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02f-campaign-targeting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Economic Optimization of Customer Targeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02g-cloud-automl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Comparing Local Models with Cloud AutoML</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link active" data-scroll-target="#learning-objectives"><span class="header-section-number">3.1</span> Learning objectives</a></li>
+  <li><a href="#why-this-step-comes-first" id="toc-why-this-step-comes-first" class="nav-link" data-scroll-target="#why-this-step-comes-first"><span class="header-section-number">3.2</span> Why this step comes first</a></li>
+  <li><a href="#the-analytical-unit-is-the-invoice" id="toc-the-analytical-unit-is-the-invoice" class="nav-link" data-scroll-target="#the-analytical-unit-is-the-invoice"><span class="header-section-number">3.3</span> The analytical unit is the invoice</a></li>
+  <li><a href="#what-a-merge-actually-does" id="toc-what-a-merge-actually-does" class="nav-link" data-scroll-target="#what-a-merge-actually-does"><span class="header-section-number">3.4</span> What a merge actually does</a></li>
+  <li><a href="#load-each-source" id="toc-load-each-source" class="nav-link" data-scroll-target="#load-each-source"><span class="header-section-number">3.5</span> Load each source</a></li>
+  <li><a href="#step-0-start-from-the-invoice-row" id="toc-step-0-start-from-the-invoice-row" class="nav-link" data-scroll-target="#step-0-start-from-the-invoice-row"><span class="header-section-number">3.6</span> Step 0 — Start from the invoice row</a></li>
+  <li><a href="#step-1-attach-the-customer-to-each-invoice" id="toc-step-1-attach-the-customer-to-each-invoice" class="nav-link" data-scroll-target="#step-1-attach-the-customer-to-each-invoice"><span class="header-section-number">3.7</span> Step 1 — Attach the customer to each invoice</a></li>
+  <li><a href="#step-2-attach-the-subscription-to-each-invoice" id="toc-step-2-attach-the-subscription-to-each-invoice" class="nav-link" data-scroll-target="#step-2-attach-the-subscription-to-each-invoice"><span class="header-section-number">3.8</span> Step 2 — Attach the subscription to each invoice</a></li>
+  <li><a href="#step-3-attach-the-payment-to-each-invoice" id="toc-step-3-attach-the-payment-to-each-invoice" class="nav-link" data-scroll-target="#step-3-attach-the-payment-to-each-invoice"><span class="header-section-number">3.9</span> Step 3 — Attach the payment to each invoice</a></li>
+  <li><a href="#step-4-attach-crm-activity-after-collapsing-several-contacts-to-one-row" id="toc-step-4-attach-crm-activity-after-collapsing-several-contacts-to-one-row" class="nav-link" data-scroll-target="#step-4-attach-crm-activity-after-collapsing-several-contacts-to-one-row"><span class="header-section-number">3.10</span> Step 4 — Attach CRM activity, after collapsing several contacts to one row</a></li>
+  <li><a href="#step-5-attach-the-september-api-status" id="toc-step-5-attach-the-september-api-status" class="nav-link" data-scroll-target="#step-5-attach-the-september-api-status"><span class="header-section-number">3.11</span> Step 5 — Attach the September API status</a></li>
+  <li><a href="#the-five-attachments-in-one-view" id="toc-the-five-attachments-in-one-view" class="nav-link" data-scroll-target="#the-five-attachments-in-one-view"><span class="header-section-number">3.12</span> The five attachments, in one view</a></li>
+  <li><a href="#a-few-analysis-columns" id="toc-a-few-analysis-columns" class="nav-link" data-scroll-target="#a-few-analysis-columns"><span class="header-section-number">3.13</span> A few analysis columns</a></li>
+  <li><a href="#check-that-the-joins-are-trustworthy" id="toc-check-that-the-joins-are-trustworthy" class="nav-link" data-scroll-target="#check-that-the-joins-are-trustworthy"><span class="header-section-number">3.14</span> Check that the joins are trustworthy</a></li>
+  <li><a href="#save-the-analysis-table" id="toc-save-the-analysis-table" class="nav-link" data-scroll-target="#save-the-analysis-table"><span class="header-section-number">3.15</span> Save the analysis table</a></li>
+  <li><a href="#document-the-variables" id="toc-document-the-variables" class="nav-link" data-scroll-target="#document-the-variables"><span class="header-section-number">3.16</span> Document the variables</a>
+  <ul class="collapse">
+  <li><a href="#where-the-sentences-live" id="toc-where-the-sentences-live" class="nav-link" data-scroll-target="#where-the-sentences-live"><span class="header-section-number">3.16.1</span> Where the sentences live</a></li>
+  <li><a href="#transport-the-same-steps-as-the-merges" id="toc-transport-the-same-steps-as-the-merges" class="nav-link" data-scroll-target="#transport-the-same-steps-as-the-merges"><span class="header-section-number">3.16.2</span> Transport: the same steps as the merges</a></li>
+  <li><a href="#one-general-function-two-files-in-two-excel-files-out" id="toc-one-general-function-two-files-in-two-excel-files-out" class="nav-link" data-scroll-target="#one-general-function-two-files-in-two-excel-files-out"><span class="header-section-number">3.16.3</span> One general function: two files in, two Excel files out</a></li>
+  </ul></li>
+  <li><a href="#towards-visualisation" id="toc-towards-visualisation" class="nav-link" data-scroll-target="#towards-visualisation"><span class="header-section-number">3.17</span> Towards visualisation</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">One Analysis Table from Several Sources</span></h1>
+<p class="subtitle lead">Joining the HarborLink extracts</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="505482a4" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> Path(<span class="st">"data/raw/analysis/customers.csv"</span>).exists():</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    os.chdir(Path(<span class="st">".."</span>).resolve())</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Working directory:"</span>, Path.cwd())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Working directory: /Users/heuchennecedric/Documents/data-extraction-lesson</code></pre>
+</div>
+</div>
+<section id="learning-objectives" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="learning-objectives"><span class="header-section-number">3.1</span> Learning objectives</h2>
+<p>This section will later use <strong>matplotlib</strong> and <strong>seaborn</strong> to explore HarborLink data. Before any chart is useful, the extracts from the previous section must become <strong>one analysis table</strong>.</p>
+<p>By the end of this session you should be able to:</p>
+<ol type="1">
+<li>Explain why a collection of DataFrames is not yet an analysis dataset.</li>
+<li>Choose an analytical unit and the keys that connect sources.</li>
+<li>Load the larger HarborLink extracts (CSV, Excel, JSON, SQLite, API).</li>
+<li>Explain, for each source, which key attaches which columns to an invoice row.</li>
+<li>Aggregate a one-to-many table before joining it.</li>
+<li>Build the invoice-level DataFrame step by step with <code>pandas.merge</code>.</li>
+<li>Add a few analysis columns, save the table, and forward each source’s variable descriptions into Excel.</li>
+</ol>
+<p>We do <strong>not</strong> start the full visualisation lesson today. The deliverable is the analysis DataFrame.</p>
+</section>
+<section id="why-this-step-comes-first" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="why-this-step-comes-first"><span class="header-section-number">3.2</span> Why this step comes first</h2>
+<p>The previous section showed that HarborLink information lives in several places: a customer export, an invoice workbook, a CRM JSON file, a finance database, an API snapshot. Each load produced a DataFrame. Those frames are not yet something we can plot as “the HarborLink dataset”.</p>
+<p>Exploratory analysis needs:</p>
+<ul>
+<li>a <strong>defined row</strong> (what is one observation?);</li>
+<li><strong>variables on that same row</strong>;</li>
+<li><strong>keys</strong> that make the join legitimate;</li>
+<li>a table large enough for patterns to appear, but small enough to run live.</li>
+</ul>
+<p>The eight-customer extract from the previous section was perfect for teaching <code>read_csv</code> and <code>json_normalize</code>. It is too small for distributions and comparisons. We therefore keep the same fictitious company and the same people — Elena Vargas is still customer 1827 — and work with a <strong>panel extract</strong>: 240 customers and their monthly invoices.</p>
+</section>
+<section id="the-analytical-unit-is-the-invoice" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="the-analytical-unit-is-the-invoice"><span class="header-section-number">3.3</span> The analytical unit is the invoice</h2>
+<p>The late-payment question is not “one row per customer” and not “one row per email”. The useful statistical unit is:</p>
+<blockquote class="blockquote">
+<p><strong>One row per invoice</strong> — one billing cycle for one customer.</p>
+</blockquote>
+<p>That choice decides everything that follows. We <strong>start</strong> from the invoice table. Every other table is used only to <strong>add columns</strong> to those invoice rows. We never replace the invoice as the row.</p>
+<p>If we later need one row per customer, we can aggregate this table. Starting too aggregated would throw away the monthly variation that plots will show.</p>
+</section>
+<section id="what-a-merge-actually-does" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="what-a-merge-actually-does"><span class="header-section-number">3.4</span> What a merge actually does</h2>
+<p>A merge does not “blend two files together”. It walks along the invoice table, row by row, and <strong>looks up extra fields</strong> in another table.</p>
+<p>Take Elena Vargas’s September invoice. After loading, that row already knows the invoice identifier, the customer identifier, the dates, the amount and the finance status. It does <strong>not</strong> yet know her name, her country, her plan, whether a payment arrived, or whether she emailed support.</p>
+<p>Those facts live in other tables. They can be copied onto her invoice row only if we know <strong>which field is the shared key</strong>.</p>
+<div class="cell" data-layout-align="default">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    I["Invoice INV-2026-0901&lt;br/&gt;customer_id = 1827&lt;br/&gt;subscription_id = SUB-1827&lt;br/&gt;period = 2026-09&lt;br/&gt;amount = 49.90"]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    I --&gt;|customer_id| C[Customer attributes]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    I --&gt;|subscription_id| S[Plan and monthly amount]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    I --&gt;|invoice_id| P[Payment date and payment status]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    I --&gt;|customer_id and period| R[CRM counts for that month]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    I --&gt;|invoice_id| A[September API status]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    I["Invoice INV-2026-0901&lt;br/&gt;customer_id = 1827&lt;br/&gt;subscription_id = SUB-1827&lt;br/&gt;period = 2026-09&lt;br/&gt;amount = 49.90"]
+    I --&gt;|customer_id| C[Customer attributes]
+    I --&gt;|subscription_id| S[Plan and monthly amount]
+    I --&gt;|invoice_id| P[Payment date and payment status]
+    I --&gt;|customer_id and period| R[CRM counts for that month]
+    I --&gt;|invoice_id| A[September API status]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The picture is always the same:</p>
+<ol type="1">
+<li>Keep the invoice row.</li>
+<li>Name the key (or keys).</li>
+<li>Find the matching row(s) in the other table.</li>
+<li>Copy selected columns onto the invoice.</li>
+<li>If several rows match, stop and aggregate first. Otherwise the invoice would be duplicated.</li>
+</ol>
+<p><code>how="left"</code> means: <strong>keep every invoice</strong>, even when the other table has no match. The new columns are then missing (<code>NaN</code>). That is the correct behaviour for a historical invoice that does not appear in the September API.</p>
+</section>
+<section id="load-each-source" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="load-each-source"><span class="header-section-number">3.5</span> Load each source</h2>
+<p>The panel files live in <code>data/raw/analysis/</code>. They were generated with <code>python/generate_analysis_data.py</code> and include the customers from the previous section.</p>
+<p>That script does not write the extracts alone. In the same run it calls <code>write_source_description_files</code>, which places a companion CSV next to each source (<code>customers_variables.csv</code>, <code>invoices_variables.csv</code>, <code>subscriptions_variables.csv</code>, <code>payments_variables.csv</code>, <code>interactions_variables.csv</code>, <code>api_invoices_variables.csv</code>). SQLite does not store those sentences inside <code>company.sqlite</code>; they sit next to the database, one CSV per table that we will join. Every companion has three columns: <code>variable</code>, <code>type</code>, <code>definition</code>. They are not the data. They are the meaning of the columns, stored <strong>when the files are constructed</strong> so that a later merge can copy the sentences with the columns.</p>
+<div id="045c2509" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> pd.read_csv(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/customers.csv"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    parse_dates<span class="op">=</span>[<span class="st">"signup_date"</span>],</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>invoices <span class="op">=</span> pd.read_excel(</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/invoices.xlsx"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    sheet_name<span class="op">=</span><span class="st">"invoices"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    parse_dates<span class="op">=</span>[<span class="st">"invoice_date"</span>, <span class="st">"due_date"</span>],</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">"data/raw/analysis/company.sqlite"</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>subscriptions <span class="op">=</span> pd.read_sql_query(<span class="st">"SELECT * FROM subscriptions"</span>, connection)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>payments <span class="op">=</span> pd.read_sql_query(</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"""</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT payment_id, invoice_id, payment_date, status AS payment_status</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM payments</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    connection,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    parse_dates<span class="op">=</span>[<span class="st">"payment_date"</span>],</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>connection.close()</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"data/raw/analysis/interactions.json"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    interaction_documents <span class="op">=</span> json.load(<span class="bu">file</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>contacts <span class="op">=</span> pd.json_normalize(</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    interaction_documents,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    record_path<span class="op">=</span><span class="st">"contacts"</span>,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    meta<span class="op">=</span>[<span class="st">"customer_id"</span>],</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>contacts[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(contacts[<span class="st">"date"</span>])</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>contacts[<span class="st">"period"</span>] <span class="op">=</span> contacts[<span class="st">"date"</span>].dt.strftime(<span class="st">"%Y-%m"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="36f9b738" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.mock_api <span class="im">import</span> start_background_server</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>API_URL <span class="op">=</span> start_background_server() <span class="op">+</span> <span class="st">"/panel/invoices"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> requests.get(API_URL, timeout<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    response.raise_for_status()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    api_payload <span class="op">=</span> response.json()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> (requests.RequestException, <span class="pp">OSError</span>):</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">"data/raw/analysis/api_invoices.json"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        api_payload <span class="op">=</span> json.load(<span class="bu">file</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>api_invoices <span class="op">=</span> pd.DataFrame(api_payload[<span class="st">"invoices"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now have five tables in memory. They are still separate. Nothing has been joined yet.</p>
+<div id="674982df" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, frame <span class="kw">in</span> [</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"invoices"</span>, invoices),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"customers"</span>, customers),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"subscriptions"</span>, subscriptions),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"payments"</span>, payments),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"contacts"</span>, contacts),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"api_invoices"</span>, api_invoices),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>]:</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">:15}</span><span class="ss"> </span><span class="sc">{</span>frame<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:5}</span><span class="ss"> rows  </span><span class="sc">{</span>frame<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">:2}</span><span class="ss"> columns"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>invoices         3325 rows   9 columns
+customers         240 rows   6 columns
+subscriptions     240 rows   6 columns
+payments         3325 rows   4 columns
+contacts         1088 rows   6 columns
+api_invoices      240 rows   9 columns</code></pre>
+</div>
+</div>
+<p><code>invoices</code> has one row per billing cycle. That is our starting table. The other frames exist only to enrich those rows.</p>
+<p>We will follow <strong>one invoice</strong> through every join: <code>INV-2026-0901</code>, Elena Vargas, September 2026. After each merge we look at that same row again, to see which columns have appeared.</p>
+<div id="e1ba831f" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>TARGET_INVOICE <span class="op">=</span> <span class="st">"INV-2026-0901"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_invoice(frame, columns):</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return the Elena September invoice, with only the columns we are studying."""</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> frame.loc[frame[<span class="st">"invoice_id"</span>] <span class="op">==</span> TARGET_INVOICE, columns]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> row</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>TARGET_INVOICE</code> is just a string we reuse, so we always look at the same row.</li>
+<li><code>show_invoice</code> filters <code>frame</code> to that identifier and keeps the listed columns. It does not change the data.</li>
+</ul>
+</section>
+<section id="step-0-start-from-the-invoice-row" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="step-0-start-from-the-invoice-row"><span class="header-section-number">3.6</span> Step 0 — Start from the invoice row</h2>
+<div id="cda22891" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> invoices.copy()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"invoice_id"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_id"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"subscription_id"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"period"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"invoice_date"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"due_date"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"amount"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"status"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">subscription_id</th>
+<th data-quarto-table-cell-role="th">period</th>
+<th data-quarto-table-cell-role="th">invoice_date</th>
+<th data-quarto-table-cell-role="th">due_date</th>
+<th data-quarto-table-cell-role="th">amount</th>
+<th data-quarto-table-cell-role="th">status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>INV-2026-0901</td>
+<td>1827</td>
+<td>SUB-1827</td>
+<td>2026-09</td>
+<td>2026-08-28</td>
+<td>2026-09-15</td>
+<td>49.9</td>
+<td>unpaid</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><code>analysis = invoices.copy()</code> creates the working table as a copy of the invoice sheet. From now on, <strong>the number of rows should stay equal to the number of invoices</strong>, except if we make a mistake.</p>
+<p>This row already contains three keys we will use:</p>
+<ul>
+<li><code>customer_id</code> <code>1827</code> — to find Elena in the customer table;</li>
+<li><code>subscription_id</code> <code>SUB-1827</code> — to find her plan;</li>
+<li><code>invoice_id</code> <code>INV-2026-0901</code> — to find the payment and the API snapshot;</li>
+<li><code>period</code> <code>2026-09</code> — together with <code>customer_id</code>, to find her CRM activity in September.</li>
+</ul>
+<p>It does not yet contain her name, her country, her plan, a payment date, or any email count.</p>
+</section>
+<section id="step-1-attach-the-customer-to-each-invoice" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="step-1-attach-the-customer-to-each-invoice"><span class="header-section-number">3.7</span> Step 1 — Attach the customer to each invoice</h2>
+<p>Look at the customer table for the same identifier.</p>
+<div id="1e87a991" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>customers.loc[</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    customers[<span class="st">"customer_id"</span>] <span class="op">==</span> <span class="dv">1827</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"customer_id"</span>, <span class="st">"customer_name"</span>, <span class="st">"company_name"</span>, <span class="st">"customer_segment"</span>, <span class="st">"country"</span>, <span class="st">"signup_date"</span>],</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">customer_name</th>
+<th data-quarto-table-cell-role="th">company_name</th>
+<th data-quarto-table-cell-role="th">customer_segment</th>
+<th data-quarto-table-cell-role="th">country</th>
+<th data-quarto-table-cell-role="th">signup_date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1827</td>
+<td>Elena Vargas</td>
+<td>Atelier Vega</td>
+<td>mid-market</td>
+<td>BE</td>
+<td>2025-03-12</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>There is <strong>one</strong> customer row for <code>1827</code>. Many invoices can belong to Elena (one per month), but she appears only once in <code>customers</code>. The relationship is <strong>many invoices to one customer</strong>.</p>
+<p>The merge copies those customer columns onto every invoice that has <code>customer_id == 1827</code>.</p>
+<div id="40278dda" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    customers,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"customer_id"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    validate<span class="op">=</span><span class="st">"m:1"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Read the arguments one by one:</p>
+<ul>
+<li><code>analysis</code> is the <strong>left</strong> table. Its rows are the invoices. They are the rows we keep.</li>
+<li><code>customers</code> is the <strong>right</strong> table. We take columns from it.</li>
+<li><code>on="customer_id"</code> is the shared key. pandas lines up left and right rows that have the same <code>customer_id</code>.</li>
+<li><code>how="left"</code> keeps every invoice. If a <code>customer_id</code> were missing from <code>customers</code>, the new columns would be empty, but the invoice would still be there.</li>
+<li><code>validate="m:1"</code> is a safety check: many left rows may share a key, but each key may appear <strong>at most once</strong> on the right. If Elena appeared twice in <code>customers</code>, pandas would raise an error instead of silently duplicating her invoices.</li>
+</ul>
+<div id="4b07b3b8" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"invoice_id"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_id"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"amount"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"status"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_name"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"company_name"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_segment"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"country"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">amount</th>
+<th data-quarto-table-cell-role="th">status</th>
+<th data-quarto-table-cell-role="th">customer_name</th>
+<th data-quarto-table-cell-role="th">company_name</th>
+<th data-quarto-table-cell-role="th">customer_segment</th>
+<th data-quarto-table-cell-role="th">country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>INV-2026-0901</td>
+<td>1827</td>
+<td>49.9</td>
+<td>unpaid</td>
+<td>Elena Vargas</td>
+<td>Atelier Vega</td>
+<td>mid-market</td>
+<td>BE</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The invoice is still one row. The amount is still 49.90. Four new fields have been copied from the customer table: name, company, segment and country. That is all a customer merge does.</p>
+</section>
+<section id="step-2-attach-the-subscription-to-each-invoice" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="step-2-attach-the-subscription-to-each-invoice"><span class="header-section-number">3.8</span> Step 2 — Attach the subscription to each invoice</h2>
+<p>The invoice already carries <code>subscription_id</code>. The subscription table stores the plan type and the monthly amount.</p>
+<div id="3fb1a3bc" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>subscriptions.loc[</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    subscriptions[<span class="st">"subscription_id"</span>] <span class="op">==</span> <span class="st">"SUB-1827"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"subscription_id"</span>, <span class="st">"customer_id"</span>, <span class="st">"subscription_type"</span>, <span class="st">"monthly_amount"</span>, <span class="st">"start_date"</span>],</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">subscription_id</th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">subscription_type</th>
+<th data-quarto-table-cell-role="th">monthly_amount</th>
+<th data-quarto-table-cell-role="th">start_date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>SUB-1827</td>
+<td>1827</td>
+<td>premium</td>
+<td>49.9</td>
+<td>2025-03-12</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Again, one subscription row. Several invoices share that identifier. We do not need every subscription column: <code>customer_id</code> is already on the invoice. We select only the fields we want to add.</p>
+<div id="81dde4c1" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    subscriptions[</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"subscription_id"</span>, <span class="st">"subscription_type"</span>, <span class="st">"monthly_amount"</span>, <span class="st">"start_date"</span>]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"subscription_id"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    validate<span class="op">=</span><span class="st">"m:1"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>The key is now <code>subscription_id</code>, not <code>customer_id</code>.</li>
+<li>The list inside <code>subscriptions[...]</code> is <strong>column selection</strong>. It happens <em>before</em> the merge, so we do not import a second <code>customer_id</code> that would collide with the one we already have.</li>
+<li><code>validate="m:1"</code> again: many invoices, one subscription.</li>
+</ul>
+<div id="74518e87" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"invoice_id"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_name"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"subscription_id"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"subscription_type"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"monthly_amount"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"amount"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"status"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">customer_name</th>
+<th data-quarto-table-cell-role="th">subscription_id</th>
+<th data-quarto-table-cell-role="th">subscription_type</th>
+<th data-quarto-table-cell-role="th">monthly_amount</th>
+<th data-quarto-table-cell-role="th">amount</th>
+<th data-quarto-table-cell-role="th">status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>INV-2026-0901</td>
+<td>Elena Vargas</td>
+<td>SUB-1827</td>
+<td>premium</td>
+<td>49.9</td>
+<td>49.9</td>
+<td>unpaid</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Elena’s September row now also knows that the plan is premium and that the catalogue price is 49.90. <code>amount</code> (from the invoice) and <code>monthly_amount</code> (from the subscription) can later be compared. They are not the same column: one is this month’s billed amount, the other is the plan price.</p>
+</section>
+<section id="step-3-attach-the-payment-to-each-invoice" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="step-3-attach-the-payment-to-each-invoice"><span class="header-section-number">3.9</span> Step 3 — Attach the payment to each invoice</h2>
+<p>Payments are stored at the same grain as invoices: one payment record per <code>invoice_id</code>. The key is therefore the invoice identifier itself.</p>
+<div id="c152e264" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>payments.loc[</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    payments[<span class="st">"invoice_id"</span>] <span class="op">==</span> TARGET_INVOICE,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"payment_id"</span>, <span class="st">"invoice_id"</span>, <span class="st">"payment_date"</span>, <span class="st">"payment_status"</span>],</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">payment_id</th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">payment_date</th>
+<th data-quarto-table-cell-role="th">payment_status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>PAY-2026-0901</td>
+<td>INV-2026-0901</td>
+<td>NaT</td>
+<td>unpaid</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>This is a <strong>one-to-one</strong> relationship. Each invoice should match exactly one payment row. For an unpaid invoice the payment row still exists: <code>payment_date</code> is missing and <code>payment_status</code> is <code>unpaid</code>. A missing date is not a failed join. It is the business fact “no payment has been recorded”.</p>
+<div id="3031f4ca" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    payments,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"invoice_id"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    validate<span class="op">=</span><span class="st">"1:1"</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>on="invoice_id"</code> matches the invoice to its payment record.</li>
+<li><code>validate="1:1"</code> is stricter than <code>m:1</code>. Each key may appear once on the left and once on the right. Two payment rows for the same invoice would be an error in our data model.</li>
+</ul>
+<div id="bc80ab87" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"invoice_id"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_name"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"amount"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"status"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"payment_id"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"payment_date"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"payment_status"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">customer_name</th>
+<th data-quarto-table-cell-role="th">amount</th>
+<th data-quarto-table-cell-role="th">status</th>
+<th data-quarto-table-cell-role="th">payment_id</th>
+<th data-quarto-table-cell-role="th">payment_date</th>
+<th data-quarto-table-cell-role="th">payment_status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>INV-2026-0901</td>
+<td>Elena Vargas</td>
+<td>49.9</td>
+<td>unpaid</td>
+<td>PAY-2026-0901</td>
+<td>NaT</td>
+<td>unpaid</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The row is still unique. <code>payment_date</code> is empty for Elena in September, and <code>payment_status</code> is <code>unpaid</code>. Finance status (<code>status</code>) and payment status agree here; we kept both so that a later check can compare them.</p>
+</section>
+<section id="step-4-attach-crm-activity-after-collapsing-several-contacts-to-one-row" class="level2" data-number="3.10">
+<h2 data-number="3.10" class="anchored" data-anchor-id="step-4-attach-crm-activity-after-collapsing-several-contacts-to-one-row"><span class="header-section-number">3.10</span> Step 4 — Attach CRM activity, after collapsing several contacts to one row</h2>
+<p>Customer interactions are different. The CRM file is <strong>one row per contact</strong>, not one row per invoice. Elena can have several September messages.</p>
+<div id="a41ee96a" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>elena_contacts <span class="op">=</span> contacts.loc[</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    (contacts[<span class="st">"customer_id"</span>] <span class="op">==</span> <span class="dv">1827</span>) <span class="op">&amp;</span> (contacts[<span class="st">"period"</span>] <span class="op">==</span> <span class="st">"2026-09"</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"customer_id"</span>, <span class="st">"period"</span>, <span class="st">"date"</span>, <span class="st">"channel"</span>, <span class="st">"interaction_type"</span>, <span class="st">"text"</span>],</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>elena_contacts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">period</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">channel</th>
+<th data-quarto-table-cell-role="th">interaction_type</th>
+<th data-quarto-table-cell-role="th">text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1827</td>
+<td>2026-09</td>
+<td>2026-09-05</td>
+<td>email</td>
+<td>payment_issue</td>
+<td>Hello, I am contacting you because my Septembe...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>1827</td>
+<td>2026-09</td>
+<td>2026-09-06</td>
+<td>crm_note</td>
+<td>note</td>
+<td>Customer emailed about unpaid September premiu...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>1827</td>
+<td>2026-09</td>
+<td>2026-09-08</td>
+<td>reminder</td>
+<td>reminder</td>
+<td>Friendly reminder: invoice INV-2026-0901 for E...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>If we merged these contacts directly onto her invoice, pandas would repeat the invoice once per contact. The amount 49.90 would appear several times. That would break every later count and every later plot.</p>
+<p>We can see the mistake on this single invoice:</p>
+<div id="898e872c" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>show_invoice(analysis, [<span class="st">"invoice_id"</span>, <span class="st">"customer_id"</span>, <span class="st">"amount"</span>, <span class="st">"status"</span>]).merge(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    elena_contacts,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"customer_id"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">amount</th>
+<th data-quarto-table-cell-role="th">status</th>
+<th data-quarto-table-cell-role="th">period</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">channel</th>
+<th data-quarto-table-cell-role="th">interaction_type</th>
+<th data-quarto-table-cell-role="th">text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>INV-2026-0901</td>
+<td>1827</td>
+<td>49.9</td>
+<td>unpaid</td>
+<td>2026-09</td>
+<td>2026-09-05</td>
+<td>email</td>
+<td>payment_issue</td>
+<td>Hello, I am contacting you because my Septembe...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>INV-2026-0901</td>
+<td>1827</td>
+<td>49.9</td>
+<td>unpaid</td>
+<td>2026-09</td>
+<td>2026-09-06</td>
+<td>crm_note</td>
+<td>note</td>
+<td>Customer emailed about unpaid September premiu...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>INV-2026-0901</td>
+<td>1827</td>
+<td>49.9</td>
+<td>unpaid</td>
+<td>2026-09</td>
+<td>2026-09-08</td>
+<td>reminder</td>
+<td>reminder</td>
+<td>Friendly reminder: invoice INV-2026-0901 for E...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>One invoice has become several rows. That is why a raw contact join is forbidden here.</p>
+<p>The remedy is to <strong>summarise first</strong>. For each customer and each billing month we compute numbers: how many contacts, how many reminders, how many payment issues. After that, there is again <strong>one right-hand row per invoice month</strong>.</p>
+<div id="d22580d4" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>contact_summary <span class="op">=</span> contacts.groupby([<span class="st">"customer_id"</span>, <span class="st">"period"</span>], as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    n_interactions<span class="op">=</span>(<span class="st">"interaction_type"</span>, <span class="st">"size"</span>),</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    n_reminders<span class="op">=</span>(<span class="st">"interaction_type"</span>, <span class="kw">lambda</span> series: <span class="bu">int</span>((series <span class="op">==</span> <span class="st">"reminder"</span>).<span class="bu">sum</span>())),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    n_complaints<span class="op">=</span>(<span class="st">"interaction_type"</span>, <span class="kw">lambda</span> series: <span class="bu">int</span>((series <span class="op">==</span> <span class="st">"complaint"</span>).<span class="bu">sum</span>())),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    n_payment_issues<span class="op">=</span>(</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"interaction_type"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lambda</span> series: <span class="bu">int</span>((series <span class="op">==</span> <span class="st">"payment_issue"</span>).<span class="bu">sum</span>()),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    n_emails<span class="op">=</span>(<span class="st">"channel"</span>, <span class="kw">lambda</span> series: <span class="bu">int</span>((series <span class="op">==</span> <span class="st">"email"</span>).<span class="bu">sum</span>())),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>contact_summary.loc[</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    (contact_summary[<span class="st">"customer_id"</span>] <span class="op">==</span> <span class="dv">1827</span>) <span class="op">&amp;</span> (contact_summary[<span class="st">"period"</span>] <span class="op">==</span> <span class="st">"2026-09"</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">period</th>
+<th data-quarto-table-cell-role="th">n_interactions</th>
+<th data-quarto-table-cell-role="th">n_reminders</th>
+<th data-quarto-table-cell-role="th">n_complaints</th>
+<th data-quarto-table-cell-role="th">n_payment_issues</th>
+<th data-quarto-table-cell-role="th">n_emails</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5</td>
+<td>1827</td>
+<td>2026-09</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<ul>
+<li><code>groupby(["customer_id", "period"])</code> splits the contacts into groups that have the same customer and the same month.</li>
+<li><code>as_index=False</code> keeps those two keys as ordinary columns, so they can be used in <code>merge</code>.</li>
+<li><code>agg(...)</code> replaces the group by a few numbers. <code>size</code> counts the rows. The <code>lambda</code> expressions count how many values equal <code>"reminder"</code>, <code>"complaint"</code>, and so on.</li>
+</ul>
+<p>Elena’s September emails are now a single summary row. We can attach it to her invoice with <strong>two keys</strong>: the customer and the month. Using only <code>customer_id</code> would pour all of her historical tickets onto every monthly invoice.</p>
+<div id="7eef8c70" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    contact_summary,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span>[<span class="st">"customer_id"</span>, <span class="st">"period"</span>],</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    validate<span class="op">=</span><span class="st">"m:1"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>on=["customer_id", "period"]</code> means both values must match. September contacts go to the September invoice, not to August.</li>
+<li><code>how="left"</code> keeps invoices that had no CRM contact that month. Their counts will be missing for now; we will turn those missings into zeros later.</li>
+<li><code>validate="m:1"</code>: after the aggregation, each <code>(customer_id, period)</code> pair appears at most once in <code>contact_summary</code>.</li>
+</ul>
+<div id="35aeac6e" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"invoice_id"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_name"</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"period"</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"amount"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"status"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"n_interactions"</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"n_payment_issues"</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"n_reminders"</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"n_emails"</span>,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">customer_name</th>
+<th data-quarto-table-cell-role="th">period</th>
+<th data-quarto-table-cell-role="th">amount</th>
+<th data-quarto-table-cell-role="th">status</th>
+<th data-quarto-table-cell-role="th">n_interactions</th>
+<th data-quarto-table-cell-role="th">n_payment_issues</th>
+<th data-quarto-table-cell-role="th">n_reminders</th>
+<th data-quarto-table-cell-role="th">n_emails</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>INV-2026-0901</td>
+<td>Elena Vargas</td>
+<td>2026-09</td>
+<td>49.9</td>
+<td>unpaid</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Still one row. The CRM has been reduced to numbers that belong on an invoice: Elena has a payment-issue email in September. The original sentences remain in <code>contacts</code> if we need them later. They do not belong on the analysis row we will plot.</p>
+</section>
+<section id="step-5-attach-the-september-api-status" class="level2" data-number="3.11">
+<h2 data-number="3.11" class="anchored" data-anchor-id="step-5-attach-the-september-api-status"><span class="header-section-number">3.11</span> Step 5 — Attach the September API status</h2>
+<p>The API is not another grain of data. It is a <strong>second source</strong> for some of the same invoices. It only contains September 2026.</p>
+<div id="6b1dd1f9" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>api_invoices.loc[</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    api_invoices[<span class="st">"invoice_id"</span>] <span class="op">==</span> TARGET_INVOICE,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"invoice_id"</span>, <span class="st">"status"</span>, <span class="st">"amount"</span>],</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">status</th>
+<th data-quarto-table-cell-role="th">amount</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>INV-2026-0901</td>
+<td>unpaid</td>
+<td>49.9</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>We rename <code>status</code> to <code>status_api</code> before merging. Otherwise pandas would create <code>status_x</code> and <code>status_y</code>, which are hard to read. The rename says clearly: this status comes from the API.</p>
+<div id="d4ca6347" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>api_status <span class="op">=</span> api_invoices[[<span class="st">"invoice_id"</span>, <span class="st">"status"</span>]].rename(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{<span class="st">"status"</span>: <span class="st">"status_api"</span>}</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    api_status,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"invoice_id"</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">"left"</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    validate<span class="op">=</span><span class="st">"m:1"</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>The key is <code>invoice_id</code>.</li>
+<li><code>how="left"</code> is essential. Most invoices in the panel are not from September. They have no API row. They must stay in the table, with <code>status_api</code> missing.</li>
+<li><code>validate="m:1"</code> (not <code>1:1</code>): many historical invoices will not appear on the right. The check only forbids the API from listing the same invoice twice.</li>
+</ul>
+<div id="3eaf945b" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"invoice_id"</span>, <span class="st">"period"</span>, <span class="st">"status"</span>, <span class="st">"payment_status"</span>, <span class="st">"status_api"</span>, <span class="st">"amount"</span>],</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">period</th>
+<th data-quarto-table-cell-role="th">status</th>
+<th data-quarto-table-cell-role="th">payment_status</th>
+<th data-quarto-table-cell-role="th">status_api</th>
+<th data-quarto-table-cell-role="th">amount</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>INV-2026-0901</td>
+<td>2026-09</td>
+<td>unpaid</td>
+<td>unpaid</td>
+<td>unpaid</td>
+<td>49.9</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>For this September invoice the three statuses agree: unpaid. For an August invoice, <code>status_api</code> would be empty. That missing value records “the snapshot does not cover this month”. It is not a broken join.</p>
+</section>
+<section id="the-five-attachments-in-one-view" class="level2" data-number="3.12">
+<h2 data-number="3.12" class="anchored" data-anchor-id="the-five-attachments-in-one-view"><span class="header-section-number">3.12</span> The five attachments, in one view</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Other table</th>
+<th>Key copied from the invoice</th>
+<th>What is added to the invoice row</th>
+<th>Rows on the right for one invoice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>customers</code></td>
+<td><code>customer_id</code></td>
+<td>name, company, segment, country, signup date</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>subscriptions</code></td>
+<td><code>subscription_id</code></td>
+<td>plan, monthly amount, start date</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>payments</code></td>
+<td><code>invoice_id</code></td>
+<td>payment identifier, payment date, payment status</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><code>contact_summary</code></td>
+<td><code>customer_id</code> and <code>period</code></td>
+<td>counts of interactions that month</td>
+<td>1 after aggregation</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><code>api_status</code></td>
+<td><code>invoice_id</code></td>
+<td><code>status_api</code> for September only</td>
+<td>1 or 0</td>
+</tr>
+</tbody>
+</table>
+<p>The invoice identifier never changes. We only widen the row.</p>
+<div id="929b9f46" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>analysis.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>(3325, 26)</code></pre>
+</div>
+</div>
+<p>The number of rows should still equal the number of invoices. If it has grown, a one-to-many merge has leaked through.</p>
+</section>
+<section id="a-few-analysis-columns" class="level2" data-number="3.13">
+<h2 data-number="3.13" class="anchored" data-anchor-id="a-few-analysis-columns"><span class="header-section-number">3.13</span> A few analysis columns</h2>
+<p>These columns are still preparation, not exploration. They are computed <strong>from columns that the merges have already placed on the invoice</strong>.</p>
+<div id="7ab44edf" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"days_to_due"</span>] <span class="op">=</span> (analysis[<span class="st">"due_date"</span>] <span class="op">-</span> analysis[<span class="st">"invoice_date"</span>]).dt.days</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"days_to_pay"</span>] <span class="op">=</span> (analysis[<span class="st">"payment_date"</span>] <span class="op">-</span> analysis[<span class="st">"invoice_date"</span>]).dt.days</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"paid_after_due"</span>] <span class="op">=</span> analysis[<span class="st">"payment_date"</span>].gt(analysis[<span class="st">"due_date"</span>])</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"is_outstanding"</span>] <span class="op">=</span> analysis[<span class="st">"payment_status"</span>].isin([<span class="st">"unpaid"</span>, <span class="st">"overdue"</span>])</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"tenure_months"</span>] <span class="op">=</span> (</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    (analysis[<span class="st">"invoice_date"</span>].dt.year <span class="op">-</span> analysis[<span class="st">"signup_date"</span>].dt.year) <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> (analysis[<span class="st">"invoice_date"</span>].dt.month <span class="op">-</span> analysis[<span class="st">"signup_date"</span>].dt.month)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> column <span class="kw">in</span> [</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_interactions"</span>,</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_reminders"</span>,</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_complaints"</span>,</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_payment_issues"</span>,</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_emails"</span>,</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>]:</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    analysis[column] <span class="op">=</span> analysis[column].fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>analysis.loc[analysis[<span class="st">"payment_date"</span>].isna(), <span class="st">"paid_after_due"</span>] <span class="op">=</span> <span class="va">False</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>days_to_pay</code> uses <code>payment_date</code>, which arrived in step 3. It is missing when there is no payment. That missingness <strong>is</strong> information.</li>
+<li><code>tenure_months</code> uses <code>signup_date</code>, which arrived in step 1, and <code>invoice_date</code>, which was already on the invoice.</li>
+<li>Interaction counts that stayed missing after step 4 mean “no CRM contact that month”. We replace them by 0. A missing count would be the wrong story: no ticket is not “unknown”.</li>
+</ul>
+<div id="fdb2d20a" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"invoice_id"</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"customer_name"</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"subscription_type"</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"amount"</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"payment_status"</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"status_api"</span>,</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"n_payment_issues"</span>,</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"is_outstanding"</span>,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"tenure_months"</span>,</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">invoice_id</th>
+<th data-quarto-table-cell-role="th">customer_name</th>
+<th data-quarto-table-cell-role="th">subscription_type</th>
+<th data-quarto-table-cell-role="th">amount</th>
+<th data-quarto-table-cell-role="th">payment_status</th>
+<th data-quarto-table-cell-role="th">status_api</th>
+<th data-quarto-table-cell-role="th">n_payment_issues</th>
+<th data-quarto-table-cell-role="th">is_outstanding</th>
+<th data-quarto-table-cell-role="th">tenure_months</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>INV-2026-0901</td>
+<td>Elena Vargas</td>
+<td>premium</td>
+<td>49.9</td>
+<td>unpaid</td>
+<td>unpaid</td>
+<td>1</td>
+<td>True</td>
+<td>17</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>This is the analysis observation we wanted: one invoice, with customer, plan, payment, CRM and API information on the <strong>same</strong> row.</p>
+</section>
+<section id="check-that-the-joins-are-trustworthy" class="level2" data-number="3.14">
+<h2 data-number="3.14" class="anchored" data-anchor-id="check-that-the-joins-are-trustworthy"><span class="header-section-number">3.14</span> Check that the joins are trustworthy</h2>
+<div id="97685057" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Duplicate invoice ids:"</span>, analysis[<span class="st">"invoice_id"</span>].duplicated().<span class="bu">sum</span>())</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows without a customer name:"</span>, analysis[<span class="st">"customer_name"</span>].isna().<span class="bu">sum</span>())</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"API status available:"</span>, analysis[<span class="st">"status_api"</span>].notna().<span class="bu">sum</span>())</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of invoices:"</span>, <span class="bu">len</span>(invoices))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of analysis rows:"</span>, <span class="bu">len</span>(analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Duplicate invoice ids: 0
+Rows without a customer name: 0
+API status available: 240
+Number of invoices: 3325
+Number of analysis rows: 3325</code></pre>
+</div>
+</div>
+<p>If the last two numbers differ, an invoice was duplicated or dropped. If a customer name is missing, step 1 failed for that <code>customer_id</code>.</p>
+<div id="c11c11ce" class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>september <span class="op">=</span> analysis[analysis[<span class="st">"period"</span>] <span class="op">==</span> <span class="st">"2026-09"</span>]</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    september[<span class="st">"status"</span>]</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    .eq(september[<span class="st">"status_api"</span>])</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    .value_counts(dropna<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>True    240
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>For September, the workbook and the API should match. If they did not, we would have a <strong>source conflict</strong> to resolve before plotting.</p>
+<p>A few customer segments are missing by construction. Later EDA will have to decide whether to drop those rows, recode them, or keep a missing category.</p>
+<div id="7165d8d2" class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"customer_segment"</span>].value_counts(dropna<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>customer_segment
+smb           1939
+mid-market     892
+enterprise     378
+NaN            116
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+</section>
+<section id="save-the-analysis-table" class="level2" data-number="3.15">
+<h2 data-number="3.15" class="anchored" data-anchor-id="save-the-analysis-table"><span class="header-section-number">3.15</span> Save the analysis table</h2>
+<div id="daa8eb41" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.sort_values([<span class="st">"invoice_date"</span>, <span class="st">"customer_id"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>analysis.to_csv(<span class="st">"data/processed/harborlink_invoices.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>analysis.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>(3325, 31)</code></pre>
+</div>
+</div>
+<p><code>data/processed/harborlink_invoices.csv</code> is the table the next sessions will explore. The same pipeline is implemented in <code>python/build_analysis_frame.py</code> if you need to rebuild it without re-running every cell.</p>
+</section>
+<section id="document-the-variables" class="level2" data-number="3.16">
+<h2 data-number="3.16" class="anchored" data-anchor-id="document-the-variables"><span class="header-section-number">3.16</span> Document the variables</h2>
+<p>Column names such as <code>n_payment_issues</code> or <code>status_api</code> are short for Python. Their meaning was not invented at the end of the join. Three commands carry the sentences from construction to Excel:</p>
+<ol type="1">
+<li><strong>Collect</strong> — <code>write_source_description_files</code> (called by <code>python/generate_analysis_data.py</code>) writes one <code>*_variables.csv</code> next to each extract.</li>
+<li><strong>Forward</strong> — <code>read_descriptions</code> loads a companion; <code>attach_descriptions</code> copies selected rows onto the invoice catalog, with the same <code>rename</code> / <code>keep</code> / <code>skip</code> as the data joins.</li>
+<li><strong>Write Excel</strong> — <code>write_variable_workbooks(data, descriptions, dictionary_path, summary_path)</code> takes <strong>any</strong> data file and <strong>any</strong> description file and writes a dictionary workbook and a summary workbook.</li>
+</ol>
+<p>The packaged forwarding step is <code>forward_invoice_descriptions</code> in <code>python/harborlink_catalog.py</code>. <code>python/build_analysis_frame.py</code> calls it when it rebuilds <code>harborlink_invoices.csv</code>, so the merged descriptions travel with the merged data even if you skip these cells.</p>
+<section id="where-the-sentences-live" class="level3" data-number="3.16.1">
+<h3 data-number="3.16.1" class="anchored" data-anchor-id="where-the-sentences-live"><span class="header-section-number">3.16.1</span> Where the sentences live</h3>
+<p>Open any companion file. The customer extract is typical: one row per column of <code>customers.csv</code>.</p>
+<div id="23f32123" class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.data_dictionary <span class="im">import</span> read_descriptions, attach_descriptions, write_variable_workbooks</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>read_descriptions(<span class="st">"data/raw/analysis/customers_variables.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">variable</th>
+<th data-quarto-table-cell-role="th">type</th>
+<th data-quarto-table-cell-role="th">definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>customer_id</td>
+<td>identifier</td>
+<td>Identifier of the customer billed on this invo...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>customer_name</td>
+<td>identifier</td>
+<td>Name of the person who is the HarborLink custo...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>company_name</td>
+<td>identifier</td>
+<td>Name of the customer's company.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>customer_segment</td>
+<td>factor</td>
+<td>Commercial segment of the customer (smb, mid-m...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>country</td>
+<td>factor</td>
+<td>Country of the customer, as an ISO two-letter ...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>signup_date</td>
+<td>date</td>
+<td>Date the customer first subscribed to HarborLink.</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><code>read_descriptions</code> accepts a path (CSV, Excel or JSON) or a DataFrame. It only requires the three columns <code>variable</code>, <code>type</code>, <code>definition</code>.</p>
+</section>
+<section id="transport-the-same-steps-as-the-merges" class="level3" data-number="3.16.2">
+<h3 data-number="3.16.2" class="anchored" data-anchor-id="transport-the-same-steps-as-the-merges"><span class="header-section-number">3.16.2</span> Transport: the same steps as the merges</h3>
+<p><code>attach_descriptions</code> is the metadata analogue of <code>merge</code>. It starts from the invoice catalog and <strong>adds</strong> descriptions coming from the other sources. It does not look up rows; it looks up <strong>column names</strong>. <code>rename</code> is the same mapping we used on the data (<code>status</code> → <code>payment_status</code> in the SQL, <code>status</code> → <code>status_api</code> for the API). <code>keep</code> copies only the columns that the join actually attached. <code>skip</code> avoids writing <code>customer_id</code> twice.</p>
+<p>The CRM counts (<code>n_interactions</code>, …) and the analysis columns (<code>days_to_due</code>, …) never existed in a source file. Their descriptions are attached at the moment those columns are created, just as the numbers themselves are.</p>
+<div id="e6d11ee8" class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.harborlink_catalog <span class="im">import</span> (</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    analysis_column_descriptions,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    crm_count_descriptions,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>descriptions <span class="op">=</span> read_descriptions(<span class="st">"data/raw/analysis/invoices_variables.csv"</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>descriptions <span class="op">=</span> attach_descriptions(</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    descriptions,</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/customers_variables.csv"</span>,</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    skip<span class="op">=</span>[<span class="st">"customer_id"</span>],</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>descriptions <span class="op">=</span> attach_descriptions(</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    descriptions,</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/subscriptions_variables.csv"</span>,</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    keep<span class="op">=</span>[<span class="st">"subscription_type"</span>, <span class="st">"monthly_amount"</span>, <span class="st">"start_date"</span>],</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>descriptions <span class="op">=</span> attach_descriptions(</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>    descriptions,</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/payments_variables.csv"</span>,</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>    rename<span class="op">=</span>{<span class="st">"status"</span>: <span class="st">"payment_status"</span>},</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>    keep<span class="op">=</span>[<span class="st">"payment_id"</span>, <span class="st">"payment_date"</span>, <span class="st">"payment_status"</span>],</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>descriptions <span class="op">=</span> attach_descriptions(descriptions, crm_count_descriptions())</span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>descriptions <span class="op">=</span> attach_descriptions(</span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>    descriptions,</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/api_invoices_variables.csv"</span>,</span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>    rename<span class="op">=</span>{<span class="st">"status"</span>: <span class="st">"status_api"</span>},</span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>    keep<span class="op">=</span>[<span class="st">"status_api"</span>],</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>descriptions <span class="op">=</span> attach_descriptions(descriptions, analysis_column_descriptions())</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>descriptions.to_csv(<span class="st">"data/processed/harborlink_invoices_variables.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>descriptions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">variable</th>
+<th data-quarto-table-cell-role="th">type</th>
+<th data-quarto-table-cell-role="th">definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>invoice_id</td>
+<td>identifier</td>
+<td>Unique identifier of one invoice (one billing ...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>customer_id</td>
+<td>identifier</td>
+<td>Identifier of the customer billed on this invo...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>subscription_id</td>
+<td>identifier</td>
+<td>Identifier of that customer's HarborLink subsc...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>order_id</td>
+<td>identifier</td>
+<td>Identifier of the billing order behind this in...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>invoice_date</td>
+<td>date</td>
+<td>Date the invoice was issued.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>due_date</td>
+<td>date</td>
+<td>Date by which the invoice should be paid.</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>amount</td>
+<td>numeric</td>
+<td>Amount billed on this invoice, in euros.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>status</td>
+<td>factor</td>
+<td>Payment status stored on the invoice workbook....</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>period</td>
+<td>date</td>
+<td>Billing month of the invoice, written YYYY-MM.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>customer_name</td>
+<td>identifier</td>
+<td>Name of the person who is the HarborLink custo...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>company_name</td>
+<td>identifier</td>
+<td>Name of the customer's company.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>customer_segment</td>
+<td>factor</td>
+<td>Commercial segment of the customer (smb, mid-m...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>country</td>
+<td>factor</td>
+<td>Country of the customer, as an ISO two-letter ...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>signup_date</td>
+<td>date</td>
+<td>Date the customer first subscribed to HarborLink.</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>subscription_type</td>
+<td>factor</td>
+<td>Plan of the subscription: starter, standard or...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">15</td>
+<td>monthly_amount</td>
+<td>numeric</td>
+<td>Monthly price of the plan, in euros. It should...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>start_date</td>
+<td>date</td>
+<td>Date this subscription started.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17</td>
+<td>payment_id</td>
+<td>identifier</td>
+<td>Identifier of the payment row attached to this...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">18</td>
+<td>payment_status</td>
+<td>factor</td>
+<td>Finance snapshot on 12 September 2026. paid = ...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">19</td>
+<td>payment_date</td>
+<td>date</td>
+<td>Date a payment was recorded. Empty when no pay...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">20</td>
+<td>n_interactions</td>
+<td>numeric</td>
+<td>Number of CRM contacts for this customer durin...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">21</td>
+<td>n_reminders</td>
+<td>numeric</td>
+<td>Number of those CRM contacts that were payment...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">22</td>
+<td>n_complaints</td>
+<td>numeric</td>
+<td>Number of those CRM contacts that were complai...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">23</td>
+<td>n_payment_issues</td>
+<td>numeric</td>
+<td>Number of those CRM contacts that reported a p...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">24</td>
+<td>n_emails</td>
+<td>numeric</td>
+<td>Number of those CRM contacts that went through...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">25</td>
+<td>status_api</td>
+<td>factor</td>
+<td>Payment status returned by the September API s...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">26</td>
+<td>days_to_due</td>
+<td>numeric</td>
+<td>Number of days between invoice_date and due_da...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">27</td>
+<td>days_to_pay</td>
+<td>numeric</td>
+<td>Number of days between invoice_date and paymen...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">28</td>
+<td>paid_after_due</td>
+<td>factor</td>
+<td>True when a payment_date exists and is after d...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">29</td>
+<td>is_outstanding</td>
+<td>factor</td>
+<td>True when payment_status is unpaid or overdue....</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">30</td>
+<td>tenure_months</td>
+<td>numeric</td>
+<td>Whole months between signup_date and this invo...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The CSV <code>harborlink_invoices_variables.csv</code> is the dictionary of the <strong>merged</strong> table, still as plain text, before any Excel formatting.</p>
+</section>
+<section id="one-general-function-two-files-in-two-excel-files-out" class="level3" data-number="3.16.3">
+<h3 data-number="3.16.3" class="anchored" data-anchor-id="one-general-function-two-files-in-two-excel-files-out"><span class="header-section-number">3.16.3</span> One general function: two files in, two Excel files out</h3>
+<p><code>write_variable_workbooks</code> is not a HarborLink helper. It gathers <strong>two files</strong> — a data set and a table of variable descriptions — and writes <strong>two Excel files</strong> — a dictionary and a column summary.</p>
+<pre><code>write_variable_workbooks(data, descriptions, dictionary_path, summary_path)</code></pre>
+<ul>
+<li><code>data</code>: a DataFrame, or a path to a CSV / Excel / JSON file;</li>
+<li><code>descriptions</code>: a DataFrame, or a path to a CSV / Excel / JSON file with columns <code>variable</code>, <code>type</code>, <code>definition</code>;</li>
+<li><code>dictionary_path</code>: where to write the glossary workbook;</li>
+<li><code>summary_path</code>: where to write the summary workbook (hover notes, min / max / mean, histograms).</li>
+</ul>
+<p>Here the two files are the merged invoice table and the forwarded descriptions we just saved:</p>
+<div id="190dc78d" class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dictionary_path, summary_path <span class="op">=</span> write_variable_workbooks(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/harborlink_invoices.csv"</span>,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/harborlink_invoices_variables.csv"</span>,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/harborlink_invoices_dictionary.xlsx"</span>,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/harborlink_invoices_summary.xlsx"</span>,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dictionary_path)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(summary_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>data/processed/harborlink_invoices_dictionary.xlsx
+data/processed/harborlink_invoices_summary.xlsx</code></pre>
+</div>
+</div>
+<p>The same function on <strong>two other files</strong> — the customer extract and its own description CSV. Nothing in the call names invoices:</p>
+<div id="0815b658" class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>write_variable_workbooks(</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/customers.csv"</span>,</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/customers_variables.csv"</span>,</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/customers_dictionary.xlsx"</span>,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/customers_summary.xlsx"</span>,</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<pre><code>(PosixPath('data/processed/customers_dictionary.xlsx'),
+ PosixPath('data/processed/customers_summary.xlsx'))</code></pre>
+</div>
+</div>
+<p>If you introduce another pair (any rectangular data file plus a <code>*_variables.csv</code> with those three columns), pass those two paths and two output paths. The function does not change.</p>
+<p><code>harborlink_invoices_dictionary.xlsx</code> lists each merged column with its forwarded definition. <code>harborlink_invoices_summary.xlsx</code> is a portrait of the columns (not of the customers): hover a name in the first row to read the definition; below it, min / max / mean / median / standard deviation when the variable is numeric, then a histogram.</p>
+</section>
+</section>
+<section id="towards-visualisation" class="level2" data-number="3.17">
+<h2 data-number="3.17" class="anchored" data-anchor-id="towards-visualisation"><span class="header-section-number">3.17</span> Towards visualisation</h2>
+<p>We now have a rectangular, invoice-level HarborLink table: several thousand observations, with customer attributes, payment outcomes and CRM activity sitting on the same row <strong>because each source was looked up with an explicit key</strong>.</p>
+<p><strong>The next session</strong> starts from <code>data/processed/harborlink_invoices.csv</code> and uses <strong>matplotlib</strong> and <strong>seaborn</strong> to describe distributions, compare segments and plans, and look at late payments over time. That work is in <code>lessons/02d-eda-visualisation.qmd</code>.</p>
+<p>The path remains:</p>
+<p><strong>Heterogeneous sources → one lookup per source, on a named key → one DataFrame → exploratory analysis and visualisation → statistical and machine-learning analysis</strong></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lessons/02b-data-loading.html" class="pagination-link" aria-label="From Business Information to Analysis-Ready Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">From Business Information to Analysis-Ready Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lessons/02d-eda-visualisation.html" class="pagination-link" aria-label="Exploratory Analysis and Data Visualisation">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exploratory Analysis and Data Visualisation</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

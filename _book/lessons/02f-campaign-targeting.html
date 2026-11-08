@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Economic Optimization of Customer Targeting – AI and Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lessons/02g-cloud-automl.html" rel="next">
+<link href="../lessons/02e-churn-text-ml.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lessons/02f-campaign-targeting.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Economic Optimization of Customer Targeting</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">AI and Data Science</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Loading, integrating and exploring data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02b-data-loading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">From Business Information to Analysis-Ready Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02c-exploratory-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">One Analysis Table from Several Sources</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02d-eda-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exploratory Analysis and Data Visualisation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02e-churn-text-ml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">From Structured Data to a Predictive Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02f-campaign-targeting.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Economic Optimization of Customer Targeting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lessons/02g-cloud-automl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Comparing Local Models with Cloud AutoML</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#stage-1-from-churn-prediction-to-an-economic-decision" id="toc-stage-1-from-churn-prediction-to-an-economic-decision" class="nav-link active" data-scroll-target="#stage-1-from-churn-prediction-to-an-economic-decision"><span class="header-section-number">6.1</span> Stage 1 — From churn prediction to an economic decision</a></li>
+  <li><a href="#stage-2-the-expected-cost-problem" id="toc-stage-2-the-expected-cost-problem" class="nav-link" data-scroll-target="#stage-2-the-expected-cost-problem"><span class="header-section-number">6.2</span> Stage 2 — The expected-cost problem</a></li>
+  <li><a href="#stage-3-the-individual-decision" id="toc-stage-3-the-individual-decision" class="nav-link" data-scroll-target="#stage-3-the-individual-decision"><span class="header-section-number">6.3</span> Stage 3 — The individual decision</a>
+  <ul class="collapse">
+  <li><a href="#the-telco-test-customers" id="toc-the-telco-test-customers" class="nav-link" data-scroll-target="#the-telco-test-customers"><span class="header-section-number">6.3.1</span> The telco test customers</a></li>
+  </ul></li>
+  <li><a href="#stage-4-when-the-decision-is-a-probability-cutoff" id="toc-stage-4-when-the-decision-is-a-probability-cutoff" class="nav-link" data-scroll-target="#stage-4-when-the-decision-is-a-probability-cutoff"><span class="header-section-number">6.4</span> Stage 4 — When the decision is a probability cutoff</a></li>
+  <li><a href="#stage-5-a-limited-campaign-budget" id="toc-stage-5-a-limited-campaign-budget" class="nav-link" data-scroll-target="#stage-5-a-limited-campaign-budget"><span class="header-section-number">6.5</span> Stage 5 — A limited campaign budget</a>
+  <ul class="collapse">
+  <li><a href="#equal-contact-costs" id="toc-equal-contact-costs" class="nav-link" data-scroll-target="#equal-contact-costs"><span class="header-section-number">6.5.1</span> Equal contact costs</a></li>
+  <li><a href="#contact-costs-that-differ" id="toc-contact-costs-that-differ" class="nav-link" data-scroll-target="#contact-costs-that-differ"><span class="header-section-number">6.5.2</span> Contact costs that differ</a></li>
+  </ul></li>
+  <li><a href="#stage-6-change-the-economic-assumptions" id="toc-stage-6-change-the-economic-assumptions" class="nav-link" data-scroll-target="#stage-6-change-the-economic-assumptions"><span class="header-section-number">6.6</span> Stage 6 — Change the economic assumptions</a></li>
+  <li><a href="#stage-7-campaign-probabilities-from-real-campaign-data" id="toc-stage-7-campaign-probabilities-from-real-campaign-data" class="nav-link" data-scroll-target="#stage-7-campaign-probabilities-from-real-campaign-data"><span class="header-section-number">6.7</span> Stage 7 — Campaign probabilities from real campaign data</a></li>
+  <li><a href="#test-customers-and-customers-the-model-has-already-seen" id="toc-test-customers-and-customers-the-model-has-already-seen" class="nav-link" data-scroll-target="#test-customers-and-customers-the-model-has-already-seen"><span class="header-section-number">6.8</span> Test customers, and customers the model has already seen</a></li>
+  <li><a href="#run-the-workshop" id="toc-run-the-workshop" class="nav-link" data-scroll-target="#run-the-workshop"><span class="header-section-number">6.9</span> Run the workshop</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Economic Optimization of Customer Targeting</span></h1>
+<p class="subtitle lead">Whom to contact, and at what cost</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>A score ranks customers by how likely they are to leave. A retention campaign asks a further question.</p>
+<p><strong>Which customers should the company target so that the expected economic cost is as small as possible?</strong></p>
+<p>Targeting a customer costs money. It can also change the probability that the customer leaves. The decision uses the cost, the loss if the customer leaves, and both probabilities (to leave with or without the campaign).</p>
+<!--
+| Stage | What you will do | Minutes |
+|---|---|---:|
+| 1 | From a score to an economic decision | 10 |
+| 2 | Write the expected-cost problem | 15 |
+| 3 | Decide customer by customer | 25 |
+| 4 | Recover a probability cutoff as a special case | 15 |
+| 5 | Respect a campaign budget | 25 |
+| 6 | Change the economic assumptions | 15 |
+| 7 | See what real campaign data would have to provide | 15 |
+-->
+<p>Run the cells from top to bottom.</p>
+<section id="stage-1-from-churn-prediction-to-an-economic-decision" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="stage-1-from-churn-prediction-to-an-economic-decision"><span class="header-section-number">6.1</span> Stage 1 — From churn prediction to an economic decision</h2>
+<p>The previous workshop scored each <strong>test</strong> customer with a logistic regression that uses the structured fields and the communications. Those customers were not used to fit the model. This workshop treats that score as an input to a decision.</p>
+<p>The scores are loaded from <code>SCORE_FILE</code>. They are not computed again. The previous workshop writes that file with <code>save_scores</code>. In the example, both workshops use <code>data/processed/telco/test_probabilities_with_text.csv</code>. For another dataset, set <code>SCORE_FILE</code> below to the path you used when saving, for example <code>data/processed/mydata/scores.csv</code>. The load uses that path.</p>
+<p>For customer <span class="math inline">\(i\)</span>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(p_{0,i}\)</span></td>
+<td>Estimated probability of churn if customer <span class="math inline">\(i\)</span> is not targeted</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(p_{1,i}\)</span></td>
+<td>Estimated probability of churn if customer <span class="math inline">\(i\)</span> is targeted</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(c_i\)</span></td>
+<td>Cost of targeting customer <span class="math inline">\(i\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(L_i\)</span></td>
+<td>Economic loss if customer <span class="math inline">\(i\)</span> churns</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(a_i\)</span></td>
+<td>1 if customer <span class="math inline">\(i\)</span> is targeted, and 0 otherwise</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(p_{0,i}\)</span> and <span class="math inline">\(p_{1,i}\)</span> are probabilities, so each one lies between 0 and 1. <span class="math inline">\(c_i\)</span> and <span class="math inline">\(L_i\)</span> are zero or positive. You can supply your own values. The telco file is only the working example.</p>
+<p>The expected cost of a decision depends on the money at stake, not only on the churn probability.</p>
+</section>
+<section id="stage-2-the-expected-cost-problem" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="stage-2-the-expected-cost-problem"><span class="header-section-number">6.2</span> Stage 2 — The expected-cost problem</h2>
+<p>If the company targets customer <span class="math inline">\(i\)</span>, it pays <span class="math inline">\(c_i\)</span>. The probability of churn is then <span class="math inline">\(p_{1,i}\)</span>, so the expected loss is <span class="math inline">\(L_i p_{1,i}\)</span>.</p>
+<p>If the company does not target customer <span class="math inline">\(i\)</span>, it pays no contact cost. The probability of churn stays <span class="math inline">\(p_{0,i}\)</span>, so the expected loss is <span class="math inline">\(L_i p_{0,i}\)</span>.</p>
+<p>One expression covers both choices:</p>
+<p><span class="math display">\[
+C_i(a_i) = c_i a_i + L_i\big[(1-a_i)p_{0,i} + a_i p_{1,i}\big].
+\]</span></p>
+<p>The first term is the contact cost. It is paid only when <span class="math inline">\(a_i = 1\)</span>. The expression in brackets is the probability of churn under the choice you made. Multiply it by <span class="math inline">\(L_i\)</span> to get the expected loss.</p>
+<p>The total expected cost is the sum over (test) customers:</p>
+<p><span class="math display">\[
+J(a_1,\ldots,a_n) = \sum_i C_i(a_i).
+\]</span></p>
+<p>The problem is:</p>
+<p><span class="math display">\[
+\text{minimize } J(a_1,\ldots,a_n)
+\quad\text{subject to}\quad
+a_i \in \{0,1\}
+\text{ for every customer } i.
+\]</span></p>
+<p>The solution is a list <span class="math inline">\(a^\star = (a_1^\star,\ldots,a_n^\star)\)</span>. Target customer <span class="math inline">\(i\)</span> when <span class="math inline">\(a_i^\star = 1\)</span>. Do not target customer <span class="math inline">\(i\)</span> when <span class="math inline">\(a_i^\star = 0\)</span>.</p>
+<p>The total is a sum of separate customer costs, so the choice for one customer does not change the arithmetic for another. Compare the two options for each customer:</p>
+<ul>
+<li>Expected cost with no campaign: <span class="math inline">\(L_i p_{0,i}\)</span>.</li>
+<li>Expected cost with a campaign: <span class="math inline">\(c_i + L_i p_{1,i}\)</span>.</li>
+</ul>
+<p>Target customer <span class="math inline">\(i\)</span> when the second amount is smaller. Rearrangement gives the same rule:</p>
+<p><span class="math display">\[
+L_i(p_{0,i} - p_{1,i}) &gt; c_i.
+\]</span></p>
+<p><span class="math inline">\(L_i(p_{0,i} - p_{1,i})\)</span> is the expected loss avoided by the campaign. Target customer <span class="math inline">\(i\)</span> if the expected loss avoided exceeds the campaign cost.</p>
+<p>The expected net benefit is that comparison, written as one number:</p>
+<p><span class="math display">\[
+b_i = L_i(p_{0,i} - p_{1,i}) - c_i.
+\]</span></p>
+<p>Target customer <span class="math inline">\(i\)</span> when <span class="math inline">\(b_i &gt; 0\)</span>.</p>
+<p>Three customers make the arithmetic concrete. The contact cost is 15 in each row.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Customer</th>
+<th style="text-align: right;"><span class="math inline">\(p_0\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(p_1\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(L\)</span></th>
+<th style="text-align: right;">Cost if not targeted</th>
+<th style="text-align: right;">Cost if targeted</th>
+<th style="text-align: right;"><span class="math inline">\(b\)</span></th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">−11</td>
+<td>do not target</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">275</td>
+<td style="text-align: right;">115</td>
+<td style="text-align: right;">160</td>
+<td>target</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">−10</td>
+<td>do not target</td>
+</tr>
+</tbody>
+</table>
+<p>Customer C has the highest churn probability. The campaign lowers that probability by only 0.05, and the loss is 100, so the expected loss avoided is 5. The contact costs 15. C is not targeted.</p>
+</section>
+<section id="stage-3-the-individual-decision" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="stage-3-the-individual-decision"><span class="header-section-number">6.3</span> Stage 3 — The individual decision</h2>
+<p>The calculation is the function <code>allocate</code>. It accepts one number for every customer, or a list with one entry per customer. A table version, <code>allocate_frame</code>, reads columns whose names you choose.</p>
+<p>The inputs must agree in length. A probability outside 0 to 1, a negative cost, or a negative loss stops the calculation. A missing value stops it as well: the function does not fill one in. Every decision it returns is 0 or 1.</p>
+<div id="6e66a67c" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Folder and file name of the scores written by save_scores in the previous workshop.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># For another dataset, set the same path you used there, for example:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SCORE_FILE = "data/processed/mydata/scores.csv"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>SCORE_FILE <span class="op">=</span> <span class="st">"data/processed/telco/test_probabilities_with_text.csv"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>POPULATION_FILE <span class="op">=</span> <span class="st">"data/processed/telco/campaign_example_population.csv"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> Path(SCORE_FILE).exists():</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    os.chdir(Path(<span class="st">".."</span>).resolve())</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">str</span>(Path.cwd()) <span class="kw">not</span> <span class="kw">in</span> sys.path:</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(Path.cwd()))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> python.workshop_targeting <span class="im">as</span> targeting</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="dv">12</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.width"</span>, <span class="dv">120</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.float_format"</span>, <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>read_scores</code> loads the file written by <code>save_scores</code>. It requires <code>customer_id</code>, <code>p0</code> and <code>observed_outcome</code>. <code>p0</code> is the score. <code>observed_outcome</code> is 1 when the customer churned and 0 otherwise.</p>
+<div id="2ac465cf" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> targeting.read_scores(SCORE_FILE)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(scores)<span class="sc">}</span><span class="ss"> customers in </span><span class="sc">{</span>SCORE_FILE<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>scores.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1761 customers in data/processed/telco/test_probabilities_with_text.csv.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">p0</th>
+<th data-quarto-table-cell-role="th">observed_outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>5343-SGUBI</td>
+<td>0.198</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>5442-BXVND</td>
+<td>0.067</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>6434-TTGJP</td>
+<td>0.065</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>1628-BIZYP</td>
+<td>0.845</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>0298-XACET</td>
+<td>0.029</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The same three customers, passed as lists. <code>cost</code> is one number, so every customer has the same contact cost. <code>loss</code> is one number per customer.</p>
+<div id="532053d7" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vector_plan <span class="op">=</span> targeting.allocate(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">0.10</span>, <span class="fl">0.55</span>, <span class="fl">0.80</span>],</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.08</span>, <span class="fl">0.20</span>, <span class="fl">0.75</span>],</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span>[<span class="dv">200</span>, <span class="dv">500</span>, <span class="dv">100</span>],</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>],</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>targeting.customer_table(vector_plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">row</th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">p0</th>
+<th data-quarto-table-cell-role="th">p1</th>
+<th data-quarto-table-cell-role="th">cost</th>
+<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">expected_cost_without</th>
+<th data-quarto-table-cell-role="th">expected_cost_with_campaign</th>
+<th data-quarto-table-cell-role="th">net_benefit</th>
+<th data-quarto-table-cell-role="th">target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>A</td>
+<td>0.100</td>
+<td>0.080</td>
+<td>15.000</td>
+<td>200.000</td>
+<td>20.000</td>
+<td>31.000</td>
+<td>-11.000</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>B</td>
+<td>0.550</td>
+<td>0.200</td>
+<td>15.000</td>
+<td>500.000</td>
+<td>275.000</td>
+<td>115.000</td>
+<td>160.000</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>C</td>
+<td>0.800</td>
+<td>0.750</td>
+<td>15.000</td>
+<td>100.000</td>
+<td>80.000</td>
+<td>90.000</td>
+<td>-10.000</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The same inputs can sit in a table. The column names are yours. They do not have to be <code>p0</code> or <code>loss</code>.</p>
+<div id="17ac2382" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>records <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"customer"</span>: [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>],</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chance_without"</span>: [<span class="fl">0.10</span>, <span class="fl">0.55</span>, <span class="fl">0.80</span>],</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chance_with"</span>: [<span class="fl">0.08</span>, <span class="fl">0.20</span>, <span class="fl">0.75</span>],</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"contact_cost"</span>: [<span class="dv">15</span>, <span class="dv">15</span>, <span class="dv">15</span>],</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"churn_loss"</span>: [<span class="dv">200</span>, <span class="dv">500</span>, <span class="dv">100</span>],</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>frame_plan <span class="op">=</span> targeting.allocate_frame(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    records,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span><span class="st">"chance_without"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span><span class="st">"chance_with"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span><span class="st">"contact_cost"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="st">"churn_loss"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    id_column<span class="op">=</span><span class="st">"customer"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Same decisions as the lists:"</span>, np.array_equal(frame_plan[<span class="st">"target"</span>], vector_plan[<span class="st">"target"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Same decisions as the lists: True</code></pre>
+</div>
+</div>
+<p><code>allocate</code> also returns the totals: the expected cost of the plan, the contact spending, the number and share of customers targeted, and the expected benefit relative to doing nothing. The benefit equals the expected cost of doing nothing minus the expected cost of the plan.</p>
+<div id="d6573e7d" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"Three customers"</span>: vector_plan})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Plan</th>
+<th data-quarto-table-cell-role="th">Customers targeted</th>
+<th data-quarto-table-cell-role="th">Share targeted</th>
+<th data-quarto-table-cell-role="th">Campaign spend</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Benefit vs no campaign</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Three customers</td>
+<td>1</td>
+<td>0.333</td>
+<td>15.000</td>
+<td>215.000</td>
+<td>160.000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<section id="the-telco-test-customers" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="the-telco-test-customers"><span class="header-section-number">6.3.1</span> The telco test customers</h3>
+<p>The scores were loaded above. This example attaches a campaign probability, a contact cost and a loss. With your own score file, replace those three inputs. The column names in the example are not required by the functions.</p>
+<p>The example loss is twelve times the customer’s current monthly charge. The example contact cost is 30, 45, or 180. Both are assumptions.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For this exercise, campaign probabilities are simulated. In a real application, they would need to be estimated using suitable campaign data, ideally from a randomized experiment.</p>
+</div>
+</div>
+<div id="621e225d" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>example <span class="op">=</span> targeting.read_population(POPULATION_FILE)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>same_customers <span class="op">=</span> scores[<span class="st">"customer_id"</span>].tolist() <span class="op">==</span> example[<span class="st">"customer_id"</span>].tolist()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>same_scores <span class="op">=</span> np.allclose(scores[<span class="st">"p0"</span>], example[<span class="st">"p0"</span>])</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (same_customers <span class="kw">and</span> same_scores):</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> targeting.TargetingError(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"The campaign table does not match the scores loaded from SCORE_FILE."</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>p0 <span class="op">=</span> scores[<span class="st">"p0"</span>].to_numpy()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> example[<span class="st">"p1"</span>].to_numpy()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>cost <span class="op">=</span> example[<span class="st">"example_cost"</span>].to_numpy()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> example[<span class="st">"example_loss"</span>].to_numpy()</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>customer_ids <span class="op">=</span> scores[<span class="st">"customer_id"</span>].tolist()</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>observed <span class="op">=</span> scores[<span class="st">"observed_outcome"</span>].to_numpy()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>There is no shared probability cutoff in this calculation. Each customer is compared with that customer’s own cost, loss, and campaign probability. Two customers with the same <code>p0</code> can receive different decisions.</p>
+<div id="f0b8653b" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plan <span class="op">=</span> targeting.allocate(p0, p1, cost, loss, ids<span class="op">=</span>customer_ids)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"No shared budget"</span>: plan})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Plan</th>
+<th data-quarto-table-cell-role="th">Customers targeted</th>
+<th data-quarto-table-cell-role="th">Share targeted</th>
+<th data-quarto-table-cell-role="th">Campaign spend</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Benefit vs no campaign</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>No shared budget</td>
+<td>948</td>
+<td>0.538</td>
+<td>36795.000</td>
+<td>476738.506</td>
+<td>114991.691</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="14fcbba2" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>targeting.selected_customers(plan, limit<span class="op">=</span><span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">row</th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">p0</th>
+<th data-quarto-table-cell-role="th">p1</th>
+<th data-quarto-table-cell-role="th">cost</th>
+<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">expected_cost_without</th>
+<th data-quarto-table-cell-role="th">expected_cost_with_campaign</th>
+<th data-quarto-table-cell-role="th">net_benefit</th>
+<th data-quarto-table-cell-role="th">target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>100</td>
+<td>9221-OTIVJ</td>
+<td>0.958</td>
+<td>0.510</td>
+<td>45.000</td>
+<td>1258.200</td>
+<td>1205.233</td>
+<td>686.416</td>
+<td>518.817</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>1085</td>
+<td>5052-PNLOS</td>
+<td>0.964</td>
+<td>0.537</td>
+<td>30.000</td>
+<td>1264.200</td>
+<td>1218.713</td>
+<td>708.792</td>
+<td>509.921</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>1619</td>
+<td>5419-CONWX</td>
+<td>0.956</td>
+<td>0.499</td>
+<td>45.000</td>
+<td>1197.600</td>
+<td>1145.086</td>
+<td>642.615</td>
+<td>502.471</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>876</td>
+<td>1400-MMYXY</td>
+<td>0.960</td>
+<td>0.534</td>
+<td>45.000</td>
+<td>1270.800</td>
+<td>1220.395</td>
+<td>723.512</td>
+<td>496.883</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>6</td>
+<td>8245-UMPYT</td>
+<td>0.950</td>
+<td>0.502</td>
+<td>45.000</td>
+<td>1156.800</td>
+<td>1099.420</td>
+<td>625.275</td>
+<td>474.145</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>1034</td>
+<td>8059-UDZFY</td>
+<td>0.875</td>
+<td>0.481</td>
+<td>45.000</td>
+<td>1264.200</td>
+<td>1105.564</td>
+<td>652.764</td>
+<td>452.799</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>1326</td>
+<td>7029-RPUAV</td>
+<td>0.913</td>
+<td>0.510</td>
+<td>45.000</td>
+<td>1205.400</td>
+<td>1100.364</td>
+<td>659.878</td>
+<td>440.485</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>1143</td>
+<td>3992-YWPKO</td>
+<td>0.900</td>
+<td>0.543</td>
+<td>30.000</td>
+<td>1318.800</td>
+<td>1186.896</td>
+<td>746.555</td>
+<td>440.341</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="19482bd7" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> targeting.threshold_counterexample(plan)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pair.empty:</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"With these inputs, the targeted customers are those above a cutoff on p0."</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"The targeted customer has the lower churn probability."</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>pair</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The targeted customer has the lower churn probability.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">row</th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">p0</th>
+<th data-quarto-table-cell-role="th">p1</th>
+<th data-quarto-table-cell-role="th">cost</th>
+<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">expected_cost_without</th>
+<th data-quarto-table-cell-role="th">expected_cost_with_campaign</th>
+<th data-quarto-table-cell-role="th">net_benefit</th>
+<th data-quarto-table-cell-role="th">target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>377</td>
+<td>6445-TNRXS</td>
+<td>0.063</td>
+<td>0.041</td>
+<td>30.000</td>
+<td>1376.400</td>
+<td>87.307</td>
+<td>86.788</td>
+<td>0.519</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>187</td>
+<td>0841-NULXI</td>
+<td>0.928</td>
+<td>0.696</td>
+<td>180.000</td>
+<td>426.600</td>
+<td>395.697</td>
+<td>476.943</td>
+<td>-81.246</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The historical churn label is still on the file. It describes the customers. It is not used to compute the expected cost.</p>
+<div id="85ba7979" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>chosen <span class="op">=</span> plan[<span class="st">"target"</span>] <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group"</span>: [<span class="st">"Targeted"</span>, <span class="st">"Not targeted"</span>],</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Customers"</span>: [<span class="bu">int</span>(chosen.<span class="bu">sum</span>()), <span class="bu">int</span>((<span class="op">~</span>chosen).<span class="bu">sum</span>())],</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Observed churn rate"</span>: [observed[chosen].mean(), observed[<span class="op">~</span>chosen].mean()],</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Group</th>
+<th data-quarto-table-cell-role="th">Customers</th>
+<th data-quarto-table-cell-role="th">Observed churn rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Targeted</td>
+<td>948</td>
+<td>0.439</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Not targeted</td>
+<td>813</td>
+<td>0.063</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="681d7c89" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_expected_costs(plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+<figure class="figure">
+<p><img src="02f-campaign-targeting_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="42ab38b6" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_net_benefits(plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+<figure class="figure">
+<p><img src="02f-campaign-targeting_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The horizontal line is zero. Customers above it are targeted. Customers on or below it are not.</p>
+</section>
+</section>
+<section id="stage-4-when-the-decision-is-a-probability-cutoff" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="stage-4-when-the-decision-is-a-probability-cutoff"><span class="header-section-number">6.4</span> Stage 4 — When the decision is a probability cutoff</h2>
+<p>Impose three extra restrictions:</p>
+<ul>
+<li><span class="math inline">\(c_i = c\)</span> for every customer;</li>
+<li><span class="math inline">\(L_i = L\)</span> for every customer;</li>
+<li><span class="math inline">\(p_{1,i} = (1-r)p_{0,i}\)</span>, with the same effectiveness <span class="math inline">\(r\)</span> for every customer.</li>
+</ul>
+<p>Then <span class="math inline">\(p_{0,i} - p_{1,i} = r p_{0,i}\)</span>, and the expected net benefit becomes</p>
+<p><span class="math display">\[
+b_i = r L p_{0,i} - c.
+\]</span></p>
+<p>Target customer <span class="math inline">\(i\)</span> when <span class="math inline">\(b_i &gt; 0\)</span>. With <span class="math inline">\(r\)</span> and <span class="math inline">\(L\)</span> positive, that is the same statement as</p>
+<p><span class="math display">\[
+p_{0,i} &gt; \frac{c}{r L}.
+\]</span></p>
+<p>The cutoff is therefore</p>
+<p><span class="math display">\[
+t^\star = \frac{c}{r L}.
+\]</span></p>
+<p><span class="math inline">\(t^\star\)</span> is a consequence of the cost calculation. It appears only when the contact cost, the loss, and the campaign effectiveness are each the same for every customer. Outside those three restrictions, the rule remains the customer-level comparison in Stage 3.</p>
+<div id="8e510fb0" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>EFFECTIVENESS <span class="op">=</span> <span class="fl">0.25</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>COMMON_COST <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>COMMON_LOSS <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>p1_common <span class="op">=</span> targeting.campaign_probabilities(p0, EFFECTIVENESS)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>common_plan <span class="op">=</span> targeting.allocate(p0, p1_common, COMMON_COST, COMMON_LOSS, ids<span class="op">=</span>customer_ids)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>cutoff <span class="op">=</span> targeting.probability_threshold(COMMON_COST, COMMON_LOSS, EFFECTIVENESS)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>by_cutoff <span class="op">=</span> (p0 <span class="op">&gt;</span> cutoff).astype(<span class="bu">int</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cutoff t* = </span><span class="sc">{</span>cutoff<span class="sc">:.3f}</span><span class="ss">."</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Decisions on which the cost rule and the cutoff disagree: </span><span class="sc">{</span><span class="bu">int</span>(np.<span class="bu">sum</span>(common_plan[<span class="st">'target'</span>] <span class="op">!=</span> by_cutoff))<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"Common cost, loss and effectiveness"</span>: common_plan})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cutoff t* = 0.267.
+Decisions on which the cost rule and the cutoff disagree: 0.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Plan</th>
+<th data-quarto-table-cell-role="th">Customers targeted</th>
+<th data-quarto-table-cell-role="th">Share targeted</th>
+<th data-quarto-table-cell-role="th">Campaign spend</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Benefit vs no campaign</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Common cost, loss and effectiveness</td>
+<td>937</td>
+<td>0.532</td>
+<td>37480.000</td>
+<td>351376.607</td>
+<td>51946.038</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<!--
+If campaign effectiveness differs across customers, two customers with the same churn probability can have different expected net benefits. The customer whose probability falls further is the better target.
+
+If contact costs differ, a high churn probability does not pay for an expensive contact unless the expected loss avoided covers that cost.
+
+If losses differ, the same reduction in churn probability is worth more for the customer who costs more to lose.
+
+-->
+<p>Ranking customers by the churn probability alone can select the wrong people: Telco customers in Stage 3 are one such case: costs, losses, and campaign probabilities all differ.</p>
+</section>
+<section id="stage-5-a-limited-campaign-budget" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="stage-5-a-limited-campaign-budget"><span class="header-section-number">6.5</span> Stage 5 — A limited campaign budget</h2>
+<p>A budget <span class="math inline">\(B\)</span> limits total contact spending:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{minimize } &amp;\sum_i \Big(c_i a_i + L_i\big[(1-a_i)p_{0,i} + a_i p_{1,i}\big]\Big) \\
+\text{subject to } &amp;\sum_i c_i a_i \le B, \\
+&amp;a_i \in \{0,1\}.
+\end{aligned}
+\]</span></p>
+<p>The expected cost of a plan can be rewritten as</p>
+<p><span class="math display">\[
+J(a) = \sum_i L_i p_{0,i} - \sum_i b_i a_i.
+\]</span></p>
+<p>The first sum is the expected cost of targeting nobody. It does not depend on the decision. Minimising <span class="math inline">\(J\)</span> under the budget is therefore the same problem as maximising the total expected net benefit, <span class="math inline">\(\sum_i b_i a_i\)</span>, under the same budget.</p>
+<p>A customer with <span class="math inline">\(b_i \le 0\)</span> is never selected. Targeting that customer would raise expected cost, and it would use budget.</p>
+<section id="equal-contact-costs" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="equal-contact-costs"><span class="header-section-number">6.5.1</span> Equal contact costs</h3>
+<p>Suppose every contact costs the same amount <span class="math inline">\(c\)</span>, and <span class="math inline">\(c &gt; 0\)</span>. The budget can pay for at most</p>
+<p><span class="math display">\[
+K = \lfloor B / c \rfloor
+\]</span></p>
+<p>customers. The solution is then the <span class="math inline">\(K\)</span> customers with the largest positive expected net benefits. If fewer than <span class="math inline">\(K\)</span> customers have a positive benefit, target only those.</p>
+<p>The cell below keeps the simulated campaign probabilities, so effectiveness still differs across customers. The contact cost is 40 and the loss is 600 for every customer. The budget pays for at most 200 contacts.</p>
+<div id="fd8ffbe3" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>COMMON_COST <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>COMMON_LOSS <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>MAX_CUSTOMERS <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>equal_budget <span class="op">=</span> COMMON_COST <span class="op">*</span> MAX_CUSTOMERS</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>open_equal <span class="op">=</span> targeting.allocate(p0, p1, COMMON_COST, COMMON_LOSS, ids<span class="op">=</span>customer_ids)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>equal_plan <span class="op">=</span> targeting.allocate_under_equal_cost(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    p0, p1, COMMON_COST, COMMON_LOSS, equal_budget, ids<span class="op">=</span>customer_ids</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No customer limit"</span>: open_equal,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"At most </span><span class="sc">{</span>MAX_CUSTOMERS<span class="sc">}</span><span class="ss"> customers"</span>: equal_plan,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Plan</th>
+<th data-quarto-table-cell-role="th">Customers targeted</th>
+<th data-quarto-table-cell-role="th">Share targeted</th>
+<th data-quarto-table-cell-role="th">Campaign spend</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Benefit vs no campaign</th>
+<th data-quarto-table-cell-role="th">Budget</th>
+<th data-quarto-table-cell-role="th">Within budget</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>No customer limit</td>
+<td>906</td>
+<td>0.514</td>
+<td>36240.000</td>
+<td>336722.762</td>
+<td>66599.883</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>At most 200 customers</td>
+<td>200</td>
+<td>0.114</td>
+<td>8000.000</td>
+<td>372625.835</td>
+<td>30696.810</td>
+<td>8000.000</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Because effectiveness differs, the largest churn probabilities are not the largest expected net benefits.</p>
+<div id="db7fc918" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>highest_probability <span class="op">=</span> np.zeros(<span class="bu">len</span>(p0), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>highest_probability[np.argsort(<span class="op">-</span>p0)[:MAX_CUSTOMERS]] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>differ <span class="op">=</span> <span class="bu">int</span>(np.<span class="bu">sum</span>(highest_probability <span class="op">!=</span> equal_plan[<span class="st">"target"</span>]))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"The </span><span class="sc">{</span>MAX_CUSTOMERS<span class="sc">}</span><span class="ss"> highest churn probabilities and this budget rule "</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"differ for </span><span class="sc">{</span>differ<span class="sc">}</span><span class="ss"> customers."</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The 200 highest churn probabilities and this budget rule differ for 190 customers.</code></pre>
+</div>
+</div>
+</section>
+<section id="contact-costs-that-differ" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="contact-costs-that-differ"><span class="header-section-number">6.5.2</span> Contact costs that differ</h3>
+<p>When contact costs differ, filling the budget with the largest net benefits can be the wrong set. One expensive customer can crowd out several cheaper customers whose benefits add up to more.</p>
+<p>Three customers and a budget of 6 show the arithmetic. The losses and probabilities below produce expected net benefits of 6, 5, and 5. The contact costs are 4, 3, and 3.</p>
+<p>Taking the benefit of 6 spends 4 and leaves 2, which pays for nobody else. The total benefit is 6. Taking the two benefits of 5 spends 6. The total benefit is 10.</p>
+<div id="62b7b496" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>small_exact <span class="op">=</span> targeting.allocate_under_budget(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">1.00</span>, <span class="fl">0.80</span>, <span class="fl">0.80</span>],</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>],</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span>[<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>],</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="st">"High benefit"</span>, <span class="st">"Lower benefit 1"</span>, <span class="st">"Lower benefit 2"</span>],</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"RUN"</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>small_ranked <span class="op">=</span> targeting.allocate_by_benefit_rank(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">1.00</span>, <span class="fl">0.80</span>, <span class="fl">0.80</span>],</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>],</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span>[<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>],</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="st">"High benefit"</span>, <span class="st">"Lower benefit 1"</span>, <span class="st">"Lower benefit 2"</span>],</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Exact budget solution"</span>: small_exact,</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Largest benefits first"</span>: small_ranked,</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Plan</th>
+<th data-quarto-table-cell-role="th">Customers targeted</th>
+<th data-quarto-table-cell-role="th">Share targeted</th>
+<th data-quarto-table-cell-role="th">Campaign spend</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Benefit vs no campaign</th>
+<th data-quarto-table-cell-role="th">Budget</th>
+<th data-quarto-table-cell-role="th">Within budget</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Exact budget solution</td>
+<td>2</td>
+<td>0.667</td>
+<td>6.000</td>
+<td>16.000</td>
+<td>10.000</td>
+<td>6.000</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Largest benefits first</td>
+<td>1</td>
+<td>0.333</td>
+<td>4.000</td>
+<td>20.000</td>
+<td>6.000</td>
+<td>6.000</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The telco example uses the customer-specific costs and losses from Stage 3. The budget is 8000. <code>allocate_under_budget</code> solves the binary problem exactly. <code>allocate_by_benefit_rank</code> is the ranking rule, shown only for comparison.</p>
+<p>On this file the exact solve takes about half a second, so the default mode is <code>"RUN"</code>. <code>"SAVE"</code> stores the solution. <code>"LOAD"</code> reads a stored solution and stops if the inputs or the budget differ from the saved run. It does not invent a result.</p>
+<div id="a07af8ac" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>targeting.OPTIMIZATION_MODE <span class="op">=</span> <span class="st">"RUN"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># targeting.OPTIMIZATION_MODE = "SAVE"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># targeting.OPTIMIZATION_MODE = "LOAD"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>budget_plan <span class="op">=</span> targeting.allocate_under_budget(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    p0, p1, cost, loss, BUDGET, ids<span class="op">=</span>customer_ids</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>ranked_plan <span class="op">=</span> targeting.allocate_by_benefit_rank(</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    p0, p1, cost, loss, BUDGET, ids<span class="op">=</span>customer_ids</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No budget"</span>: plan,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Exact budget solution"</span>: budget_plan,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Largest benefits first"</span>: ranked_plan,</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Plan</th>
+<th data-quarto-table-cell-role="th">Customers targeted</th>
+<th data-quarto-table-cell-role="th">Share targeted</th>
+<th data-quarto-table-cell-role="th">Campaign spend</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Benefit vs no campaign</th>
+<th data-quarto-table-cell-role="th">Budget</th>
+<th data-quarto-table-cell-role="th">Within budget</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>No budget</td>
+<td>948</td>
+<td>0.538</td>
+<td>36795.000</td>
+<td>476738.506</td>
+<td>114991.691</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Exact budget solution</td>
+<td>242</td>
+<td>0.137</td>
+<td>7995.000</td>
+<td>528769.429</td>
+<td>62960.767</td>
+<td>8000.000</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Largest benefits first</td>
+<td>210</td>
+<td>0.119</td>
+<td>7980.000</td>
+<td>533229.027</td>
+<td>58501.169</td>
+<td>8000.000</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="06e54e47" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>gap <span class="op">=</span> budget_plan[<span class="st">"benefit"</span>] <span class="op">-</span> ranked_plan[<span class="st">"benefit"</span>]</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> gap <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Ranking by expected net benefit leaves </span><span class="sc">{</span>gap<span class="sc">:,.0f}</span><span class="ss"> of expected benefit unused."</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"For this budget, the ranking rule and the exact solution select the same customers."</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exact spend </span><span class="sc">{</span>budget_plan[<span class="st">'campaign_spend'</span>]<span class="sc">:,.0f}</span><span class="ss"> is within the budget of </span><span class="sc">{</span>BUDGET<span class="sc">:,.0f}</span><span class="ss">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ranking by expected net benefit leaves 4,460 of expected benefit unused.
+Exact spend 7,995 is within the budget of 8,000.</code></pre>
+</div>
+</div>
+<div id="031d687d" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_allocations(plan, budget_plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+<figure class="figure">
+<p><img src="02f-campaign-targeting_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The left panel compares spending and expected net benefit. The right panel shows who would be targeted with no budget. The legend marks who the budget keeps and who it drops.</p>
+</section>
+</section>
+<section id="stage-6-change-the-economic-assumptions" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="stage-6-change-the-economic-assumptions"><span class="header-section-number">6.6</span> Stage 6 — Change the economic assumptions</h2>
+<p>A decision can change when a cost, a loss, a campaign probability, or the budget changes. Edit the four assignments and run the cell again. The defaults reproduce the plan from Stage 3 and the budget from Stage 5.</p>
+<p><code>REDUCTION_SCALE</code> multiplies the gap between <code>p0</code> and the simulated <code>p1</code>. A scale of 1 keeps the example. A scale of 0 means the campaign changes no probability. Keep the scale between 0 and 1 so that every campaign probability stays between 0 and 1.</p>
+<div id="a4b3c93c" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>COST_MULTIPLIER <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>LOSS_MULTIPLIER <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>REDUCTION_SCALE <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>cost_now <span class="op">=</span> cost <span class="op">*</span> COST_MULTIPLIER</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>loss_now <span class="op">=</span> loss <span class="op">*</span> LOSS_MULTIPLIER</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>p1_now <span class="op">=</span> p0 <span class="op">-</span> REDUCTION_SCALE <span class="op">*</span> (p0 <span class="op">-</span> p1)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>revised <span class="op">=</span> targeting.allocate(p0, p1_now, cost_now, loss_now, ids<span class="op">=</span>customer_ids)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>revised_budget <span class="op">=</span> targeting.allocate_under_budget(</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    p0, p1_now, cost_now, loss_now, BUDGET, ids<span class="op">=</span>customer_ids, mode<span class="op">=</span><span class="st">"RUN"</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"No budget"</span>: revised, <span class="st">"With budget"</span>: revised_budget})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Plan</th>
+<th data-quarto-table-cell-role="th">Customers targeted</th>
+<th data-quarto-table-cell-role="th">Share targeted</th>
+<th data-quarto-table-cell-role="th">Campaign spend</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Benefit vs no campaign</th>
+<th data-quarto-table-cell-role="th">Budget</th>
+<th data-quarto-table-cell-role="th">Within budget</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>No budget</td>
+<td>948</td>
+<td>0.538</td>
+<td>36795.000</td>
+<td>476738.506</td>
+<td>114991.691</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>With budget</td>
+<td>242</td>
+<td>0.137</td>
+<td>7995.000</td>
+<td>528769.429</td>
+<td>62960.767</td>
+<td>8000.000</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The next table changes one thing only: the common campaign effectiveness <span class="math inline">\(r\)</span>, with <span class="math inline">\(p_{1,i} = (1-r)p_{0,i}\)</span>. Like in Section 6.5.1, the contact cost is 40, the loss is 600 and the budget pays for at most 200 contacts.</p>
+<div id="b16e3938" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sensitivity <span class="op">=</span> targeting.effectiveness_sensitivity(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    p0,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span><span class="dv">40</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">600</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    effectiveness<span class="op">=</span>[<span class="fl">0.10</span>, <span class="fl">0.20</span>, <span class="fl">0.30</span>, <span class="fl">0.50</span>, <span class="fl">0.70</span>],</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">40</span> <span class="op">*</span> <span class="dv">200</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>sensitivity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">effectiveness</th>
+<th data-quarto-table-cell-role="th">customers_targeted</th>
+<th data-quarto-table-cell-role="th">share_targeted</th>
+<th data-quarto-table-cell-role="th">campaign_spend</th>
+<th data-quarto-table-cell-role="th">expected_cost</th>
+<th data-quarto-table-cell-role="th">benefit_vs_no_campaign</th>
+<th data-quarto-table-cell-role="th">threshold</th>
+<th data-quarto-table-cell-role="th">budget_customers_targeted</th>
+<th data-quarto-table-cell-role="th">budget_campaign_spend</th>
+<th data-quarto-table-cell-role="th">budget_expected_cost</th>
+<th data-quarto-table-cell-role="th">budget_benefit_vs_no_campaign</th>
+<th data-quarto-table-cell-role="th">decisions_changed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0.100</td>
+<td>439</td>
+<td>0.249</td>
+<td>17560.000</td>
+<td>398831.603</td>
+<td>4491.042</td>
+<td>0.667</td>
+<td>200</td>
+<td>8000.000</td>
+<td>400267.073</td>
+<td>3055.572</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0.200</td>
+<td>839</td>
+<td>0.476</td>
+<td>33560.000</td>
+<td>368848.914</td>
+<td>34473.731</td>
+<td>0.333</td>
+<td>200</td>
+<td>8000.000</td>
+<td>389211.501</td>
+<td>14111.143</td>
+<td>400</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0.300</td>
+<td>999</td>
+<td>0.567</td>
+<td>39960.000</td>
+<td>333259.335</td>
+<td>70063.309</td>
+<td>0.222</td>
+<td>200</td>
+<td>8000.000</td>
+<td>378155.930</td>
+<td>25166.715</td>
+<td>160</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>0.500</td>
+<td>1184</td>
+<td>0.672</td>
+<td>47360.000</td>
+<td>257563.335</td>
+<td>145759.310</td>
+<td>0.133</td>
+<td>200</td>
+<td>8000.000</td>
+<td>356044.786</td>
+<td>47277.859</td>
+<td>185</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>0.700</td>
+<td>1275</td>
+<td>0.724</td>
+<td>51000.000</td>
+<td>179595.701</td>
+<td>223726.944</td>
+<td>0.095</td>
+<td>200</td>
+<td>8000.000</td>
+<td>333933.643</td>
+<td>69389.002</td>
+<td>91</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="90f72e98" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_effectiveness(sensitivity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div>
+<figure class="figure">
+<p><img src="02f-campaign-targeting_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As <span class="math inline">\(r\)</span> rises, the unconstrained plan targets more customers and the cutoff <span class="math inline">\(t^\star = c/(rL)\)</span> falls. <code>decisions_changed</code> counts those changes from one row to the next.</p>
+<p>The budget plan stays at 200 customers. Under a common cost, a common loss, and a common effectiveness, expected net benefit ranks customers in the same order as <span class="math inline">\(p_0\)</span>. The 200 contacts are the 200 highest churn probabilities among customers with a positive benefit. That set does not change across these rows, because more than 200 customers already have a positive benefit at <span class="math inline">\(r = 0.10\)</span>. The expected benefit of the budget plan still rises: the same contacts avoid more expected loss when the campaign is more effective.</p>
+</section>
+<section id="stage-7-campaign-probabilities-from-real-campaign-data" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="stage-7-campaign-probabilities-from-real-campaign-data"><span class="header-section-number">6.7</span> Stage 7 — Campaign probabilities from real campaign data</h2>
+<p><span class="math inline">\(p_{1,i}\)</span> was supplied to this workshop. A real campaign file would have to produce it.</p>
+<p>A model fitted on customers who were offered the campaign can estimate the churn probability under the campaign, for customers who look like them.</p>
+<p>That estimate is not yet the effect of the campaign. The effect is the difference between the outcome with the campaign and the outcome that would have occurred without it.</p>
+<p>A randomized control group provides the comparison. Customers who were not offered the campaign identify <span class="math inline">\(p_{0,i}\)</span>. Customers who were offered it identify <span class="math inline">\(p_{1,i}\)</span>. Under a properly run randomization, the difference is the causal effect of the campaign.</p>
+<p>A file that contains only customers who received the campaign does not identify what they would have done without it.</p>
+<p>The telco file has no campaign indicator and no random assignment. It cannot estimate campaign effectiveness.</p>
+<p>Uplift is the name for the difference in probabilities:</p>
+<p><span class="math display">\[
+u_i = p_{0,i} - p_{1,i}.
+\]</span></p>
+<p>The expected net benefit is then</p>
+<p><span class="math display">\[
+b_i = L_i u_i - c_i.
+\]</span></p>
+<p>The first customer to consider is the one with the highest positive expected net benefit. The budget decides whether that customer is affordable, and which affordable group has the largest total benefit. A high churn probability does not settle the choice. This workshop does not fit an uplift model.</p>
+</section>
+<section id="test-customers-and-customers-the-model-has-already-seen" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="test-customers-and-customers-the-model-has-already-seen"><span class="header-section-number">6.8</span> Test customers, and customers the model has already seen</h2>
+<p>The scores in this workshop are the test customers from the previous one. The model did not use those rows when it chose the coefficients. They stand in for customers the model has not seen.</p>
+<p>They are still a slice of the same historical file. The churn on those rows has already happened. They are a stand-in for a current book, not the current book itself.</p>
+<p>The same coefficients can be applied to every row of the file, including the rows that were used to fit the model. That produces a score for the whole file.</p>
+<ul>
+<li>On a customer the model did not see, the score is the kind of number the test set is meant to give. The outcome did not help choose the coefficients.</li>
+<li>On a customer who was used to fit the model, the outcome did help choose the coefficients. The score is pulled toward a result the model has already seen. It will look more accurate than a score on a new customer.</li>
+</ul>
+<p>The observed outcome splits in the same way. On the test rows, it was not used to choose the coefficients. On the training rows, it was. Using those training rows as a check of the score mixes the past fit with the customers still to be decided about.</p>
+<p>Keep the two groups apart. Fit on the past. Score the customers you might contact now. When the only available file is the historical one, use the test rows as the campaign table and leave the training rows out of it.</p>
+</section>
+<section id="run-the-workshop" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="run-the-workshop"><span class="header-section-number">6.9</span> Run the workshop</h2>
+<p>Run the cells from top to bottom. From the project folder:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render lessons/02f-campaign-targeting.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The render reads the file named in <code>SCORE_FILE</code>. It does not fit the logistic regression again. For another dataset, set <code>SCORE_FILE</code> to the path used when those scores were saved, for example <code>data/processed/mydata/scores.csv</code>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lessons/02e-churn-text-ml.html" class="pagination-link" aria-label="From Structured Data to a Predictive Model">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">From Structured Data to a Predictive Model</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lessons/02g-cloud-automl.html" class="pagination-link" aria-label="Comparing Local Models with Cloud AutoML">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Comparing Local Models with Cloud AutoML</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

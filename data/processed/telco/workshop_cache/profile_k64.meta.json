@@ -1,0 +1,25 @@
+{
+  "cache_version": 1,
+  "cache_label": "profile",
+  "n_components": 64,
+  "random_state": 42,
+  "test_size": 0.25,
+  "split_fingerprint": "80c7747923a0c439cc31",
+  "corpus_fingerprint": "d3c1fbb4372a2bf74e72",
+  "aggregation": "Use the CustomerProfile paragraph already stored on the customer row.",
+  "tfidf": {
+    "max_features": 5000,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 2,
+    "stop_words": "english"
+  },
+  "n_train_documents": 5282,
+  "n_test_documents_in_fit": 0,
+  "n_empty_documents": 0,
+  "vocabulary_size": 3681,
+  "explained_variance_ratio_sum": 0.6283901508591494,
+  "fit_excludes_test": true
+}

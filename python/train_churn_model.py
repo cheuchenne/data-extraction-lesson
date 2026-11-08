@@ -1,32 +1,19 @@
-"""
-Churn classification with tabular + text (early fusion).
+"""Tabular plus text classification.
 
-Default text corpus: customer_communications_llm.csv if present and non-empty,
-else customer_communications.csv. Restricts to customers present in the corpus.
-
-Also writes text-focused XAI:
-  - predictive strength by communication type
-  - leave-one-type-out AUC drop
-  - example high-influence messages (complaints/support)
+Call ``run`` with the table file, the text file, the column roles and the
+feature lists. This file does not name a particular dataset.
 """
 
 from __future__ import annotations
 
 import json
 import os
-import sys
 import warnings
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-PYTHON_DIR = Path(__file__).resolve().parent
-if str(PYTHON_DIR) not in sys.path:
-    sys.path.insert(0, str(PYTHON_DIR))
-
-from telco_paths import COMMS_FILE, COMMS_LLM_FILE, PROFILES_FILE, TELCO_RESULTS  # noqa: E402
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -48,50 +35,75 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-COMMS_LLM = COMMS_LLM_FILE
-COMMS_FALLBACK = COMMS_FILE
-RESULTS_DIR = TELCO_RESULTS
+ID_COLUMN = "id"
+TARGET_COLUMN = "target"
+POSITIVE_LABEL = "1"
+TEXT_COLUMN = "text"
+ORDER_COLUMN = "text_index"
+TYPE_COLUMN = ""
+NUMERIC_FEATURES: list[str] = []
+CATEGORICAL_FEATURES: list[str] = []
+RESULTS_DIR = Path("data/processed/text_model_results")
 RANDOM_STATE = 42
 TEST_SIZE = 0.25
 SVD_DIM = int(os.environ.get("SVD_DIM", "64"))
 
-NUMERIC_FEATURES = ["tenure", "MonthlyCharges", "TotalCharges", "SeniorCitizen"]
-CATEGORICAL_FEATURES = [
-    "gender", "Partner", "Dependents", "PhoneService", "MultipleLines",
-    "InternetService", "OnlineSecurity", "OnlineBackup", "DeviceProtection",
-    "TechSupport", "StreamingTV", "StreamingMovies", "Contract",
-    "PaperlessBilling", "PaymentMethod",
-]
+
+def configure(
+    id_column: str,
+    target_column: str,
+    positive_label: str,
+    numeric_features: list[str],
+    categorical_features: list[str],
+    text_column: str = "text",
+    order_column: str = "text_index",
+    type_column: str = "",
+    results_dir: str | Path = "data/processed/text_model_results",
+    random_state: int = 42,
+    test_size: float = 0.25,
+    svd_dim: int | None = None,
+) -> None:
+    """Store the column roles used by every function in this file."""
+    global ID_COLUMN, TARGET_COLUMN, POSITIVE_LABEL, TEXT_COLUMN, ORDER_COLUMN, TYPE_COLUMN
+    global NUMERIC_FEATURES, CATEGORICAL_FEATURES, RESULTS_DIR, RANDOM_STATE, TEST_SIZE, SVD_DIM
+    ID_COLUMN = id_column
+    TARGET_COLUMN = target_column
+    POSITIVE_LABEL = str(positive_label)
+    TEXT_COLUMN = text_column
+    ORDER_COLUMN = order_column
+    TYPE_COLUMN = type_column or ""
+    NUMERIC_FEATURES = list(numeric_features)
+    CATEGORICAL_FEATURES = list(categorical_features)
+    RESULTS_DIR = Path(results_dir)
+    RANDOM_STATE = int(random_state)
+    TEST_SIZE = float(test_size)
+    if svd_dim is not None:
+        SVD_DIM = int(svd_dim)
 
 
-def load_comms() -> pd.DataFrame:
-    """Prefer full template corpus unless USE_LLM_COMMS=1."""
-    use_llm = os.environ.get("USE_LLM_COMMS", "").strip() in {"1", "true", "True", "yes"}
-    if use_llm and Path(COMMS_LLM).exists() and Path(COMMS_LLM).stat().st_size > 0:
-        df = pd.read_csv(COMMS_LLM)
-        if len(df) > 0:
-            print(f"Using LLM communications: {COMMS_LLM} ({len(df)} texts)")
-            return df
-    print(f"Using communications: {COMMS_FALLBACK}")
-    return pd.read_csv(COMMS_FALLBACK)
-
-
-def build_docs(profiles: pd.DataFrame, comms: pd.DataFrame) -> pd.Series:
+def build_docs(table: pd.DataFrame, messages: pd.DataFrame) -> pd.Series:
     grouped = (
-        comms.sort_values(["customerID", "text_index"])
-        .groupby("customerID")["text"]
+        messages.sort_values([ID_COLUMN, ORDER_COLUMN])
+        .groupby(ID_COLUMN)[TEXT_COLUMN]
         .apply(lambda s: "\n\n".join(str(t) for t in s))
     )
-    return grouped.reindex(profiles["customerID"]).fillna("")
+    wanted = pd.Index(table[ID_COLUMN].astype(str).tolist(), name=ID_COLUMN)
+    return grouped.reindex(wanted).fillna("")
 
 
 def make_tabular_preprocessor() -> ColumnTransformer:
-    return ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), NUMERIC_FEATURES),
-            ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), CATEGORICAL_FEATURES),
-        ]
-    )
+    transformers = []
+    if NUMERIC_FEATURES:
+        transformers.append(("num", StandardScaler(), list(NUMERIC_FEATURES)))
+    if CATEGORICAL_FEATURES:
+        transformers.append((
+            "cat",
+            OneHotEncoder(drop="first", sparse_output=False),
+            list(CATEGORICAL_FEATURES),
+        ))
+    if not transformers:
+        raise ValueError("Pass numeric features, categorical features, or both.")
+    return ColumnTransformer(transformers=transformers)
 
 
 def encode_texts(texts, idx_train, idx_test):
@@ -120,34 +132,34 @@ def evaluate(y_true, y_prob, y_pred, label: str) -> dict:
         "tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp),
     }
     print(f"\n=== {label} ===")
-    print(classification_report(y_true, y_pred, target_names=["No churn", "Churn"]))
+    print(classification_report(y_true, y_pred, target_names=["negative", "positive"]))
     print("[[TN FP],[FN TP]]\n", cm)
     print("ROC-AUC", round(metrics["roc_auc"], 4))
     return metrics
 
 
-def text_type_xai(profiles, comms, y, idx_train, idx_test, y_train, y_test, X_tab_train, X_tab_test):
-    """Quantify which communication types carry predictive signal."""
-    RESULTS_DIR.mkdir(exist_ok=True)
-    types = sorted(comms["communication_type"].dropna().unique())
+def text_type_xai(table, messages, y, idx_train, idx_test, y_train, y_test, X_tab_train, X_tab_test):
+    """Quantify which text types carry predictive signal, when a type column is set."""
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    types = []
+    if TYPE_COLUMN and TYPE_COLUMN in messages.columns:
+        types = sorted(messages[TYPE_COLUMN].dropna().unique())
     rows = []
 
-    # Baseline tabular AUC
     clf0 = LogisticRegression(max_iter=2000, class_weight="balanced", random_state=RANDOM_STATE)
     clf0.fit(X_tab_train, y_train)
     base_auc = roc_auc_score(y_test, clf0.predict_proba(X_tab_test)[:, 1])
 
     for t in types:
-        sub = comms[comms["communication_type"] == t]
+        sub = messages[messages[TYPE_COLUMN] == t]
         docs = (
-            sub.sort_values(["customerID", "text_index"])
-            .groupby("customerID")["text"]
+            sub.sort_values([ID_COLUMN, ORDER_COLUMN])
+            .groupby(ID_COLUMN)[TEXT_COLUMN]
             .apply(lambda s: "\n\n".join(map(str, s)))
-            .reindex(profiles["customerID"])
+            .reindex(pd.Index(table[ID_COLUMN].astype(str).tolist(), name=ID_COLUMN))
             .fillna("")
         )
         texts = docs.tolist()
-        # skip if too few non-empty in train
         n_nonempty = sum(1 for i in idx_train if texts[i].strip())
         if n_nonempty < 10:
             continue
@@ -160,23 +172,22 @@ def text_type_xai(profiles, comms, y, idx_train, idx_test, y_train, y_test, X_ta
         clf = LogisticRegression(max_iter=2000, class_weight="balanced", random_state=RANDOM_STATE)
         clf.fit(Xtr_b, y_train)
         auc = roc_auc_score(y_test, clf.predict_proba(Xte_b)[:, 1])
-        rows.append({"communication_type": t, "auc_with_type": auc, "auc_lift_vs_tabular": auc - base_auc, "n_texts": int(len(sub))})
+        rows.append({"text_type": t, "auc_with_type": auc, "auc_lift_vs_tabular": auc - base_auc, "n_texts": int(len(sub))})
 
-    type_df = pd.DataFrame(rows).sort_values("auc_lift_vs_tabular", ascending=False)
-    type_df.to_csv(RESULTS_DIR / "text_type_predictive_strength.csv", index=False)
-
+    type_df = pd.DataFrame(rows)
     if not type_df.empty:
+        type_df = type_df.sort_values("auc_lift_vs_tabular", ascending=False)
+        type_df.to_csv(RESULTS_DIR / "text_type_predictive_strength.csv", index=False)
         plt.figure(figsize=(8, 4))
-        plt.barh(type_df["communication_type"], type_df["auc_lift_vs_tabular"])
+        plt.barh(type_df["text_type"], type_df["auc_lift_vs_tabular"])
         plt.axvline(0, color="k", lw=1)
         plt.xlabel("AUC lift vs tabular-only when adding this type")
-        plt.title("Predictive strength of communication types")
+        plt.title("Predictive strength of text types")
         plt.tight_layout()
         plt.savefig(RESULTS_DIR / "text_type_auc_lift.png", dpi=150)
         plt.close()
 
-    # Leave-one-type-out on full multi-type docs
-    full_docs = build_docs(profiles, comms).tolist()
+    full_docs = build_docs(table, messages).tolist()
     Xtr_full, Xte_full, _, _ = encode_texts(full_docs, idx_train, idx_test)
     clf_full = LogisticRegression(max_iter=2000, class_weight="balanced", random_state=RANDOM_STATE)
     clf_full.fit(np.hstack([X_tab_train, Xtr_full]), y_train)
@@ -184,8 +195,8 @@ def text_type_xai(profiles, comms, y, idx_train, idx_test, y_train, y_test, X_ta
 
     loo_rows = []
     for t in types:
-        reduced = comms[comms["communication_type"] != t]
-        docs = build_docs(profiles, reduced).tolist()
+        reduced = messages[messages[TYPE_COLUMN] != t]
+        docs = build_docs(table, reduced).tolist()
         try:
             Xtr, Xte, _, _ = encode_texts(docs, idx_train, idx_test)
         except Exception:
@@ -194,20 +205,18 @@ def text_type_xai(profiles, comms, y, idx_train, idx_test, y_train, y_test, X_ta
         clf.fit(np.hstack([X_tab_train, Xtr]), y_train)
         auc = roc_auc_score(y_test, clf.predict_proba(np.hstack([X_tab_test, Xte]))[:, 1])
         loo_rows.append({"removed_type": t, "auc_without_type": auc, "auc_drop": auc_full - auc})
-    loo_df = pd.DataFrame(loo_rows).sort_values("auc_drop", ascending=False)
-    loo_df.to_csv(RESULTS_DIR / "text_type_leave_one_out.csv", index=False)
-
+    loo_df = pd.DataFrame(loo_rows)
     if not loo_df.empty:
+        loo_df = loo_df.sort_values("auc_drop", ascending=False)
+        loo_df.to_csv(RESULTS_DIR / "text_type_leave_one_out.csv", index=False)
         plt.figure(figsize=(8, 4))
         plt.barh(loo_df["removed_type"], loo_df["auc_drop"])
         plt.xlabel("AUC drop when removing this type from the corpus")
-        plt.title("Leave-one-communication-type-out")
+        plt.title("Leave-one-text-type-out")
         plt.tight_layout()
         plt.savefig(RESULTS_DIR / "text_type_leave_one_out.png", dpi=150)
         plt.close()
 
-    # Example messages: among churners, show complaints/support with highest model score contribution
-    # Score each single message with a text-only classifier fit on train docs
     msg_rows = []
     train_docs = [full_docs[i] for i in idx_train]
     pipe = Pipeline(
@@ -220,34 +229,32 @@ def text_type_xai(profiles, comms, y, idx_train, idx_test, y_train, y_test, X_ta
     clf_txt = LogisticRegression(max_iter=2000, class_weight="balanced", random_state=RANDOM_STATE)
     clf_txt.fit(Xtr_txt, y_train)
 
-    sample = comms.sample(n=min(400, len(comms)), random_state=RANDOM_STATE)
-    for r in sample.itertuples(index=False):
-        x = pipe.transform([str(r.text)])
-        p = float(clf_txt.predict_proba(x)[:, 1])
+    sample = messages.sample(n=min(400, len(messages)), random_state=RANDOM_STATE)
+    for _, row in sample.iterrows():
+        score = float(clf_txt.predict_proba(pipe.transform([str(row[TEXT_COLUMN])]))[:, 1])
         msg_rows.append(
             {
-                "customerID": r.customerID,
-                "communication_type": r.communication_type,
-                "p_churn_text_only": p,
-                "text_excerpt": str(r.text)[:280].replace("\n", " "),
+                ID_COLUMN: row[ID_COLUMN],
+                "text_type": row[TYPE_COLUMN] if TYPE_COLUMN and TYPE_COLUMN in messages.columns else "",
+                "positive_score": score,
+                "text_excerpt": str(row[TEXT_COLUMN])[:280].replace("\n", " "),
             }
         )
-    msg_df = pd.DataFrame(msg_rows).sort_values("p_churn_text_only", ascending=False)
-    msg_df.head(25).to_csv(RESULTS_DIR / "high_churn_signal_messages.csv", index=False)
-    msg_df.tail(25).to_csv(RESULTS_DIR / "low_churn_signal_messages.csv", index=False)
+    msg_df = pd.DataFrame(msg_rows).sort_values("positive_score", ascending=False)
+    msg_df.head(25).to_csv(RESULTS_DIR / "high_positive_signal_messages.csv", index=False)
+    msg_df.tail(25).to_csv(RESULTS_DIR / "low_positive_signal_messages.csv", index=False)
 
-    # Scatter: type vs mean p
-    means = msg_df.groupby("communication_type")["p_churn_text_only"].mean().sort_values()
-    plt.figure(figsize=(8, 4))
-    plt.barh(means.index.astype(str), means.values)
-    plt.xlabel("Mean text-only P(churn) for sampled messages")
-    plt.title("Average churn signal by communication type")
-    plt.tight_layout()
-    plt.savefig(RESULTS_DIR / "text_type_mean_p_churn.png", dpi=150)
-    plt.close()
+    if TYPE_COLUMN and TYPE_COLUMN in messages.columns and not msg_df.empty:
+        means = msg_df.groupby("text_type")["positive_score"].mean().sort_values()
+        plt.figure(figsize=(8, 4))
+        plt.barh(means.index.astype(str), means.values)
+        plt.xlabel("Mean text-only positive score for sampled messages")
+        plt.title("Average score by text type")
+        plt.tight_layout()
+        plt.savefig(RESULTS_DIR / "text_type_mean_positive_score.png", dpi=150)
+        plt.close()
 
     return type_df, loo_df
-
 
 def explain_global_local(clf, X_train, X_test, y_test, feature_names):
     coef = np.abs(clf.coef_.ravel())
@@ -293,7 +300,7 @@ def explain_global_local(clf, X_train, X_test, y_test, feature_names):
     from lime.lime_tabular import LimeTabularExplainer
 
     explainer = LimeTabularExplainer(
-        X_train, feature_names=feature_names, class_names=["No churn", "Churn"],
+        X_train, feature_names=feature_names, class_names=["negative", "positive"],
         discretize_continuous=True, random_state=RANDOM_STATE,
     )
     idxs = []
@@ -310,31 +317,64 @@ def explain_global_local(clf, X_train, X_test, y_test, feature_names):
     pd.DataFrame(lime_rows).to_csv(RESULTS_DIR / "lime_examples.csv", index=False)
 
 
-def main():
-    RESULTS_DIR.mkdir(exist_ok=True)
-    comms = load_comms()
-    profiles = pd.read_csv(PROFILES_FILE)
-    profiles["TotalCharges"] = pd.to_numeric(profiles["TotalCharges"], errors="coerce").fillna(0.0)
-    profiles["SeniorCitizen"] = profiles["SeniorCitizen"].astype(int)
+def run(
+    tabular_file,
+    text_file,
+    id_column: str,
+    target_column: str,
+    positive_label: str,
+    numeric_features: list[str],
+    categorical_features: list[str],
+    text_column: str = "text",
+    order_column: str = "text_index",
+    type_column: str = "",
+    results_dir: str | Path = "data/processed/text_model_results",
+    random_state: int = 42,
+    test_size: float = 0.25,
+    svd_dim: int | None = None,
+) -> pd.DataFrame:
+    """Fit a tabular model and a tabular-plus-text model on one stratified split."""
+    configure(
+        id_column=id_column,
+        target_column=target_column,
+        positive_label=positive_label,
+        numeric_features=numeric_features,
+        categorical_features=categorical_features,
+        text_column=text_column,
+        order_column=order_column,
+        type_column=type_column,
+        results_dir=results_dir,
+        random_state=random_state,
+        test_size=test_size,
+        svd_dim=svd_dim,
+    )
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    messages = pd.read_csv(text_file, dtype={ID_COLUMN: str})
+    table = pd.read_csv(tabular_file, dtype={ID_COLUMN: str})
+    for column in NUMERIC_FEATURES:
+        table[column] = pd.to_numeric(table[column], errors="coerce").fillna(0.0)
 
-    # Keep customers that have communications
-    ids = set(comms["customerID"])
-    profiles = profiles[profiles["customerID"].isin(ids)].reset_index(drop=True)
-    print(f"Customers in modeling set: {len(profiles)}")
+    ids = set(messages[ID_COLUMN].astype(str))
+    table = table[table[ID_COLUMN].astype(str).isin(ids)].reset_index(drop=True)
+    print(f"Rows in modeling set: {len(table)}")
 
-    y = (profiles["Churn"].astype(str).str.strip() == "Yes").astype(int).to_numpy()
-    docs = build_docs(profiles, comms).tolist()
-    X_tab = profiles[NUMERIC_FEATURES + CATEGORICAL_FEATURES].copy()
+    y = (table[TARGET_COLUMN].astype(str).str.strip() == str(POSITIVE_LABEL)).astype(int).to_numpy()
+    docs = build_docs(table, messages).tolist()
+    feature_columns = [*NUMERIC_FEATURES, *CATEGORICAL_FEATURES]
+    X_tab = table[feature_columns].copy()
 
-    idx = np.arange(len(profiles))
+    idx = np.arange(len(table))
     idx_train, idx_test = train_test_split(idx, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y)
     y_train, y_test = y[idx_train], y[idx_test]
 
     pre = make_tabular_preprocessor()
     X_tab_train = pre.fit_transform(X_tab.iloc[idx_train])
     X_tab_test = pre.transform(X_tab.iloc[idx_test])
-    cat_names = list(pre.named_transformers_["cat"].get_feature_names_out(CATEGORICAL_FEATURES))
-    tab_names = NUMERIC_FEATURES + cat_names
+    tab_names = []
+    if NUMERIC_FEATURES:
+        tab_names.extend(list(NUMERIC_FEATURES))
+    if CATEGORICAL_FEATURES:
+        tab_names.extend(list(pre.named_transformers_["cat"].get_feature_names_out(CATEGORICAL_FEATURES)))
 
     clf_a = LogisticRegression(max_iter=2000, class_weight="balanced", random_state=RANDOM_STATE)
     clf_a.fit(X_tab_train, y_train)
@@ -356,7 +396,7 @@ def main():
     plt.plot([0, 1], [0, 1], "k--", lw=1)
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
-    plt.title("ROC — churn classification")
+    plt.title("ROC")
     plt.legend(loc="lower right")
     plt.tight_layout()
     plt.savefig(RESULTS_DIR / "roc_curves.png", dpi=150)
@@ -365,9 +405,10 @@ def main():
     comparison = pd.DataFrame([metrics_a, metrics_b])
     comparison.to_csv(RESULTS_DIR / "metrics_comparison.csv", index=False)
     summary = {
-        "n_customers": int(len(profiles)),
-        "n_texts": int(len(comms)),
-        "comms_file": COMMS_LLM if Path(COMMS_LLM).exists() else COMMS_FALLBACK,
+        "n_rows": int(len(table)),
+        "n_texts": int(len(messages)),
+        "tabular_file": str(tabular_file),
+        "text_file": str(text_file),
         "metrics": [metrics_a, metrics_b],
         "auc_lift_text": float(metrics_b["roc_auc"] - metrics_a["roc_auc"]),
         "f1_lift_text": float(metrics_b["f1"] - metrics_a["f1"]),
@@ -375,14 +416,62 @@ def main():
     }
     Path(RESULTS_DIR / "metrics_comparison.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    print("\nText-type XAI…")
-    text_type_xai(profiles, comms, y, idx_train, idx_test, y_train, y_test, X_tab_train, X_tab_test)
-    print("Global/local XAI…")
+    print("\nText-type analysis…")
+    text_type_xai(table, messages, y, idx_train, idx_test, y_train, y_test, X_tab_train, X_tab_test)
+    print("Global and local analysis…")
     explain_global_local(clf_b, X_train_b, X_test_b, y_test, tab_names + text_names)
 
     print("\nSummary")
     print(comparison.to_string(index=False))
     print(f"AUC lift (text): {summary['auc_lift_text']:+.4f}")
+    return comparison
+
+
+def main() -> None:
+    """Read column roles from the environment and call run().
+
+    Required: TABULAR_FILE, TEXT_FILE, ID_COLUMN, TARGET_COLUMN, POSITIVE_LABEL,
+    NUMERIC_FEATURES, CATEGORICAL_FEATURES.
+    Feature lists are comma-separated column names.
+    Optional: TEXT_COLUMN, TEXT_ORDER_COLUMN, TEXT_TYPE_COLUMN, RESULTS_DIR,
+    RANDOM_STATE, TEST_SIZE, SVD_DIM.
+    """
+    required = [
+        "TABULAR_FILE",
+        "TEXT_FILE",
+        "ID_COLUMN",
+        "TARGET_COLUMN",
+        "POSITIVE_LABEL",
+        "NUMERIC_FEATURES",
+        "CATEGORICAL_FEATURES",
+    ]
+    missing = [name for name in required if not os.environ.get(name, "").strip()]
+    if missing:
+        raise SystemExit(
+            "Set these environment variables before running this script: "
+            + ", ".join(missing)
+            + ". NUMERIC_FEATURES and CATEGORICAL_FEATURES are comma-separated column names."
+        )
+
+    def split_list(name: str) -> list[str]:
+        return [item.strip() for item in os.environ[name].split(",") if item.strip()]
+
+    run(
+        tabular_file=os.environ["TABULAR_FILE"],
+        text_file=os.environ["TEXT_FILE"],
+        id_column=os.environ["ID_COLUMN"],
+        target_column=os.environ["TARGET_COLUMN"],
+        positive_label=os.environ["POSITIVE_LABEL"],
+        numeric_features=split_list("NUMERIC_FEATURES"),
+        categorical_features=split_list("CATEGORICAL_FEATURES"),
+        text_column=os.environ.get("TEXT_COLUMN", "text").strip() or "text",
+        order_column=os.environ.get("TEXT_ORDER_COLUMN", "text_index").strip() or "text_index",
+        type_column=os.environ.get("TEXT_TYPE_COLUMN", "").strip(),
+        results_dir=os.environ.get("RESULTS_DIR", "data/processed/text_model_results").strip(),
+        random_state=int(os.environ.get("RANDOM_STATE", "42")),
+        test_size=float(os.environ.get("TEST_SIZE", "0.25")),
+        svd_dim=int(os.environ["SVD_DIM"]) if os.environ.get("SVD_DIM", "").strip() else None,
+    )
 
 
 if __name__ == "__main__":
