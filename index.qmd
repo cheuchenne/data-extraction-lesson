@@ -5,7 +5,7 @@ number-sections: false
 
 This book has seven chapters. This page is chapter 1. It says what each chapter does, which file to open, and which Python packages that chapter needs.
 
-Open the `.qmd` file to run the cells. Open the `.html` file to read the same lesson. Install every package once, from the project folder:
+Open the `.html` file to read the lesson. Open the `.ipynb` file to run the cells. Install every package once, from the project folder:
 
 ```bash
 pip install -r requirements.txt
@@ -29,7 +29,7 @@ A company keeps the same facts in several places: a spreadsheet, a CSV file, a J
 |---|---|
 | Lesson | `lessons/02b-data-loading.qmd` |
 | Reading page | `lessons/02b-data-loading.html` |
-| Practice notebook | `notebooks/02b-data-loading.ipynb` |
+| Notebook | `lessons/02b-data-loading.ipynb` |
 | Packages | `pandas`, `openpyxl`, `requests`, `pymupdf` |
 
 ## Chapter 3 — One analysis table from several sources
@@ -40,7 +40,7 @@ The files from chapter 2 are separate. This chapter joins them into one row per 
 |---|---|
 | Lesson | `lessons/02c-exploratory-analysis.qmd` |
 | Reading page | `lessons/02c-exploratory-analysis.html` |
-| Practice notebook | `notebooks/02c-exploratory-analysis.ipynb` |
+| Notebook | `lessons/02c-exploratory-analysis.ipynb` |
 | Packages | `pandas`, `requests`, `openpyxl`, `matplotlib` |
 
 ## Chapter 4 — Exploratory analysis and data visualisation
@@ -51,7 +51,7 @@ The invoice table is ready. This chapter draws the graphs that show who the cust
 |---|---|
 | Lesson | `lessons/02d-eda-visualisation.qmd` |
 | Reading page | `lessons/02d-eda-visualisation.html` |
-| Practice notebook | `notebooks/02d-eda-visualisation.ipynb` |
+| Notebook | `lessons/02d-eda-visualisation.ipynb` |
 | Packages | `pandas`, `numpy`, `matplotlib`, `seaborn` |
 
 ## Chapter 5 — From structured data to a predictive model
@@ -62,6 +62,7 @@ Which customers are likely to leave? This chapter fits a logistic regression on 
 |---|---|
 | Lesson | `lessons/02e-churn-text-ml.qmd` |
 | Reading page | `lessons/02e-churn-text-ml.html` |
+| Notebook | `lessons/02e-churn-text-ml.ipynb` |
 | Packages | `pandas`, `numpy`, `scikit-learn`, `matplotlib` |
 
 ## Chapter 6 — Economic optimization of customer targeting
@@ -72,6 +73,7 @@ A churn probability is not yet a decision. Contacting a customer costs money. Lo
 |---|---|
 | Lesson | `lessons/02f-campaign-targeting.qmd` |
 | Reading page | `lessons/02f-campaign-targeting.html` |
+| Notebook | `lessons/02f-campaign-targeting.ipynb` |
 | Packages | `pandas`, `numpy`, `matplotlib`, `scipy` |
 
 ## Chapter 7 — Comparing local models with cloud AutoML
@@ -82,11 +84,12 @@ The same customers can be sent to a cloud service that trains its own model. Thi
 |---|---|
 | Lesson | `lessons/02g-cloud-automl.qmd` |
 | Reading page | `lessons/02g-cloud-automl.html` |
+| Notebook | `lessons/02g-cloud-automl.ipynb` |
 | Packages | `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `scipy` |
 | Paid run only | `google-cloud-aiplatform`, `google-cloud-storage` |
 
 ## How to follow a chapter
 
-Open the chapter and run the cells from top to bottom. Chapters 2, 3, and 4 use the HarborLink company. The data are synthetic. They do not need an external account. Chapters 5, 6, and 7 read the telco files already stored in `data/raw/telco/` and `data/processed/telco/`.
+Open the notebook and run the cells from top to bottom. Chapters 2, 3, and 4 use the HarborLink company. The data are synthetic. They do not need an external account. Chapters 5, 6, and 7 read the telco files already stored in `data/raw/telco/` and `data/processed/telco/`.
 
 Every chapter with code uses the kernel named `data-extraction-lesson`. `jupyter` and `ipykernel` install that kernel. They are listed in `requirements.txt`.

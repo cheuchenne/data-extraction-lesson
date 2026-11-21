@@ -246,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="505482a4" class="cell" data-execution_count="1">
+<div id="7161ba53" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -338,7 +338,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="3.5" class="anchored" data-anchor-id="load-each-source"><span class="header-section-number">3.5</span> Load each source</h2>
 <p>The panel files live in <code>data/raw/analysis/</code>. They were generated with <code>python/generate_analysis_data.py</code> and include the customers from the previous section.</p>
 <p>That script does not write the extracts alone. In the same run it calls <code>write_source_description_files</code>, which places a companion CSV next to each source (<code>customers_variables.csv</code>, <code>invoices_variables.csv</code>, <code>subscriptions_variables.csv</code>, <code>payments_variables.csv</code>, <code>interactions_variables.csv</code>, <code>api_invoices_variables.csv</code>). SQLite does not store those sentences inside <code>company.sqlite</code>; they sit next to the database, one CSV per table that we will join. Every companion has three columns: <code>variable</code>, <code>type</code>, <code>definition</code>. They are not the data. They are the meaning of the columns, stored <strong>when the files are constructed</strong> so that a later merge can copy the sentences with the columns.</p>
-<div id="045c2509" class="cell" data-execution_count="2">
+<div id="cdc04a2f" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -378,7 +378,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>contacts[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(contacts[<span class="st">"date"</span>])</span>
 <span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>contacts[<span class="st">"period"</span>] <span class="op">=</span> contacts[<span class="st">"date"</span>].dt.strftime(<span class="st">"%Y-%m"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="36f9b738" class="cell" data-execution_count="3">
+<div id="691eca3c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.mock_api <span class="im">import</span> start_background_server</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>API_URL <span class="op">=</span> start_background_server() <span class="op">+</span> <span class="st">"/panel/invoices"</span></span>
@@ -393,7 +393,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>api_invoices <span class="op">=</span> pd.DataFrame(api_payload[<span class="st">"invoices"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We now have five tables in memory. They are still separate. Nothing has been joined yet.</p>
-<div id="674982df" class="cell" data-execution_count="4">
+<div id="17d9dcf6" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, frame <span class="kw">in</span> [</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"invoices"</span>, invoices),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"customers"</span>, customers),</span>
@@ -414,7 +414,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </div>
 <p><code>invoices</code> has one row per billing cycle. That is our starting table. The other frames exist only to enrich those rows.</p>
 <p>We will follow <strong>one invoice</strong> through every join: <code>INV-2026-0901</code>, Elena Vargas, September 2026. After each merge we look at that same row again, to see which columns have appeared.</p>
-<div id="e1ba831f" class="cell" data-execution_count="5">
+<div id="f3e2d38b" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>TARGET_INVOICE <span class="op">=</span> <span class="st">"INV-2026-0901"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -430,7 +430,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </section>
 <section id="step-0-start-from-the-invoice-row" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="step-0-start-from-the-invoice-row"><span class="header-section-number">3.6</span> Step 0 — Start from the invoice row</h2>
-<div id="cda22891" class="cell" data-execution_count="6">
+<div id="5bafb896" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> invoices.copy()</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
@@ -495,7 +495,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <section id="step-1-attach-the-customer-to-each-invoice" class="level2" data-number="3.7">
 <h2 data-number="3.7" class="anchored" data-anchor-id="step-1-attach-the-customer-to-each-invoice"><span class="header-section-number">3.7</span> Step 1 — Attach the customer to each invoice</h2>
 <p>Look at the customer table for the same identifier.</p>
-<div id="1e87a991" class="cell" data-execution_count="7">
+<div id="a574c626" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>customers.loc[</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    customers[<span class="st">"customer_id"</span>] <span class="op">==</span> <span class="dv">1827</span>,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"customer_id"</span>, <span class="st">"customer_name"</span>, <span class="st">"company_name"</span>, <span class="st">"customer_segment"</span>, <span class="st">"country"</span>, <span class="st">"signup_date"</span>],</span>
@@ -534,7 +534,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </div>
 <p>There is <strong>one</strong> customer row for <code>1827</code>. Many invoices can belong to Elena (one per month), but she appears only once in <code>customers</code>. The relationship is <strong>many invoices to one customer</strong>.</p>
 <p>The merge copies those customer columns onto every invoice that has <code>customer_id == 1827</code>.</p>
-<div id="40278dda" class="cell" data-execution_count="8">
+<div id="774ece38" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    customers,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"customer_id"</span>,</span>
@@ -550,7 +550,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <li><code>how="left"</code> keeps every invoice. If a <code>customer_id</code> were missing from <code>customers</code>, the new columns would be empty, but the invoice would still be there.</li>
 <li><code>validate="m:1"</code> is a safety check: many left rows may share a key, but each key may appear <strong>at most once</strong> on the right. If Elena appeared twice in <code>customers</code>, pandas would raise an error instead of silently duplicating her invoices.</li>
 </ul>
-<div id="4b07b3b8" class="cell" data-execution_count="9">
+<div id="3d2ca765" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    [</span>
@@ -605,7 +605,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <section id="step-2-attach-the-subscription-to-each-invoice" class="level2" data-number="3.8">
 <h2 data-number="3.8" class="anchored" data-anchor-id="step-2-attach-the-subscription-to-each-invoice"><span class="header-section-number">3.8</span> Step 2 — Attach the subscription to each invoice</h2>
 <p>The invoice already carries <code>subscription_id</code>. The subscription table stores the plan type and the monthly amount.</p>
-<div id="3fb1a3bc" class="cell" data-execution_count="10">
+<div id="26001c12" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>subscriptions.loc[</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    subscriptions[<span class="st">"subscription_id"</span>] <span class="op">==</span> <span class="st">"SUB-1827"</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"subscription_id"</span>, <span class="st">"customer_id"</span>, <span class="st">"subscription_type"</span>, <span class="st">"monthly_amount"</span>, <span class="st">"start_date"</span>],</span>
@@ -641,7 +641,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </div>
 </div>
 <p>Again, one subscription row. Several invoices share that identifier. We do not need every subscription column: <code>customer_id</code> is already on the invoice. We select only the fields we want to add.</p>
-<div id="81dde4c1" class="cell" data-execution_count="11">
+<div id="1e16f01f" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    subscriptions[</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"subscription_id"</span>, <span class="st">"subscription_type"</span>, <span class="st">"monthly_amount"</span>, <span class="st">"start_date"</span>]</span>
@@ -656,7 +656,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <li>The list inside <code>subscriptions[...]</code> is <strong>column selection</strong>. It happens <em>before</em> the merge, so we do not import a second <code>customer_id</code> that would collide with the one we already have.</li>
 <li><code>validate="m:1"</code> again: many invoices, one subscription.</li>
 </ul>
-<div id="74518e87" class="cell" data-execution_count="12">
+<div id="51dfd542" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    [</span>
@@ -708,7 +708,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <section id="step-3-attach-the-payment-to-each-invoice" class="level2" data-number="3.9">
 <h2 data-number="3.9" class="anchored" data-anchor-id="step-3-attach-the-payment-to-each-invoice"><span class="header-section-number">3.9</span> Step 3 — Attach the payment to each invoice</h2>
 <p>Payments are stored at the same grain as invoices: one payment record per <code>invoice_id</code>. The key is therefore the invoice identifier itself.</p>
-<div id="c152e264" class="cell" data-execution_count="13">
+<div id="ce5b7b42" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>payments.loc[</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    payments[<span class="st">"invoice_id"</span>] <span class="op">==</span> TARGET_INVOICE,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"payment_id"</span>, <span class="st">"invoice_id"</span>, <span class="st">"payment_date"</span>, <span class="st">"payment_status"</span>],</span>
@@ -742,7 +742,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </div>
 </div>
 <p>This is a <strong>one-to-one</strong> relationship. Each invoice should match exactly one payment row. For an unpaid invoice the payment row still exists: <code>payment_date</code> is missing and <code>payment_status</code> is <code>unpaid</code>. A missing date is not a failed join. It is the business fact “no payment has been recorded”.</p>
-<div id="3031f4ca" class="cell" data-execution_count="14">
+<div id="4f2ecbae" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    payments,</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"invoice_id"</span>,</span>
@@ -754,7 +754,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <li><code>on="invoice_id"</code> matches the invoice to its payment record.</li>
 <li><code>validate="1:1"</code> is stricter than <code>m:1</code>. Each key may appear once on the left and once on the right. Two payment rows for the same invoice would be an error in our data model.</li>
 </ul>
-<div id="bc80ab87" class="cell" data-execution_count="15">
+<div id="4773d8db" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    [</span>
@@ -806,7 +806,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <section id="step-4-attach-crm-activity-after-collapsing-several-contacts-to-one-row" class="level2" data-number="3.10">
 <h2 data-number="3.10" class="anchored" data-anchor-id="step-4-attach-crm-activity-after-collapsing-several-contacts-to-one-row"><span class="header-section-number">3.10</span> Step 4 — Attach CRM activity, after collapsing several contacts to one row</h2>
 <p>Customer interactions are different. The CRM file is <strong>one row per contact</strong>, not one row per invoice. Elena can have several September messages.</p>
-<div id="a41ee96a" class="cell" data-execution_count="16">
+<div id="7370085e" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>elena_contacts <span class="op">=</span> contacts.loc[</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    (contacts[<span class="st">"customer_id"</span>] <span class="op">==</span> <span class="dv">1827</span>) <span class="op">&amp;</span> (contacts[<span class="st">"period"</span>] <span class="op">==</span> <span class="st">"2026-09"</span>),</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"customer_id"</span>, <span class="st">"period"</span>, <span class="st">"date"</span>, <span class="st">"channel"</span>, <span class="st">"interaction_type"</span>, <span class="st">"text"</span>],</span>
@@ -864,7 +864,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </div>
 <p>If we merged these contacts directly onto her invoice, pandas would repeat the invoice once per contact. The amount 49.90 would appear several times. That would break every later count and every later plot.</p>
 <p>We can see the mistake on this single invoice:</p>
-<div id="898e872c" class="cell" data-execution_count="17">
+<div id="af0ca671" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>show_invoice(analysis, [<span class="st">"invoice_id"</span>, <span class="st">"customer_id"</span>, <span class="st">"amount"</span>, <span class="st">"status"</span>]).merge(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    elena_contacts,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">"customer_id"</span>,</span>
@@ -934,7 +934,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </div>
 <p>One invoice has become several rows. That is why a raw contact join is forbidden here.</p>
 <p>The remedy is to <strong>summarise first</strong>. For each customer and each billing month we compute numbers: how many contacts, how many reminders, how many payment issues. After that, there is again <strong>one right-hand row per invoice month</strong>.</p>
-<div id="d22580d4" class="cell" data-execution_count="18">
+<div id="cd0cda4e" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>contact_summary <span class="op">=</span> contacts.groupby([<span class="st">"customer_id"</span>, <span class="st">"period"</span>], as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    n_interactions<span class="op">=</span>(<span class="st">"interaction_type"</span>, <span class="st">"size"</span>),</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    n_reminders<span class="op">=</span>(<span class="st">"interaction_type"</span>, <span class="kw">lambda</span> series: <span class="bu">int</span>((series <span class="op">==</span> <span class="st">"reminder"</span>).<span class="bu">sum</span>())),</span>
@@ -989,7 +989,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <li><code>agg(...)</code> replaces the group by a few numbers. <code>size</code> counts the rows. The <code>lambda</code> expressions count how many values equal <code>"reminder"</code>, <code>"complaint"</code>, and so on.</li>
 </ul>
 <p>Elena’s September emails are now a single summary row. We can attach it to her invoice with <strong>two keys</strong>: the customer and the month. Using only <code>customer_id</code> would pour all of her historical tickets onto every monthly invoice.</p>
-<div id="7eef8c70" class="cell" data-execution_count="19">
+<div id="ec7fe176" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.merge(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    contact_summary,</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span>[<span class="st">"customer_id"</span>, <span class="st">"period"</span>],</span>
@@ -1002,7 +1002,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <li><code>how="left"</code> keeps invoices that had no CRM contact that month. Their counts will be missing for now; we will turn those missings into zeros later.</li>
 <li><code>validate="m:1"</code>: after the aggregation, each <code>(customer_id, period)</code> pair appears at most once in <code>contact_summary</code>.</li>
 </ul>
-<div id="35aeac6e" class="cell" data-execution_count="20">
+<div id="20b8bbee" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    [</span>
@@ -1060,7 +1060,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <section id="step-5-attach-the-september-api-status" class="level2" data-number="3.11">
 <h2 data-number="3.11" class="anchored" data-anchor-id="step-5-attach-the-september-api-status"><span class="header-section-number">3.11</span> Step 5 — Attach the September API status</h2>
 <p>The API is not another grain of data. It is a <strong>second source</strong> for some of the same invoices. It only contains September 2026.</p>
-<div id="6b1dd1f9" class="cell" data-execution_count="21">
+<div id="6eda710b" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>api_invoices.loc[</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    api_invoices[<span class="st">"invoice_id"</span>] <span class="op">==</span> TARGET_INVOICE,</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"invoice_id"</span>, <span class="st">"status"</span>, <span class="st">"amount"</span>],</span>
@@ -1092,7 +1092,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </div>
 </div>
 <p>We rename <code>status</code> to <code>status_api</code> before merging. Otherwise pandas would create <code>status_x</code> and <code>status_y</code>, which are hard to read. The rename says clearly: this status comes from the API.</p>
-<div id="d4ca6347" class="cell" data-execution_count="22">
+<div id="ce99dd60" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>api_status <span class="op">=</span> api_invoices[[<span class="st">"invoice_id"</span>, <span class="st">"status"</span>]].rename(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>{<span class="st">"status"</span>: <span class="st">"status_api"</span>}</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -1109,7 +1109,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <li><code>how="left"</code> is essential. Most invoices in the panel are not from September. They have no API row. They must stay in the table, with <code>status_api</code> missing.</li>
 <li><code>validate="m:1"</code> (not <code>1:1</code>): many historical invoices will not appear on the right. The check only forbids the API from listing the same invoice twice.</li>
 </ul>
-<div id="3eaf945b" class="cell" data-execution_count="23">
+<div id="0009a220" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"invoice_id"</span>, <span class="st">"period"</span>, <span class="st">"status"</span>, <span class="st">"payment_status"</span>, <span class="st">"status_api"</span>, <span class="st">"amount"</span>],</span>
@@ -1206,7 +1206,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </tbody>
 </table>
 <p>The invoice identifier never changes. We only widen the row.</p>
-<div id="929b9f46" class="cell" data-execution_count="24">
+<div id="3cb9a2ed" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>analysis.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="24">
 <pre><code>(3325, 26)</code></pre>
@@ -1217,7 +1217,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <section id="a-few-analysis-columns" class="level2" data-number="3.13">
 <h2 data-number="3.13" class="anchored" data-anchor-id="a-few-analysis-columns"><span class="header-section-number">3.13</span> A few analysis columns</h2>
 <p>These columns are still preparation, not exploration. They are computed <strong>from columns that the merges have already placed on the invoice</strong>.</p>
-<div id="7ab44edf" class="cell" data-execution_count="25">
+<div id="b7ff4872" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"days_to_due"</span>] <span class="op">=</span> (analysis[<span class="st">"due_date"</span>] <span class="op">-</span> analysis[<span class="st">"invoice_date"</span>]).dt.days</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"days_to_pay"</span>] <span class="op">=</span> (analysis[<span class="st">"payment_date"</span>] <span class="op">-</span> analysis[<span class="st">"invoice_date"</span>]).dt.days</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"paid_after_due"</span>] <span class="op">=</span> analysis[<span class="st">"payment_date"</span>].gt(analysis[<span class="st">"due_date"</span>])</span>
@@ -1243,7 +1243,7 @@ api_invoices      240 rows   9 columns</code></pre>
 <li><code>tenure_months</code> uses <code>signup_date</code>, which arrived in step 1, and <code>invoice_date</code>, which was already on the invoice.</li>
 <li>Interaction counts that stayed missing after step 4 mean “no CRM contact that month”. We replace them by 0. A missing count would be the wrong story: no ticket is not “unknown”.</li>
 </ul>
-<div id="fdb2d20a" class="cell" data-execution_count="26">
+<div id="9681f6e5" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>show_invoice(</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    [</span>
@@ -1300,7 +1300,7 @@ api_invoices      240 rows   9 columns</code></pre>
 </section>
 <section id="check-that-the-joins-are-trustworthy" class="level2" data-number="3.14">
 <h2 data-number="3.14" class="anchored" data-anchor-id="check-that-the-joins-are-trustworthy"><span class="header-section-number">3.14</span> Check that the joins are trustworthy</h2>
-<div id="97685057" class="cell" data-execution_count="27">
+<div id="20963a22" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Duplicate invoice ids:"</span>, analysis[<span class="st">"invoice_id"</span>].duplicated().<span class="bu">sum</span>())</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows without a customer name:"</span>, analysis[<span class="st">"customer_name"</span>].isna().<span class="bu">sum</span>())</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"API status available:"</span>, analysis[<span class="st">"status_api"</span>].notna().<span class="bu">sum</span>())</span>
@@ -1315,7 +1315,7 @@ Number of analysis rows: 3325</code></pre>
 </div>
 </div>
 <p>If the last two numbers differ, an invoice was duplicated or dropped. If a customer name is missing, step 1 failed for that <code>customer_id</code>.</p>
-<div id="c11c11ce" class="cell" data-execution_count="28">
+<div id="dae5d481" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>september <span class="op">=</span> analysis[analysis[<span class="st">"period"</span>] <span class="op">==</span> <span class="st">"2026-09"</span>]</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    september[<span class="st">"status"</span>]</span>
@@ -1329,7 +1329,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 <p>For September, the workbook and the API should match. If they did not, we would have a <strong>source conflict</strong> to resolve before plotting.</p>
 <p>A few customer segments are missing by construction. Later EDA will have to decide whether to drop those rows, recode them, or keep a missing category.</p>
-<div id="7165d8d2" class="cell" data-execution_count="29">
+<div id="e3a5994f" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>analysis[<span class="st">"customer_segment"</span>].value_counts(dropna<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
 <pre><code>customer_segment
@@ -1343,7 +1343,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="save-the-analysis-table" class="level2" data-number="3.15">
 <h2 data-number="3.15" class="anchored" data-anchor-id="save-the-analysis-table"><span class="header-section-number">3.15</span> Save the analysis table</h2>
-<div id="daa8eb41" class="cell" data-execution_count="30">
+<div id="0a43a962" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> analysis.sort_values([<span class="st">"invoice_date"</span>, <span class="st">"customer_id"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>analysis.to_csv(<span class="st">"data/processed/harborlink_invoices.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>analysis.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1365,7 +1365,7 @@ Name: count, dtype: int64</code></pre>
 <section id="where-the-sentences-live" class="level3" data-number="3.16.1">
 <h3 data-number="3.16.1" class="anchored" data-anchor-id="where-the-sentences-live"><span class="header-section-number">3.16.1</span> Where the sentences live</h3>
 <p>Open any companion file. The customer extract is typical: one row per column of <code>customers.csv</code>.</p>
-<div id="23f32123" class="cell" data-execution_count="31">
+<div id="ed6f7b4b" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.data_dictionary <span class="im">import</span> read_descriptions, attach_descriptions, write_variable_workbooks</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>read_descriptions(<span class="st">"data/raw/analysis/customers_variables.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1431,7 +1431,7 @@ Name: count, dtype: int64</code></pre>
 <h3 data-number="3.16.2" class="anchored" data-anchor-id="transport-the-same-steps-as-the-merges"><span class="header-section-number">3.16.2</span> Transport: the same steps as the merges</h3>
 <p><code>attach_descriptions</code> is the metadata analogue of <code>merge</code>. It starts from the invoice catalog and <strong>adds</strong> descriptions coming from the other sources. It does not look up rows; it looks up <strong>column names</strong>. <code>rename</code> is the same mapping we used on the data (<code>status</code> → <code>payment_status</code> in the SQL, <code>status</code> → <code>status_api</code> for the API). <code>keep</code> copies only the columns that the join actually attached. <code>skip</code> avoids writing <code>customer_id</code> twice.</p>
 <p>The CRM counts (<code>n_interactions</code>, …) and the analysis columns (<code>days_to_due</code>, …) never existed in a source file. Their descriptions are attached at the moment those columns are created, just as the numbers themselves are.</p>
-<div id="e6d11ee8" class="cell" data-execution_count="32">
+<div id="2ef2b419" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.harborlink_catalog <span class="im">import</span> (</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    analysis_column_descriptions,</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    crm_count_descriptions,</span>
@@ -1683,7 +1683,7 @@ Name: count, dtype: int64</code></pre>
 <li><code>summary_path</code>: where to write the summary workbook (hover notes, min / max / mean, histograms).</li>
 </ul>
 <p>Here the two files are the merged invoice table and the forwarded descriptions we just saved:</p>
-<div id="190dc78d" class="cell" data-execution_count="33">
+<div id="6aee8a94" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dictionary_path, summary_path <span class="op">=</span> write_variable_workbooks(</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/harborlink_invoices.csv"</span>,</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/processed/harborlink_invoices_variables.csv"</span>,</span>
@@ -1698,7 +1698,7 @@ data/processed/harborlink_invoices_summary.xlsx</code></pre>
 </div>
 </div>
 <p>The same function on <strong>two other files</strong> — the customer extract and its own description CSV. Nothing in the call names invoices:</p>
-<div id="0815b658" class="cell" data-execution_count="34">
+<div id="75956507" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>write_variable_workbooks(</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/customers.csv"</span>,</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/analysis/customers_variables.csv"</span>,</span>

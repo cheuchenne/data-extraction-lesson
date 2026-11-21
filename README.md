@@ -16,7 +16,7 @@ Chapters 2, 3, and 4 use one fictitious subscription company. Those datasets are
 | `lessons/02f-campaign-targeting.qmd` | Chapter 6: economic targeting under a campaign cost |
 | `lessons/02g-cloud-automl.qmd` | Chapter 7: local logistic regression and cloud AutoML |
 | `_book/` | The HTML pages, with chapters 1 to 7 in the left-hand menu |
-| `notebooks/` | Practice notebooks for the same demonstrations |
+| `lessons/*.ipynb` | The same six lessons, opened to run the cells |
 | `data/raw/` | Small chapter 2 extracts |
 | `data/raw/analysis/` | Larger panel used to build the analysis table, plus `*_variables.csv` descriptions |
 | `data/raw/telco/` | Telco profiles and communication CSVs used in chapter 5 |
@@ -70,7 +70,7 @@ python python/generate_communications.py
 
 ## Teaching
 
-Open the Quarto file and run the cells in order. Optionally: `quarto render`.
+Open the `.ipynb` file and run the cells in order. The HTML pages are in `_book/`. `quarto render` rebuilds those pages from the `.qmd` files.
 
 The documents request the `data-extraction-lesson` kernel.
 

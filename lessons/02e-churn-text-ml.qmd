@@ -92,7 +92,6 @@ The same folder has no date on the messages. We will return to that limitation w
 
 On customers the model has not seen, does adding the communications change the quality of the ranking? The text-only model asks a related question: how far do the communications go by themselves?
 
-
 ### A question to write down before any model
 
 If you could contact only 10 percent of the base, whom would you contact first, and which facts would you want in front of you? Keep that sentence. <!--The last stage asks you to compare it with what the models actually used.-->
@@ -232,7 +231,6 @@ print("matplotlib", matplotlib.__version__)
 ## Optional prompt
 
 "Explain in simple business terms what this Python command does."
-
 :::
 
 ### Load the two datasets
@@ -271,6 +269,7 @@ workshop.target_counts(customers)
 workshop.text_type_counts(communications)
 ```
 
+````{=html}
 <!--
 ```{python}
 #| eval: false
@@ -279,6 +278,7 @@ workshop.total_charge_check()
 
 The public source file has a few blank total charges. The tenure row in this table tells you who those customers are. The prepared file used in the models already stores those totals as numbers. The loading command reported how many blanks it still found there.
 -->
+````
 
 ```{python}
 workshop.timing_summary(communications)
@@ -292,16 +292,13 @@ If this table shows no date or time column, the file cannot tell us whether a me
 
 Historical customers have characteristics and a known outcome. A logistic regression looks for a weighted combination of those characteristics that separates, as well as a simple weighted sum can, the customers who left from the customers who stayed. For a new customer it turns that weighted sum into a score between 0 and 1.
 
-<!--
-We ask the model to pay extra attention to customers who churn, because they are fewer than the customers who stay. The technical name is **balanced class weights**. The practical consequence is important: the score is a ranking signal. After we see the scores, we will compare their average with the actual churn rate before anyone reads a score of 0.70 as "a 70 percent chance."
--->
+**Balanced class weights** change the log-likelihood on the fit rows. Let `n` be the number of fit rows, `n_leave` the number who left, and `n_stay` the number who stayed. Each leaver is multiplied by `n / (2 n_leave)`. Each stayer is multiplied by `n / (2 n_stay)`. The weight of a row is `1 / (2 × the share of its own class)`. The two classes then have the same total weight. The fitted number is the score of that weighted fit.
 
 ### One split, used for every model
 
 **Training data** are the customers the model learns from. **Test data** are held out and used only to judge the result. If we judged the model on the customers it learned from, we would measure memory as well as prediction.
 
-The split is **stratified** on `Churn`: the share of churners is kept similar in both groups. 
-<!--
+The split is **stratified** on `Churn`: the share of churners is kept similar in both groups. <!--
 It is done once, at customer level, and then reused. Splitting messages instead of customers could put one person in both groups.
 -->
 
@@ -309,11 +306,13 @@ It is done once, at customer level, and then reused. Splitting messages instead 
 
 Numeric fields are `tenure`, `MonthlyCharges` and `TotalCharges`. They are rescaled using the training customers only, then the same rescaling is applied to the test customers. A charge of 70 and a tenure of 70 are different facts; rescaling stops a field with large units from dominating for that reason alone.
 
-Fields such as contract and payment method are categories. Each category (present in the training data) becomes a set of yes/no columns. The technical name is **one-hot encoding**. 
+Fields such as contract and payment method are categories. Each category (present in the training data) becomes a set of yes/no columns. The technical name is **one-hot encoding**.
 
+```{=html}
 <!--
 A contract with three levels becomes three yes/no columns. The list of levels is taken from the training customers. An unseen level in the test set would be recorded as all zeros rather than stopping the workshop.
 -->
+```
 
 `TotalCharges` and `tenure` describe related facts about the same history. The model may use both. That does not make each one a separate cause of churn.
 
@@ -333,6 +332,7 @@ workshop.show_metrics(tabular)
 
 The table has a training row and a test row. Accuracy, precision, recall and F1 use the cutoff. **ROC-AUC** does not. It summarizes the ranking across cutoffs. We will define each measure in the next stage, using the test row as the one that speaks about prediction.
 
+```{=html}
 <!--
 ::: callout-note
 ## Optional prompt
@@ -340,7 +340,7 @@ The table has a training row and a test row. Accuracy, precision, recall and F1 
 "Explain in simple business terms what this Python command does: `tabular = workshop.run_tabular_model(split)`."
 :::
 -->
-
+```
 
 ## Stage 4 — Understand and evaluate the first model
 
@@ -382,6 +382,8 @@ If the company contacts every flagged customer, recall is the share of leavers i
 ### Ranking, across cutoffs
 
 **ROC-AUC** measures how often a randomly chosen churner receives a higher score than a randomly chosen stayer. A value of 0.5 means the ranking is no better than chance. A value of 1 means every churner is ranked above every stayer. The curve shows that trade-off as the cutoff moves: the horizontal axis is the share of stayers who are flagged, and the vertical axis is the share of churners who are flagged.
+
+**PR-AUC** uses the same ranking and reads the contact list. Order the customers from the highest score to the lowest. Pick a leaver at random, each leaver equally likely. Keep that leaver and every customer ranked at least as high. Customers with the same score are kept together. Precision is the share of this group who left. PR-AUC is the expected value of that share. A value of 1 means every leaver stands above every stayer, so the kept group contains only leavers. A ranking with no link to the outcome has PR-AUC equal to the share of leavers. This chapter judges the ranking by ROC-AUC, and one cutoff by precision and recall. Chapter 7 computes PR-AUC because its comparison table and the cloud evaluation both report it.
 
 ```{python}
 workshop.plot_roc([tabular])
@@ -431,11 +433,9 @@ A logistic regression adds weighted fields. It cannot add the sentence "the line
 The existing procedure has three parts.
 
 1.  **One document per customer.** The customer's messages are joined in `text_index` order. A customer with no messages would keep an empty document and would stay in the table.
-2.  **TF-IDF**, short for term frequency–inverse document frequency. Each word, and each two-word phrase, receives a score. The score is high when the expression is common in this customer's document and uncommon across the other training documents. Very common English words are set aside. 
-<!--
-An expression that appears in only one training document is set aside as well. 
--->
-The training step keeps up to 5,000 expressions.
+2.  **TF-IDF**, short for term frequency–inverse document frequency. Each word, and each two-word phrase, receives a score. The score is high when the expression is common in this customer's document and uncommon across the other training documents. Very common English words are set aside. <!--
+    An expression that appears in only one training document is set aside as well. 
+    --> The training step keeps up to 5,000 expressions.
 3.  **LSA**, latent semantic analysis. A compression method based on **singular value decomposition (SVD)** reduces those thousands of scores to *k* numbers, named `text_1`, `text_2`, and so on, up to `text_k`. Customers who use related wording end up with similar numbers. You do not need SVD to use the result. You do need to know that *k* is `N_TEXT_COMPONENTS` in the settings cell.
 
 These columns are a numerical summary of patterns in the writing. They are not complaint counts, and they do not have business names such as "billing anger."
@@ -588,12 +588,13 @@ Several outcomes were possible, and a manager should be able to name them.
 -   Using both can help when the two sources are complementary.
 -   The combined model can also fail to beat the simpler ones. Nothing in the method guarantees an improvement.
 
-
+```{=html}
 <!--
 On **this** file, use the table and the sentence above, not a prior belief about text.
 
 The comparison is not a causal finding. A higher score does not show that a contract, a price or a complaint made the customer leave. It shows how well a score, built from the fields we allowed, ranks historical churners above historical stayers on this test set.
 -->
+```
 
 ### All of the test results on one page
 
@@ -633,13 +634,32 @@ The cell below writes the combined model's test scores. Those customers were not
 
 The file has one row per test customer.
 
-- `customer_id` is the identifier, whatever that column was called in the source table.
-- `p0` is the test score.
-- `observed_outcome` is 1 when the target equals the positive label, and 0 otherwise.
+-   `customer_id` is the identifier, whatever that column was called in the source table.
+-   `p0` is the test score.
+-   `observed_outcome` is 1 when the target equals the positive label, and 0 otherwise.
 
 ```{python}
 SCORE_FILE = "data/processed/telco/test_probabilities_with_text.csv"
 workshop.save_scores(combined, SCORE_FILE)
+```
+
+## Save both scores, for the fit rows and the test rows
+
+`save_scores` writes the test scores of the communications model. Chapter 6 reads that file. The next cell writes a second file. A later method can reload both models, and both roles, without fitting again.
+
+`MODEL_ROWS_FILE` is the path of that second file. The example is `data/processed/telco/model_rows.csv`. For another dataset, choose another path, for example `data/processed/mydata/model_rows.csv`. Chapter 7 reads whatever path you set here.
+
+The file has one row per customer.
+
+-   `customer_id` is the identifier.
+-   `role` is `fit` or `test`. A `test` row was not used to fit the model.
+-   `p_logistic_tabular` is the score from the structured fields.
+-   `p_logistic_text` is the score from the structured fields plus the communications. On a test row it equals `p0` in `SCORE_FILE`.
+-   `observed_outcome` is 1 when the target equals the positive label, and 0 otherwise.
+
+```{python}
+MODEL_ROWS_FILE = "data/processed/telco/model_rows.csv"
+workshop.save_model_rows(tabular, combined, MODEL_ROWS_FILE)
 ```
 
 ## Troubleshooting
@@ -677,7 +697,7 @@ Paste the error, not a customer extract. Apply the smallest change that the mess
 3.  Run every cell from top to bottom. Leave the settings at the printed defaults on the first pass.
 4.  Read each table or chart, then the paragraph under it. The sentences produced by the `explain_` commands use the numbers just calculated.
 5.  At the end, read the seven questions in Stage 8 against the final comparison table.
-6.  The last modelling cell writes the combined model's test scores to `SCORE_FILE`. The next workshop loads them when its `SCORE_FILE` is that same path. For another dataset, change both, for example to `data/processed/mydata/scores.csv`.
+6.  The last modelling cells write `SCORE_FILE` and `MODEL_ROWS_FILE`. Chapter 6 reads `SCORE_FILE`. Chapter 7 reads both. For another dataset, set the same paths in those chapters, for example `data/processed/mydata/scores.csv` and `data/processed/mydata/model_rows.csv`.
 
 To produce the HTML document instead of running the cells by hand:
 

@@ -6,121 +6,38 @@ fig-width: 7
 fig-height: 4.4
 ---
 
-Sections 2.e and 2.f already produced a probability of churn for each held-out customer. A logistic regression produced it, on this computer, from the customer table and from the communications.
+Chapters 5 and 6 left two kinds of information.
 
-This session asks a cloud service to produce its own probability for the same customers. You then compare the two sets of numbers, and you see whether the campaign decision changes.
+- The customer tables, and the quantities that split them into fit rows and test rows.
+- The scores of those rows, and the campaign costs of the test rows.
 
-You can follow the document in two ways.
+The first objective is to gather both. Gemini is not used in this part. The fit table and the test table are what Gemini will receive. The comparison file is the test rows Gemini's scores will be added to.
 
-- **Read the comparison.** Leave every switch as it is written. The cells use files already saved on this computer. Google is not called.
-- **Train a model on Google.** Follow the account steps, then change one line, `START_PAID_TRAINING = False`, to `True`.
+Telco is the example. Another dataset uses the same capital-letter names and other paths.
+
+The only `CLOUD_MODE` line to edit is in **Paths of the saved results**. Leave it as `"LOAD"`. `"LOAD"` reads files already on this computer. `"SAVE"` rebuilds those files on this computer. Neither value calls Google. A later cell repeats `"LOAD"` so that the final read does not rebuild. The only line that spends money is `START_PAID_TRAINING = True`, in the Gemini section.
 
 ::: callout-warning
 ## Money is spent only if you change that line
 
-Rendering this file does not create a Google resource and does not start a training job. The training cell spends money only when `START_PAID_TRAINING` is `True`.
+Rendering this file does not create a Google resource and does not start a training job.
 :::
 
-Run the cells from top to bottom. Read the paragraph under each table before you continue.
+Run the cells from top to bottom.
 
-## Stage 1 — What you already have, and what the cloud adds
+## Retrieval of the data
 
-From Section 2.e you have two scores for the customers who were held out of the fit:
+### Paths, columns, and the split
 
-| Column in the result file | Where it comes from |
-|---|---|
-| `p_logistic_tabular` | Logistic regression on the structured customer fields |
-| `p_logistic_text` | Logistic regression on those fields plus the communications |
+`use_course_example()` takes no input. It fills every capital-letter name with the telco example. It returns nothing. The assignments under it are the values the next functions read. Replace them for another dataset.
 
-From Section 2.f you have, for the same customers, a contact cost, a loss if the customer leaves, and a campaign probability `p1`.
+`TABULAR_FILE` is one row per customer. `TEXT_FILE` is one row per message. `ID_COLUMN` is the shared identifier. `TARGET_COLUMN` is the outcome. `POSITIVE_LABEL` is the label counted as a leave. In the example that label is `Yes`, later coded `1`.
 
-The cloud service does not use those scores. You send it a table. It tries several models, keeps one, and returns a new probability for each customer you ask it to score. That probability is the chance the customer leaves. The service names it from your target column and your positive label. In the course files the column that comes back is `Churn_Yes_score`. This lesson stores it as `p_automl_tabular` or `p_automl_text`.
+`TEXT_COLUMN` is the message. `TEXT_ORDER_COLUMN` numbers one customer's messages. `TEXT_TYPE_COLUMN` names the kind of message. Set it to `""` when the file has no such column. `TEXT_FEATURE` is the name of the joined-text column this lesson will add. It is not a column of the source files.
 
-The comparison uses the same validation customers for every model. A higher ranking score is not assumed to produce a cheaper campaign. The last tables show the two results side by side.
+`NUMERIC_FEATURES` and `CATEGORICAL_FEATURES` are the predictors. Do not put `ID_COLUMN` or `TARGET_COLUMN` in those lists.
 
-## Stage 2 — The three places you will work
-
-| Place | What it is | What you do there |
-|---|---|---|
-| This document | The workshop on your computer | Choose the files, start the job, read the probabilities |
-| Google Cloud console | The website <https://console.cloud.google.com/> | Create the account, the project, and the billing |
-| The terminal | The command window in the project folder | Sign in, and create the storage folder |
-
-The project folder is the folder that contains `_quarto.yml`, `lessons/`, and `data/`.
-
-## Stage 3 — Words used from here on
-
-**Google account.** The login you use for the console. Create one at <https://accounts.google.com/> if you do not have one.
-
-**Project.** A named container for one piece of work. The training job, the stored files, and the bill sit inside one project. The project has a display name, which you choose, and a **project ID**, which is shorter. The commands use the project ID, for example `churn-workshop-123456`.
-
-**Billing account.** The payment method attached to the project. Training is refused until a billing account is linked. New accounts are sometimes given trial credit. The billing page shows the amount that remains. When the credit is used, the payment method is charged.
-
-**Region.** The group of data centers that will hold the files and run the job. This lesson uses `us-central1`. The storage folder and the job use the same region. The price list is different in another region.
-
-**Bucket.** A named folder on Google’s disks. The training table is copied into it. The probabilities are written back into it, then copied onto your computer. The name is yours to choose. It must be unique across Google Cloud, and it may contain only lowercase letters, numbers, and hyphens.
-
-**Batch prediction.** You send a file of customers. The service writes a file of probabilities. The computer that does this runs for that job and then stops.
-
-**Endpoint.** A computer that stays on so that one customer can be scored at any moment. It is billed for every hour it stays on. This lesson uses batch prediction. It does not create an endpoint.
-
-**Node hour.** One machine working for one hour. The training cap below is one node hour per model. The service can stop earlier. It does not train past the cap. Batch prediction is a separate charge and is not part of that cap.
-
-## Stage 4 — What an API is, and how it reaches this file
-
-An **API** (application programming interface) is a fixed list of requests that a program is allowed to send to a service. The console is for a person. The API is for a program.
-
-For this lesson the requests are: store this table, train a classification model, score this other table, delete what you created. You do not type those requests by hand.
-
-Three separate steps make the requests possible. None of the three starts the training.
-
-1. **Allow the project to receive the requests.** In the console, open these two pages and click **Enable** on each.
-
-   - Vertex AI API: <https://console.cloud.google.com/apis/library/aiplatform.googleapis.com>
-   - Cloud Storage API: <https://console.cloud.google.com/apis/library/storage.googleapis.com>
-
-   Enabling an API gives permission. It does not upload your customers and it does not train a model.
-
-2. **Install the translator on this computer.** The Python package `google-cloud-aiplatform` turns the call in the training cell into one of those requests. `google-cloud-storage` copies the CSV files. Install them once, from the project folder, after you have decided to run a paid job:
-
-```bash
-source .venv/bin/activate
-pip install google-cloud-aiplatform google-cloud-storage
-```
-
-   On Windows, activate with `.venv\Scripts\activate`. You do not need these packages to read the saved comparison.
-
-3. **Sign in, so the package can prove who is asking.** The command is in Stage 7. It opens a browser. The proof stays in your user account on this computer. Do not download a key file into this project folder, and do not paste a password into a cell.
-
-The pages that describe this service sometimes say **Gemini Enterprise Agent Platform**. In the console the menu is **Vertex AI**. The Python package is `google-cloud-aiplatform`. Those are the current names for the same tabular training service. This lesson uses that service.
-
-While a job is running you can watch it in the console: **Vertex AI → Training**, then **Vertex AI → Batch predictions**. The probabilities used in the tables below are the ones saved in the CSV on your computer.
-
-## Stage 5 — Point the lesson at your files
-
-The course example uses the telco files from Sections 2.e and 2.f. To use your own extract, replace the paths and the column names in the next cell, set `CLOUD_MODE` to `"SAVE"`, and run the cell again. `"SAVE"` rebuilds the files on this computer. It does not call Google.
-
-Your customer file replaces `TABULAR_FILE`.
-
-- One row per customer. The identifier is not repeated.
-- The identifier column, the target column, and every column you list under the numeric and categorical features.
-- The target has two labels. `POSITIVE_LABEL` is the label you care about. In the course file that label is `Yes`, the customer left. The saved scores code it as 1.
-- Leave the identifier and the target out of the feature lists. Leave out any column that was filled in after the customer left.
-
-Your message file replaces `TEXT_FILE`.
-
-- One row per message. A customer may have several messages.
-- The same identifier column, a text column, and an order column. The order column numbers that customer’s messages. The same number is not used twice for one customer.
-- Messages for one customer are sorted by that order and joined with a blank line. The cloud model receives that joined text in a column named `customer_text`. The logistic regression from Section 2.e does not receive the raw text. It uses the compressed text columns from that workshop. The comparison includes that difference.
-- If your message file has no type column, set `TEXT_TYPE_COLUMN` to `""`.
-
-`SAVED_PROBABILITY_FILE` is the file Section 2.e wrote for the logistic regression that uses the communications. In the course it is `data/processed/telco/test_probabilities_with_text.csv`. It must list the same test customers, in the same order, with the probability and the observed outcome. Set `RANDOM_STATE` and `TEST_SIZE` to the values that produced that file. In the course those values are `42` and `0.25`.
-
-`ECONOMICS_FILE` is the campaign file from Section 2.f. One row per customer, with the campaign probability, the contact cost, and the loss if the customer churns. The four column-name settings under the paths must match that file.
-
-The service accepts a training table of at least 1,000 rows. With `TEST_SIZE` at `0.25`, the customer file needs more than about 1,400 rows. Blank numeric values are stored as zero.
-
-The training cap is saved when the files are built. If you change `BUDGET_MILLI_NODE_HOURS`, set `CLOUD_MODE` to `"SAVE"` and run the next two cells again before you start a paid job. `1000` is one node hour, and it is the smallest cap the service accepts.
+`RANDOM_STATE` is the seed. `TEST_SIZE` is the share of customers held out of the fit. Chapter 5 used `42` and `0.25`. The same two numbers rebuild that split.
 
 ```{python}
 from pathlib import Path
@@ -138,28 +55,15 @@ import python.workshop_automl as automl
 
 automl.use_course_example()
 
-# Your files. Replace the four paths, and the folder, for another dataset.
 automl.TABULAR_FILE = "data/raw/telco/telco_customers.csv"
 automl.TEXT_FILE = "data/raw/telco/customer_communications.csv"
-automl.SAVED_PROBABILITY_FILE = "data/processed/telco/test_probabilities_with_text.csv"
-automl.ECONOMICS_FILE = "data/processed/telco/campaign_example_population.csv"
-automl.OUTPUT_DIR = "data/processed/telco/automl"
-
-# Column names in those files.
 automl.ID_COLUMN = "customerID"
 automl.TARGET_COLUMN = "Churn"
 automl.POSITIVE_LABEL = "Yes"
 automl.TEXT_COLUMN = "text"
 automl.TEXT_ORDER_COLUMN = "text_index"
 automl.TEXT_TYPE_COLUMN = "communication_type"
-automl.SAVED_PROBABILITY_ID = "customer_id"
-automl.SAVED_PROBABILITY_COLUMN = "p0"
-automl.SAVED_OUTCOME_COLUMN = "observed_outcome"
-automl.ECONOMICS_ID_COLUMN = "customer_id"
-automl.ECONOMICS_P1_COLUMN = "p1"
-automl.ECONOMICS_COST_COLUMN = "example_cost"
-automl.ECONOMICS_LOSS_COLUMN = "example_loss"
-
+automl.TEXT_FEATURE = "customer_text"
 automl.NUMERIC_FEATURES = ["tenure", "MonthlyCharges", "TotalCharges"]
 automl.CATEGORICAL_FEATURES = [
     "gender",
@@ -179,113 +83,289 @@ automl.CATEGORICAL_FEATURES = [
     "PaperlessBilling",
     "PaymentMethod",
 ]
-
-# The same split that wrote SAVED_PROBABILITY_FILE.
 automl.RANDOM_STATE = 42
 automl.TEST_SIZE = 0.25
-# Half of that earlier test set is the comparison set. The other half is kept aside.
+print("Working directory:", Path.cwd())
+automl.active_settings()
+```
+
+### Gather the two files
+
+`gather_sources()` takes no argument. It reads the paths and column names above. It sorts each customer's messages by `TEXT_ORDER_COLUMN`, joins them with a blank line, and stores the text in `customer_text` (`TEXT_FEATURE`). It returns one row per customer. It does not split. It does not call Google.
+
+```{python}
+customers = automl.gather_sources()
+shown = customers[[automl.ID_COLUMN, automl.TARGET_COLUMN, automl.TEXT_FEATURE]].head(2).copy()
+shown[automl.TEXT_FEATURE] = (
+    shown[automl.TEXT_FEATURE].str.replace("\n", " ", regex=False).str.slice(0, 80)
+)
+shown
+```
+
+### Separate fit rows and test rows
+
+`separate_fit_test(customers)` takes the table just returned. It also reads `RANDOM_STATE`, `TEST_SIZE`, `ID_COLUMN`, `TARGET_COLUMN` and `POSITIVE_LABEL`. It returns two tables, `fit_table` and `test_table`. The split is stratified on the target. A row in `test_table` was not used to fit the Chapter 5 models. The row counts are the Chapter 5 counts when the seed and `TEST_SIZE` are unchanged.
+
+`fit_table` is the table Gemini will train on. `test_table` is the table from which the scored customers are taken.
+
+```{python}
+fit_table, test_table = automl.separate_fit_test(customers)
+print("Fit rows:", len(fit_table))
+print("Test rows:", len(test_table))
+```
+
+## Retrieval of the previous results
+
+The scores and the campaign quantities are loaded here. `p1`, `cost` and `loss` are not model scores. Chapter 6 stored them for the test customers. They are loaded now because the comparison at the end uses them, and only them, as the campaign inputs.
+
+### Paths of the saved results
+
+`MODEL_ROWS_FILE` is the file Chapter 5 writes with `save_model_rows`. One row per customer. `role` is `fit` or `test`. `p_logistic_tabular` is the structured-fields score. `p_logistic_text` is the score that also uses the communications. `observed_outcome` is `1` or `0`. `MODEL_ROWS_ID_COLUMN` is the identifier column of that file. In the example it is `customer_id`. `ID_COLUMN` in the customer table is `customerID`. The two names are joined. The example path is `data/processed/telco/model_rows.csv`. Until that cell in Chapter 5 has been run, the file is absent. This lesson then uses `SAVED_PROBABILITY_FILE` for `p_logistic_text` and refits the tabular score when `CLOUD_MODE` is `"SAVE"`.
+
+`SAVED_PROBABILITY_FILE` is the file `save_scores` (in Chapter 5) wrote for Chapter 6. In the example, `p0` (`SAVED_PROBABILITY_COLUMN`) is `p_logistic_text` on the test rows, and `observed_outcome` (`SAVED_OUTCOME_COLUMN`) is the same 0/1 outcome. `SAVED_PROBABILITY_ID` is the identifier column of that file.
+
+`ECONOMICS_FILE` is Chapter 6's `POPULATION_FILE`. `ECONOMICS_P1_COLUMN` (`p1`) is the probability of staying if contacted. `ECONOMICS_COST_COLUMN` (`example_cost`) becomes `cost`. `ECONOMICS_LOSS_COLUMN` (`example_loss`) becomes `loss`. The file has the test customers, not the fit customers.
+
+`HOLDOUT_VALIDATION_FRACTION = 0.5` keeps half of `test_table` for the comparison file. The other half is not scored. The comparison customers stay out of the training upload: the model Gemini keeps can be fit again on every uploaded row. `OUTPUT_DIR` is the folder of the files this lesson writes.
+
+`OBSERVED_COLUMN` is the 0/1 column of the comparison file. `1` means `TARGET_COLUMN` equals `POSITIVE_LABEL`. In the example, `1` means `Churn` is `Yes`: the customer left. The functions read `OBSERVED_COLUMN`. Change `TARGET_COLUMN` in **Paths, columns, and the split** to use another outcome.
+
+`CLOUD_MODE` has two values. `"LOAD"` reads `validation_probabilities.csv` and the Gemini files in `OUTPUT_DIR`. `"SAVE"` rebuilds those files. The assignment below is the only line to edit. The later cells read it. After a rebuild, set this line back to `"LOAD"` before **Add the Gemini scores to the comparison file**.
+
+`DECISION_THRESHOLD = 0.5` means a score of at least `0.5` is counted as a predicted leave. The comparison section uses it. The probabilities themselves are not changed by it.
+
+```{python}
+automl.MODEL_ROWS_FILE = "data/processed/telco/model_rows.csv"
+automl.MODEL_ROWS_ID_COLUMN = "customer_id"
+automl.OBSERVED_COLUMN = "observed_outcome"
+automl.SAVED_PROBABILITY_FILE = "data/processed/telco/test_probabilities_with_text.csv"
+automl.SAVED_PROBABILITY_ID = "customer_id"
+automl.SAVED_PROBABILITY_COLUMN = "p0"
+automl.SAVED_OUTCOME_COLUMN = "observed_outcome"
+automl.ECONOMICS_FILE = "data/processed/telco/campaign_example_population.csv"
+automl.ECONOMICS_ID_COLUMN = "customer_id"
+automl.ECONOMICS_P1_COLUMN = "p1"
+automl.ECONOMICS_COST_COLUMN = "example_cost"
+automl.ECONOMICS_LOSS_COLUMN = "example_loss"
 automl.HOLDOUT_VALIDATION_FRACTION = 0.5
 automl.DECISION_THRESHOLD = 0.5
-
-# 1000 milli node hours = 1 node hour per model. The smallest cap.
-automl.BUDGET_MILLI_NODE_HOURS = 1000
-# A third model, communications only, is off. True adds one more training cap.
-automl.INCLUDE_TEXT_ONLY = False
-# The campaign budget from Section 2.f, applied to the comparison customers.
-automl.BUDGET = 8000
-
-# "LOAD" reads saved files. "SAVE" rebuilds them here. Neither calls Google.
+automl.OUTPUT_DIR = "data/processed/telco/automl"
+# Only line to edit. Use exactly "LOAD" or exactly "SAVE".
+# "LOAD" reads the files. "SAVE" rebuilds them. Neither calls Google.
 automl.CLOUD_MODE = "LOAD"
+```
 
-pd.set_option("display.max_columns", 8)
-pd.set_option("display.width", 120)
-pd.set_option("display.max_colwidth", 60)
-pd.set_option("display.float_format", lambda value: f"{value:.3f}")
+### Attach the scores and the costs
+
+`retrieve_results(fit_table, test_table)` takes those two tables. It reads the paths in the cell above.
+
+It returns a dictionary.
+
+- `retrieved["fit"]` is the fit rows. `p_logistic_tabular` and `p_logistic_text` are filled when `MODEL_ROWS_FILE` exists. Fit rows have no `p1`, `cost` or `loss`: Chapter 6 did not store campaign quantities for them.
+- `retrieved["test"]` is every test row. `p_logistic_text` comes from `MODEL_ROWS_FILE`, or from `p0` in `SAVED_PROBABILITY_FILE`. `p1`, `cost` and `loss` come from `ECONOMICS_FILE`. Without `MODEL_ROWS_FILE`, `p_logistic_tabular` is filled only on the comparison rows. The other test rows have that column empty.
+- `retrieved["comparison"]` is the share `HOLDOUT_VALIDATION_FRACTION` of the test rows. This is the file Gemini will complete. `write=True` writes it to `OUTPUT_DIR/validation_probabilities.csv`. `write=False` reads that file and fits no model.
+
+`retrieve_results` does not read `CLOUD_MODE`. The argument `write` does. `write_files` is that argument. It is `True` only when the line above is exactly `"SAVE"`.
+
+<!--
+`strip()` deletes spaces at the two ends of a string. `upper()` turns each letter into a capital. `" save ".strip().upper()` is `"SAVE"`. That extra spelling is not used. `"save"` and `" SAVE "` do not count. The line above must be `"LOAD"` or `"SAVE"`.-->
+
+```{python}
+# Do not assign CLOUD_MODE here. This reads the line in the cell above.
+write_files = automl.CLOUD_MODE == "SAVE"
+retrieved = automl.retrieve_results(fit_table, test_table, write=write_files)
+print("Fit rows:", len(retrieved["fit"]))
+print("Test rows:", len(retrieved["test"]))
+print("Comparison rows:", len(retrieved["comparison"]))
+retrieved["comparison"].head(2)
+```
+
+`validation_probabilities.csv` holds the comparison rows and the local columns: `ID_COLUMN`, `OBSERVED_COLUMN`, `p_logistic_tabular`, `p_logistic_text`, `p1`, `cost` and `loss`. In the example those first two names are `customerID` and `observed_outcome`. A Gemini score is added later, by `import_saved_scores` or by the paid cell.
+
+## Gemini
+
+Gemini, in this lesson, is the tabular AutoML service on Google Cloud. In the console the menu is **Vertex AI**. Some pages say **Gemini Enterprise Agent Platform**. The Python package is `google-cloud-aiplatform`. It is not the chat model.
+
+You send `fit_table`. The service searches among model types and keeps one model. You then send the comparison rows, with no target. It returns a probability that the row has the positive label. In the example that label is `Yes` in `Churn`: the customer left. That probability is written back into `validation_probabilities.csv`.
+
+### Account, project, and bill
+
+Do this in the browser before the training cell.
+
+1. Open <https://console.cloud.google.com/> and sign in.
+2. Open <https://console.cloud.google.com/projectcreate>. Create a project. Copy the **project ID**. It is not the display name.
+3. Open <https://console.cloud.google.com/billing>. Link a billing account to the project. Read the credit that remains.
+4. Open <https://cloud.google.com/vertex-ai/pricing>. Read the tabular AutoML training price and the batch prediction price for the region you will set below.
+
+**Project.** The container for the job, the files, and the bill.
+
+**Billing account.** Training is refused until one is linked.
+
+**Region.** The group of data centers. This lesson uses `us-central1`. The stored files and the job use the same region.
+
+### The API
+
+An **API** is the list of requests a program may send. The requests used here are: store this table, train a classification model, score this other table, delete what was created.
+
+1. Enable the two APIs. Enabling them does not upload customers and does not train.
+
+   - Vertex AI API: <https://console.cloud.google.com/apis/library/aiplatform.googleapis.com>
+   - Cloud Storage API: <https://console.cloud.google.com/apis/library/storage.googleapis.com>
+
+2. Install the packages once, from the project folder, when you have decided to run a paid job.
+
+```bash
+source .venv/bin/activate
+pip install google-cloud-aiplatform google-cloud-storage
+```
+
+On Windows, activate with `.venv\Scripts\activate`. Reading the saved comparison does not need these packages.
+
+`google-cloud-aiplatform` is the Python client for Vertex AI. `run_cloud()` uses it to create the dataset, start the training job, and start the batch prediction. `google-cloud-storage` is the Python client for the bucket. `run_cloud()` uses it to upload the training CSV and to download the score file. Installing the packages does not upload a table and does not start a job. The bucket itself is created later, with the `gcloud storage buckets create` command.
+
+3. Sign in from the terminal in the next section. Do not put a key file in this project folder.
+
+### Quantities the job reads
+
+`BUDGET_MILLI_NODE_HOURS` is the training cap, in milli node hours. A **node** is one machine Google starts for the search, then stops. A **node hour** is that machine working for one hour. `1000` milli node hours `=` `1` node hour. `1000` is the smallest cap the service accepts. This lesson also refuses a value above `72000`. The cap is the maximum machine-time of the search. The search keeps the best model found inside the cap. It is not a memory size. Scoring the comparison rows is a second machine and is not part of this number.
+
+`PLATFORM_VALIDATE_FRACTION = 0.10` and `PLATFORM_TEST_FRACTION = 0.10` label the fit rows only. Gemini requires a column `ml_split` with the labels `TRAIN`, `VALIDATE` and `TEST`. Ten percent of the fit rows are `VALIDATE`, ten percent are `TEST`, and the rest are `TRAIN`. 
+<!--
+`VALIDATE` is how the search chooses a model. -->
+
+These labels are not `test_table`.
+
+`OPTIMIZATION_OBJECTIVE = "minimize-log-loss"` tells the search to prefer probabilities that match `OBSERVED_COLUMN`.
+
+`SPLIT_COLUMN` is the column this lesson adds to each training file. The service reads it. The labels are `TRAIN`, `VALIDATE` and `TEST`. It is not a predictor. The example name is `ml_split`.
+
+`GCS_PREFIX` is the first folder inside the bucket. It is not a column of the table, and it is not a model. The example is `telco-automl`. One run writes its files under that folder, then under a timestamp. Set another prefix when a second dataset should not share the first dataset's folder.
+
+`INCLUDE_TEXT_ONLY = False` leaves out a third model that would use `TEXT_FEATURE` alone. `True` adds one more cap and a column `p_automl_text_only`. In the example `TEXT_FEATURE` is `customer_text`.
+
+`BUDGET = 8000` is the campaign budget from Chapter 6, in the same unit as `cost`. It is not the training cap.
+
+`manifest.json` is a local file in `OUTPUT_DIR`. It is the record of the upload. It is not the training table. `build_gemini_files(..., write=True)` writes it. `write=False` leaves the file as it is.
+
+The fields the next steps read are:
+
+- `budget_milli_node_hours`, the training cap. The paid job reads this number, not the Python name `BUDGET_MILLI_NODE_HOURS`.
+- `experiments`, the paths of `training_*.csv` and `predict_validation_*.csv`.
+- `validation_ids`, the comparison customers, in the order of `validation_probabilities.csv`.
+- `id_column`, `target_column`, `positive_label`, `text_feature`, `optimization_objective`.
+- `n_training`, `n_validation`, `n_final_test`, and `split_summary`.
+
+Changing `BUDGET_MILLI_NODE_HOURS` in the cell below changes the Python name only. To put the new number into `manifest.json`, set the one `CLOUD_MODE` line, in **Paths of the saved results**, to `"SAVE"`. Then run the cells from that line through **The two uploads**. Then set that same line back to `"LOAD"`. Do not add a second `CLOUD_MODE` assignment in this cell. `"SAVE"` rebuilds the local files. It does not call Google, and it is not a new dataset.
+
+```{python}
+automl.BUDGET_MILLI_NODE_HOURS = 1000
+automl.PLATFORM_VALIDATE_FRACTION = 0.10
+automl.PLATFORM_TEST_FRACTION = 0.10
+automl.OPTIMIZATION_OBJECTIVE = "minimize-log-loss"
+automl.SPLIT_COLUMN = "ml_split"
+automl.GCS_PREFIX = "telco-automl"
+automl.INCLUDE_TEXT_ONLY = False
+automl.BUDGET = 8000
 
 automl.active_settings()
 ```
 
-Check the table. The paths and the column names in the table are the ones the next cell will use.
+`active_settings()` takes no argument. It reads the capital-letter names and returns a table with columns `Setting` and `Value`. It does not write a file and it does not call Google.
 
-## Stage 6 — Who is sent to Google, and who is kept for the comparison
+### The two uploads
 
-Section 2.e held out 25 percent of customers. Those held-out customers are the ones in `SAVED_PROBABILITY_FILE`. This lesson does not draw a new split of the whole table.
+`build_gemini_files(retrieved)` takes the dictionary from `retrieve_results`. With `write=True` it also reads the quantities in the cell above, including `SPLIT_COLUMN`. `GCS_PREFIX` is not written into these files. It is the folder used later, in the bucket.
 
-The training file contains only the customers who were used to fit the logistic regression. Google may split that file internally. A column named `ml_split` gives it the three labels it requires: `TRAIN`, `VALIDATE`, and `TEST`. Those labels are written on training customers only. Google uses its `VALIDATE` rows to choose a model. The current documentation says the model that is kept can be fit again on every uploaded row. That is why the comparison customers are not in the upload.
+It writes, in `OUTPUT_DIR`:
 
-The earlier test set is split in half, with the same `RANDOM_STATE`. One half is the **validation** set. Every table from here on uses that half. The other half is a final test set. Its identifiers are saved, and it is not scored.
+| File | Rows | What Gemini does with it |
+|---|---|---|
+| `training_tabular.csv` | fit rows | Train on the structured fields. `SPLIT_COLUMN` is included. `ID_COLUMN` is not a predictor. |
+| `training_tabular_text.csv` | the same fit rows | The same training, plus `TEXT_FEATURE`. |
+| `predict_validation_tabular.csv` | comparison rows | Score these rows. The target is not in the file. |
+| `predict_validation_tabular_text.csv` | the same comparison rows | The same scoring, plus `TEXT_FEATURE`. |
+
+The comparison rows are not in the training file. The model Gemini keeps can be fit again on every uploaded row, so a customer who is in both files would not be a clean test. The other half of `test_table` is `final_test_ids.csv`. It is not uploaded.
+
+`build_gemini_files` returns the first rows of `training_tabular_text.csv`. `TEXT_FEATURE` is cut to 140 characters on screen. In the example that column is `customer_text`. With `write=False` it only reads the files already saved.
+
+The service accepts at least 1,000 training rows. With `TEST_SIZE = 0.25`, `TABULAR_FILE` needs more than about 1,400 customers.
 
 ```{python}
-state = automl.load_workshop()
-state["split_summary"]
+# Do not assign CLOUD_MODE here. Same line as in "Paths of the saved results".
+# "SAVE" rewrites manifest.json, including budget_milli_node_hours.
+# "LOAD" reads the training file already on disk.
+preview = automl.build_gemini_files(retrieved, write=(automl.CLOUD_MODE == "SAVE"))
+preview
 ```
 
-`Previous training` is the file Google receives. `Validation, used for comparison` is the file Google is asked to score after training. `Final test, not scored` stays on this computer. The three `Platform` rows are the labels inside the training file. They are not the validation customers.
-
-The next cell shows the first rows of the training file that includes the communications. `customerID` is kept so the probabilities can be matched later. It is not used as a predictor. `Churn` is the target. `ml_split` is the label from the table above. `customer_text` is the joined messages. The service is told that this column is text, so it uses the words. The other experiment is the same table without `customer_text`.
-
-```{python}
-automl.training_preview("tabular_text", rows=2)
-```
-
-A third experiment, communications only, is left out while `INCLUDE_TEXT_ONLY` is `False`.
-
-The files are in the folder you set as `OUTPUT_DIR`. For the course example that folder is `data/processed/telco/automl/`.
-
-| File | Who is in it |
-|---|---|
-| `training_tabular.csv` | Training customers, structured fields, target, `ml_split` |
-| `training_tabular_text.csv` | The same customers, plus `customer_text` |
-| `predict_validation_tabular.csv` | Validation customers, structured fields, no target |
-| `predict_validation_tabular_text.csv` | The same customers, plus `customer_text` |
-| `validation_probabilities.csv` | The comparison file. Local scores now. Cloud scores after Stage 9 |
-
-You can rebuild those files from a terminal. This command does not call Google.
+The same local rebuild, from a terminal, does not call Google:
 
 ```bash
 python python/workshop_automl.py prepare
 ```
 
-## Stage 7 — Open the account, the project, and the bill
+`prepare()` runs `gather_sources`, `separate_fit_test`, `retrieve_results(write=True)` and `build_gemini_files(write=True)`. It returns the check table from `verify_saved_files()`.
 
-Do these steps in the browser before the training cell.
+### What is billed
 
-1. Open <https://console.cloud.google.com/> and sign in. Accept the terms if the page asks.
-2. Open <https://console.cloud.google.com/projectcreate>. Type a project name, for example `Churn workshop`. You may edit the project ID. Click **Create**.
-3. Copy the **project ID**. Find it on the project dashboard, or under **IAM & Admin → Settings**. It is not the display name.
-4. Open <https://console.cloud.google.com/billing>. Create a billing account if you do not have one, add a payment method, and link the account to this project. Read the credit that remains.
-5. Enable the two APIs from Stage 4. Click **Enable** on each library page. If the button says **Manage**, the API is already enabled.
-6. Open <https://cloud.google.com/vertex-ai/pricing>. Read the tabular AutoML **training** price and the **batch prediction** price for `us-central1`, or for the region you will type in the next cell.
+Three cloud objects appear after a search. Only one of them holds the fitted parameters.
 
-The training cell uses two models. Each one is capped at the node hours you set (`1000` means 1). Each one then has one batch prediction. The CSV files are stored in your bucket. A model that is stored and not deployed is not billed as a prediction machine. This lesson does not create an endpoint. If you cancel a training job, you pay for the time already used. A training failure other than a cancellation is not billed.
+**Training pipeline.** The search itself. It tries model types until the cap, or until early stopping. It is billed in node hours, up to `BUDGET_MILLI_NODE_HOURS` for each experiment. It does not keep a machine after it finishes.
 
+**Model.** The registry entry written when the pipeline reaches `PIPELINE_STATE_SUCCEEDED`. This entry holds the fitted parameters: the chosen model and the numbers that turn a row into a probability of leaving. It is not a running computer. An entry that is only stored is not billed as a prediction machine.
+
+**Batch prediction.** A machine that starts, loads that same registry entry, scores the comparison file, writes the score file into the bucket, and stops. The bill is the time that machine runs. This is the scoring step this lesson uses.
+
+**Endpoint.** A second way to use the same registry entry. **Deployment** means loading the saved model onto a machine that stays on and answers one request at a time. The bill is the hours from that deployment until **undeploy**, which takes the model off the machine and stops the hourly charge. This lesson does not create an endpoint and does not deploy.
+
+The fitted parameters stay in the model registry. The endpoint and the batch job are only machines that load those parameters. The endpoint is for repeated single requests. The batch job is for one file. The comparison needs one file, so the lesson builds a batch job and does not build an endpoint.
+
+**Bucket.** A named folder on Google's disks. The training CSV is copied there. The scores are written there, then copied back.
+
+**Prefix.** The path of this lesson's files inside the bucket. `GCS_PREFIX` is only the first folder. You set it in **Quantities the job reads**. In the example it is `telco-automl`. The bucket name is `BUCKET`. A run then adds its own timestamp, and each experiment adds its own file. The prefix is not a model and it is not a separate charge. The charge is the storage of the files under that path.
+
+The tabular training file of the first run is (in my account) :
+
+`gs://my-aidata-course-bucket/telco-automl/20261119T050528Z/training_tabular.csv`
+
+`my-aidata-course-bucket` is `BUCKET`. `telco-automl` is `GCS_PREFIX`. `20261119T050528Z` is the run id. `training_tabular.csv` is the upload. The scores of that same run are further along the same path, in `tabular/predictions/`, in the files named `prediction.results-`.
+
+**Node hour.** Defined above. Each of the two searches is capped at `BUDGET_MILLI_NODE_HOURS`. Each search is followed by one batch prediction. A cancelled job is billed for the machine-time already used. Another training failure is not billed.
+
+The prediction price list has a standard virtual machine and a Spot virtual machine for the same machine type: <https://cloud.google.com/products/gemini-enterprise-agent-platform/pricing#prediction-and-explanation>. A virtual machine is one computer. A Spot virtual machine is spare capacity, so its hourly price on that page is the lower one. Google can take a Spot machine back. That interruption is preemption. The preempted time is not billed.
+
+This lesson does not request a Spot machine. The training search is billed as AutoML node hours, up to the cap. It is not a virtual machine you choose on that page. Scoring uses one standard machine, and only after a model exists.
+
+The search has no pause. `PIPELINE_STATE_RUNNING` means it continues with no further command. `PIPELINE_STATE_SUCCEEDED` means the model is saved. `PIPELINE_STATE_CANCELLED` means the search was stopped. A cancelled or failed search does not continue later. Another search is a new training pipeline, from the beginning. The partial search is not handed to another machine.
+
+A Spot machine is useful when the lower hourly price still wins after some jobs are started again, and when you can wait. Custom training that writes a checkpoint can continue from that checkpoint on the next machine. A short scoring job can be cheaper on Spot even if a preempted job has to start again, because the preempted time is not billed.
+
+That is not this lesson. The AutoML search does not give you a checkpoint to pass to a replacement machine. If it is stopped, the next search starts over. A preempted scoring job also starts over: the replacement machine does not receive the unfinished score file as a place to continue. The saved model stays, so scoring starts again and the search does not. For these two tasks, a partial result is not reused. Spot would only change the price of a job that may have to be launched again.
+
+`explain_costs()` takes no argument. It reads `BUDGET_MILLI_NODE_HOURS`, `GCS_PREFIX`, and the experiment list in `manifest.json` when that file exists. It returns one complete paragraph per component: the name, what is billed, and what this run does. It does not start a job and it does not compute a dollar amount. 
+The dollar amount is the price on the pricing page in **Account, project, and bill** (above) times the node hours actually used. `cost_table()` returns the same facts as a table. 
 ```{python}
-automl.cost_table()
+print(automl.explain_costs())
 ```
 
-The dollar amount is the rate on the pricing page times those hours. The table states the cap. It does not state a dollar figure, because the rate depends on the region and on the date you read the page.
+### Sign in and create the bucket
 
-## Stage 8 — Sign in and create the bucket
-
-Install the Google Cloud command-line tool once, from <https://cloud.google.com/sdk/docs/install>. On macOS with Homebrew the installer is:
+Install the command-line tool once, from <https://cloud.google.com/sdk/docs/install>. On macOS with Homebrew:
 
 ```bash
 brew install --cask google-cloud-sdk
 ```
 
-Close the terminal and open it again in the project folder after the install.
+Close the terminal and open it again in the project folder.
 
-Type your project ID and bucket name in the next cell, then run it. The cell prints the commands. It does not run them. Copy the printed lines into the terminal.
-
-The bucket name must be new. If the create command says the name is already taken, change `BUCKET` and run the cell again. `--location` must be the same region as `REGION`.
+`PROJECT_ID`, `REGION` and `BUCKET` are names in the next cell, not columns. `PROJECT_ID` is the project id from **Account, project, and bill** above. `REGION` is the region. `BUCKET` is the bucket name you choose. It must be new, and it may contain only lowercase letters, numbers and hyphens. The cell prints commands. It does not run them.
 
 ```{python}
-PROJECT_ID = "YOUR_PROJECT_ID"
+PROJECT_ID = "my-aidata-course"
 REGION = "us-central1"
-BUCKET = "YOUR_BUCKET_NAME"
+BUCKET = "my-aidata-course-bucket"
 
-print("Copy these lines into the terminal. Run them once.")
-print()
 print("gcloud auth application-default login")
 print(f"gcloud config set project {PROJECT_ID}")
 print("gcloud services enable aiplatform.googleapis.com storage.googleapis.com")
@@ -295,42 +375,48 @@ print(
 )
 ```
 
-`gcloud auth application-default login` opens a browser. Sign in with the same Google account that owns the project. Leave the terminal alone until it says the credentials have been saved.
+`gcloud auth application-default login` opens a browser. Sign in with the account that owns the project. Wait until the terminal says the credentials were saved.
 
-The same four lines, with the names still to fill in, are:
+### Train and score
 
-```bash
-gcloud auth application-default login
-gcloud config set project YOUR_PROJECT_ID
-gcloud services enable aiplatform.googleapis.com storage.googleapis.com
-gcloud storage buckets create gs://YOUR_BUCKET --location=us-central1 --uniform-bucket-level-access
-```
+The next cell uploads the training file, trains the tabular model, scores the comparison rows, then repeats that for the file that includes `TEXT_FEATURE`. In the example, `TEXT_FEATURE` is `customer_text`.
 
-## Stage 9 — Start the training from this document
+The score in the bucket is `TARGET_COLUMN`, then `_`, then `POSITIVE_LABEL`, then `_scores`. In the example that column is `Churn_Yes_scores`. A result file that uses `_score` is accepted as well. The copy in the next section writes that value onto the matching `ID_COLUMN` in `validation_probabilities.csv`.
 
-The next cell is the one that spends money. It uploads the training file, trains the tabular model, scores the validation customers, then does the same for the tabular-plus-text model. It writes `p_automl_tabular` and `p_automl_text` into `validation_probabilities.csv`, matched on the customer identifier.
+- `p_automl_tabular` is that score for the structured fields.
+- `p_automl_text` is that score for the structured fields plus `TEXT_FEATURE`.
 
-Leave `START_PAID_TRAINING` as `False` until the billing account is linked, the two APIs are enabled, the sign-in has finished, and the bucket exists. Then set it to `True` and run the cell. Leave it running. Setup adds time on the clock beyond the one-hour cap. If the cell stops after it has printed a pipeline name, run it again with the switch still `True`. It waits for that job. It does not submit a second training job for a model that is already recorded.
+Leave `START_PAID_TRAINING` as `False` until billing is linked, both APIs are enabled, sign-in has finished, and the bucket exists. Waiting for a job to start can take longer than the one-hour cap. The cap limits the training machine, not that wait. The cell runs the tabular search first. After that pipeline succeeds, the same cell starts the search that includes `TEXT_FEATURE`. The second search does not start by itself if this cell has stopped. Run the cell again with the switch still `True`. An experiment whose score column is already complete is skipped. A recorded model is not trained again. The text search starts when that model is not recorded yet.
 
-The same job from a terminal, after the exports below, is the last block in this stage. Use the cell or the terminal, not both at the same time.
+Another dataset uses the same cell after its own files exist. The cells through `build_gemini_files` must already have been run for that dataset, with its paths and column names. Then set `PROJECT_ID`, `REGION`, `BUCKET` and `GCS_PREFIX`. `REGION` and the bucket must match. Also give that dataset its own `OUTPUT_DIR`, or delete `cloud_resources.json` in the current folder. Otherwise the paid cell scores with the model already recorded there.
+
+The text model of the example has not been trained, and it has no score file in the bucket. The tabular column `p_automl_tabular` is already in the comparison file, so the next paid run skips that search. It trains the text model, which is a new charge of up to one node hour, then scores the comparison rows. When that cell finishes, `p_automl_text` is in `validation_probabilities.csv`. If the score files are in the bucket and the column is still missing, run `import_saved_scores("tabular_text")`.
+
+Select the project in the console and set the region to the value of `REGION`. A pipeline list for another region is empty.
+
+- Training, state `PIPELINE_STATE_PENDING`, `PIPELINE_STATE_RUNNING`, or `PIPELINE_STATE_SUCCEEDED`: <https://console.cloud.google.com/vertex-ai/training/training-pipelines>
+- Dataset built from the uploaded CSV: <https://console.cloud.google.com/vertex-ai/datasets>
+- Files in the bucket, under `GCS_PREFIX` (`telco-automl` in the example): <https://console.cloud.google.com/storage/browser>
+- Model registry, after `PIPELINE_STATE_SUCCEEDED`: <https://console.cloud.google.com/vertex-ai/models>
+- Batch prediction, after the model exists. Scores land in the bucket under `GCS_PREFIX`, then the run id, then `tabular/predictions/` or `tabular_text/predictions/`: <https://console.cloud.google.com/vertex-ai/batch-predictions>
+
+`run_cloud(approve_spend=True)` runs only when the switch is `True`. The argument and the environment name `AUTOML_APPROVE_SPEND=yes` are both required. The function also reads `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_REGION` and `GOOGLE_CLOUD_BUCKET`, which the cell sets from `PROJECT_ID`, `REGION` and `BUCKET`. It reads `manifest.json` for the file paths and for the training cap. It returns `0` when the scores are saved, `1` when the local files are missing or the training file has fewer than 1,000 rows, and `2` when the approval is missing.
+
 
 ```{python}
 START_PAID_TRAINING = False
-
 os.environ["GOOGLE_CLOUD_PROJECT"] = PROJECT_ID
 os.environ["GOOGLE_CLOUD_REGION"] = REGION
 os.environ["GOOGLE_CLOUD_BUCKET"] = BUCKET
-
 if START_PAID_TRAINING:
     os.environ["AUTOML_APPROVE_SPEND"] = "yes"
     automl.run_cloud(approve_spend=True)
 else:
     os.environ["AUTOML_APPROVE_SPEND"] = "no"
     print("Training was not started. No Google call was made.")
-    print("Set START_PAID_TRAINING = True in this cell when you accept the cost, then run the cell again.")
 ```
 
-From the terminal, the same approval is two lines. The command prints the cost table again and stops if either line is missing.
+The same job from the terminal:
 
 ```bash
 export GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID
@@ -340,7 +426,7 @@ export AUTOML_APPROVE_SPEND=yes
 python python/workshop_automl.py run --approve-spend
 ```
 
-On Windows PowerShell the exports are:
+On Windows PowerShell:
 
 ```powershell
 $env:GOOGLE_CLOUD_PROJECT = "YOUR_PROJECT_ID"
@@ -350,72 +436,117 @@ $env:AUTOML_APPROVE_SPEND = "yes"
 python python/workshop_automl.py run --approve-spend
 ```
 
-## Stage 10 — Read the probabilities
+### Copy a finished batch prediction into the comparison file
 
-Run the next cell after Stage 9. If you left the switch at `False`, the cloud columns are absent and the message says so. The logistic columns are still there. If the paid cell finished, the cloud columns are in the same rows, one row per validation customer, each probability between 0 and 1.
+`import_saved_scores(experiment)` reads one finished batch prediction and writes its positive-class score into `validation_probabilities.csv`.
 
-`observed_churn` is 1 when the customer left and 0 otherwise. `p_logistic_tabular` and `p_logistic_text` are the earlier models. `p_automl_tabular` is the cloud model on the structured fields. `p_automl_text` is the cloud model on those fields plus the joined messages. `p1`, `cost`, and `loss` are the campaign inputs from Section 2.f. They do not change when the churn probability changes.
+`experiment` is `"tabular"` or `"tabular_text"`. `"tabular"` writes `p_automl_tabular`. `"tabular_text"` writes `p_automl_text`. The bucket path is `gcs_predictions` in `cloud_resources.json`. The files read are those named `prediction.results-`. Error tables and temporary files in the same folder are left unread.
+
+The call does not train a model and does not start a batch prediction. Run the same cell again after a later job. The column already in the file is replaced. `"tabular_text"` waits until that second batch prediction has written its files.
 
 ```{python}
-state = automl.load_workshop()
-state["probabilities"].head()
+copied = automl.import_saved_scores("tabular_text")
+copied[[automl.ID_COLUMN, "p_automl_text"]].head(2)
 ```
 
-A later session can pass any probability column to the targeting calculation as the baseline probability. That session reads this CSV. It does not call Google.
+### Add the Gemini scores to the comparison file
 
-## Stage 11 — Compare the probabilities with the logistic models
+`load_workshop()` takes no argument. It reads `CLOUD_MODE` and `OUTPUT_DIR`. `"LOAD"` opens `manifest.json` and `validation_probabilities.csv`. `"SAVE"` runs `prepare()` again and fits the tabular model a second time. `"RUN"` is refused. The paid call is `run_cloud()`.
 
-Accuracy, precision, and recall use the cutoff in `DECISION_THRESHOLD`, which is 0.5. ROC-AUC, PR-AUC, log-loss, and the Brier score do not use a cutoff.
+This cell is not a third switch. Keep the assignment below as `"LOAD"`. The line you edit is still the one in **Paths of the saved results**. If that line is `"SAVE"` when this cell runs, `load_workshop()` rebuilds the files again.
 
-ROC-AUC and PR-AUC describe the ranking. Log-loss, the Brier score, and the calibration plot describe the probabilities themselves. The campaign cost uses the probability. A model can rank customers well and still be too high or too low as a probability.
+It returns a dictionary. `state["probabilities"]` is the comparison file, one row per comparison customer. A column written by `import_saved_scores` is on those rows. `state["split_summary"]` counts the fit rows, the test rows, the comparison rows, the unused test rows, and the three `ml_split` labels. `state["automl_columns"]` lists the Gemini columns present in the file.
 
-The logistic models were fit with balanced class weights, as in Section 2.e. The cloud models are trained to keep the probabilities accurate, without that reweighting. Read the calibration plot with that difference in mind.
+```{python}
+# Keep "LOAD". Do not use this line to rebuild.
+# The rebuild line is CLOUD_MODE in "Paths of the saved results".
+automl.CLOUD_MODE = "LOAD"
+state = automl.load_workshop()
+state["probabilities"].head(2)
+```
+
+| Column | What it is | Where it comes from |
+|---|---|---|
+| `customerID` | Identifier | `ID_COLUMN` in the example |
+| `observed_outcome` | `1` when `TARGET_COLUMN` equals `POSITIVE_LABEL`, else `0` | `OBSERVED_COLUMN`. In the example, the customer left |
+| `p_logistic_tabular` | Logistic score, structured fields | `MODEL_ROWS_FILE`, or a refit on `SAVE` |
+| `p_logistic_text` | Logistic score, fields plus communications | `p0` in `SAVED_PROBABILITY_FILE` |
+| `p1` | Probability of staying if contacted | `ECONOMICS_FILE` |
+| `cost` | Contact cost | `example_cost` |
+| `loss` | Loss if the customer leaves | `example_loss` |
+| `p_automl_tabular` | Gemini score, structured fields | `import_saved_scores("tabular")`. The bucket column is `TARGET_COLUMN`, `_`, `POSITIVE_LABEL`, `_scores`. In the example, `Churn_Yes_scores`. |
+| `p_automl_text` | Gemini score, fields plus `TEXT_FEATURE` | `import_saved_scores("tabular_text")`, after that batch prediction exists |
+
+`p1`, `cost` and `loss` do not change when the score changes.
+
+### Compare the scores
+
+Accuracy, precision and recall use `DECISION_THRESHOLD`. ROC-AUC, PR-AUC, log-loss and the Brier score do not. They use `OBSERVED_COLUMN` and the score column. ROC-AUC and PR-AUC describe the ranking. Log-loss, the Brier score and the calibration plot describe the probabilities. The campaign calculation uses the probability. In the example, `OBSERVED_COLUMN` is `observed_outcome` and `1` means the customer left.
+
+In Chapter 5, under **The idea, before the command**, each fit row is weighted in the log-likelihood by `1 / (2 × the share of its own class)`. Leavers are fewer, so each leaver has the larger weight, and the two classes have the same total weight. The Gemini models fit without those weights. On the calibration plot, the logistic curve and the Gemini curve are scores from those two fits.
+
+**PR-AUC.** Chapter 5, under **Ranking, across cutoffs**, defines ROC-AUC as the probability that a random leaver receives a higher score than a random stayer. That is one leaver compared with one stayer. PR-AUC reads the list those scores produce. Order the comparison customers from the highest score to the lowest. Pick a leaver at random, each leaver equally likely. Keep that leaver and every customer ranked at least as high. Customers with the same score are kept together. Precision at that leaver is the share of the kept group who left. PR-AUC is the expected value of that precision. It is the area under the precision-recall curve: as the cutoff moves, recall is the share of leavers who are kept, and precision is the share of the kept group who left. A value of 1 means the kept group contains only leavers, whichever leaver is chosen. A ranking with no link to the outcome has PR-AUC equal to the share of leavers in the comparison rows. ROC-AUC can stand well above one half while this expected precision stays near that share, because many stayers can still sit above a leaver. The column `PR-AUC` in the next table is this average.
+
+`metrics_table(state["probabilities"])` takes the comparison table and reads `DECISION_THRESHOLD`. It uses every score column that is present. It returns one row per model.
 
 ```{python}
 automl.metrics_table(state["probabilities"])
 ```
 
+`plot_roc(state["probabilities"])` takes the same table. It returns one curve per score column. The number in the legend is the ROC-AUC. The vertical axis is the share of positive outcomes flagged. The horizontal axis is the share of negative outcomes flagged. In the example, a positive outcome is a customer who left.
+
 ```{python}
 automl.plot_roc(state["probabilities"])
 ```
+
+`plot_calibration(state["probabilities"])` takes the same table. It returns a figure: mean predicted probability against the share of those customers with `OBSERVED_COLUMN` equal to `1`.
 
 ```{python}
 automl.plot_calibration(state["probabilities"])
 ```
 
-Until the paid cell has run, these displays contain the two logistic models. After it has run, run the three cells again. The added rows are the cloud models. Compare tabular logistic regression with tabular AutoML. Separately, compare logistic regression with text and AutoML with text. The table is the result. It is not a claim that the cloud model is better.
+Until the paid cell has run, the displays contain the two logistic models. After it has run, run the three cells again. Compare tabular logistic regression with tabular Gemini. Separately, compare the communications logistic regression with Gemini plus `TEXT_FEATURE`. The table is the result.
 
-## Stage 12 — Does the campaign decision change?
+### Does the campaign decision change?
 
-The contact cost, the loss, and `p1` stay the values from Section 2.f. Only the baseline probability of churn changes. The budget is `BUDGET`, the same 8000 as that workshop, applied to these validation customers.
+The calculation uses `p1`, `cost`, `loss` and `BUDGET`. Only the churn score changes: once `p_logistic_tabular`, once `p_logistic_text`, and, when those columns exist, once `p_automl_tabular` and once `p_automl_text`.
 
-For each customer the rule from Section 2.f still holds. Target the customer when the expected loss avoided by the campaign is larger than the contact cost. The tables add those customer decisions.
+The Chapter 6 rule is unchanged. Target the customer when the expected loss avoided by the campaign is larger than `cost`.
+
+`economic_table(state["probabilities"])` takes the comparison table. It reads `BUDGET`, `OBSERVED_COLUMN`, `p1`, `cost`, `loss` and each score column. It returns one row per model: ROC-AUC, customers targeted, spend, expected cost, and the same figures under `BUDGET`. `summary` is that table.
 
 ```{python}
 summary = automl.economic_table(state["probabilities"])
 summary
 ```
 
-```{python}
-automl.plot_expected_cost(summary)
-```
+`Expected cost` and `Expected net benefit` use the score as $p_0$. Logistic regression and the Gemini search are fitted to the probabilities of the outcome. They are not fitted to this cost. A higher score raises $b_i = L_i(p_{0,i} - p_{1,i}) - c_i$. The smallest expected cost is then a property of those estimated probabilities. It is not a reason to prefer the model.
+
+`realized_cost_table(state["probabilities"])` keeps `p1`, `cost` and `loss` fixed and reads `OBSERVED_COLUMN`. With no campaign, a customer who left costs `loss` and a customer who stayed costs 0. The contact list is still the Chapter 6 list for that score. For a selected customer who left, `loss` is replaced by `cost + loss * p1`. For a selected customer who stayed, the cost is `cost`. `Net benefit` is the no-campaign total minus the with-campaign total. The budget columns use the contact list that respects `BUDGET`. `p1` is held as given. The table accounts for the historical outcomes under that fixed `p1`. It does not measure the effect of a campaign.
 
 ```{python}
-comparison = automl.ranking_versus_cost(state["probabilities"])
-comparison
+automl.realized_cost_table(state["probabilities"])
 ```
 
-```{python}
-print(automl.decision_note(comparison))
-```
+The probability summaries and `realized_cost_table` answer two questions.
 
-Read that sentence against the table. The model with the higher ROC-AUC and the model with the lower expected cost can be different models. Under the budget they can be different again.
+ROC-AUC, PR-AUC, log-loss, the Brier score and the calibration plot ask whether the score orders the customers and matches the share who left. On these comparison rows, the Gemini model that uses `TEXT_FEATURE` is ahead on those four summaries. The logistic model with the communications is close behind it. The two tabular models follow both.
 
-## Stage 13 — Delete the cloud resources
+`realized_cost_table` asks the Chapter 6 question. The score only builds the contact list, through $L_i(p_{0,i} - p_{1,i}) > c_i$. The money is then computed from who left, with `p1` held fixed. On this file the communications logistic contacts 204 leavers and 275 stayers, and its net benefit is the largest, about 66,000. The Gemini model with text contacts 120 leavers and 42 stayers. That list is more concentrated on leavers. Its net benefit is smaller, about 40,000, because more of the historical leavers are left uncontacted and each of them still costs `loss`. The same order remains under `BUDGET`.
 
-When you have the CSV, the campaign calculation does not need the cloud model. Delete what the paid cell recorded. The next cell deletes those recorded names only. It does not look for other models in the project.
+Chapter 6 is the step between the two readings. A gain in ROC-AUC does not name the customers worth a contact. The loss, the contact cost and `p1` can place two customers with the same score on opposite sides of the rule. The realized table is that rule applied to the people who left in this comparison set.
 
-Set `DELETE_CLOUD_RESOURCES` to `True` only when you want that deletion, then run the cell.
+Use that table when the customers about to be contacted resemble these comparison rows, and when `p1`, `cost` and `loss` stay the ones used here. The overlap between a contact list and the historical leavers is a fact about this cohort. It is the relevant business comparison for a cohort of the same kind.
+
+A cohort with a different churn share, different losses, or a different effect of a contact need not repeat that overlap. The Chapter 6 rule is then applied again, to new scores and to the new costs. The model that estimates the probabilities well is the more reliable input to that rule. A list that caught the leavers of this particular sample is tied to this sample.
+
+`p1` remains an assumption. The realized net benefit accounts for these historical outcomes under that assumption. It compares the contact lists on this cohort. It is not a measured effect of a campaign, and it is not a forecast for a cohort that does not look like this one.
+
+### Delete the cloud resources
+
+When `validation_probabilities.csv` has the Gemini columns, the campaign calculation does not need the cloud model.
+
+`cleanup_cloud(approve_delete=True)` runs only when `DELETE_CLOUD_RESOURCES` is `True`. It also requires `AUTOML_APPROVE_DELETE=yes`. It reads `cloud_resources.json` in `OUTPUT_DIR`, the names `run_cloud()` recorded. It returns `0` when nothing remains or the deletion finished, and `2` when the approval is missing.
 
 ```{python}
 DELETE_CLOUD_RESOURCES = False
@@ -426,26 +557,27 @@ if DELETE_CLOUD_RESOURCES:
 else:
     os.environ["AUTOML_APPROVE_DELETE"] = "no"
     print("Nothing was deleted.")
-    print("Set DELETE_CLOUD_RESOURCES = True and run this cell when the demonstration is finished.")
 ```
 
-The same deletion from the terminal:
+From the terminal:
 
 ```bash
 export AUTOML_APPROVE_DELETE=yes
 python python/workshop_automl.py cleanup --approve-delete
 ```
 
-The paid run also writes `data/processed/telco/automl/cleanup_commands.sh` with the same resource ids, when the output folder is the course folder. Then confirm the project is clear:
+The paid run also writes `cleanup_commands.sh` in `OUTPUT_DIR`. Then list the project:
 
 ```bash
 gcloud ai endpoints list --region="$GOOGLE_CLOUD_REGION"
 gcloud ai models list --region="$GOOGLE_CLOUD_REGION"
 gcloud ai datasets list --region="$GOOGLE_CLOUD_REGION"
-gcloud storage ls "gs://$GOOGLE_CLOUD_BUCKET/telco-automl/**"
+# GCS_PREFIX is the folder set in the lesson. The example is telco-automl.
+export GCS_PREFIX=telco-automl
+gcloud storage ls "gs://$GOOGLE_CLOUD_BUCKET/$GCS_PREFIX/**"
 ```
 
-This lesson does not create an endpoint. If one is listed, billing continues until each deployed model is removed. Replace the ids with the ones from `gcloud ai endpoints describe`.
+This lesson does not create an endpoint. If one is listed, billing continues until each deployed model is removed.
 
 ```bash
 gcloud ai endpoints describe ENDPOINT_ID --region="$GOOGLE_CLOUD_REGION"
@@ -455,15 +587,19 @@ gcloud ai endpoints undeploy-model ENDPOINT_ID \
 gcloud ai endpoints delete ENDPOINT_ID --region="$GOOGLE_CLOUD_REGION" --quiet
 ```
 
-To stop a training job or a batch job that is still running:
+To stop a job that is still running:
 
 ```bash
 gcloud ai training-pipelines cancel TRAINING_PIPELINE_ID --region="$GOOGLE_CLOUD_REGION" --quiet
 gcloud ai batch-prediction-jobs cancel BATCH_JOB_ID --region="$GOOGLE_CLOUD_REGION" --quiet
 ```
 
-The last cell checks the local files. A row that says the AutoML probabilities are not saved means the paid cell has not been run. The check does not start a job to fill that gap.
+<!--
+`verify_saved_files()` takes no argument. It reads `manifest.json` and `validation_probabilities.csv`. It returns columns `Check`, `Result`, `Detail` and `Required`. A row that says the Gemini probabilities are not saved means `p_automl_tabular` and `p_automl_text` are not in the comparison file yet. The check does not start a job.
+
 
 ```{python}
-automl.verify_saved_files()
+# automl.verify_saved_files()
 ```
+
+-->

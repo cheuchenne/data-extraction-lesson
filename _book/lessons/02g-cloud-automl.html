@@ -105,6 +105,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -194,19 +223,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#stage-1-what-you-already-have-and-what-the-cloud-adds" id="toc-stage-1-what-you-already-have-and-what-the-cloud-adds" class="nav-link active" data-scroll-target="#stage-1-what-you-already-have-and-what-the-cloud-adds"><span class="header-section-number">7.1</span> Stage 1 — What you already have, and what the cloud adds</a></li>
-  <li><a href="#stage-2-the-three-places-you-will-work" id="toc-stage-2-the-three-places-you-will-work" class="nav-link" data-scroll-target="#stage-2-the-three-places-you-will-work"><span class="header-section-number">7.2</span> Stage 2 — The three places you will work</a></li>
-  <li><a href="#stage-3-words-used-from-here-on" id="toc-stage-3-words-used-from-here-on" class="nav-link" data-scroll-target="#stage-3-words-used-from-here-on"><span class="header-section-number">7.3</span> Stage 3 — Words used from here on</a></li>
-  <li><a href="#stage-4-what-an-api-is-and-how-it-reaches-this-file" id="toc-stage-4-what-an-api-is-and-how-it-reaches-this-file" class="nav-link" data-scroll-target="#stage-4-what-an-api-is-and-how-it-reaches-this-file"><span class="header-section-number">7.4</span> Stage 4 — What an API is, and how it reaches this file</a></li>
-  <li><a href="#stage-5-point-the-lesson-at-your-files" id="toc-stage-5-point-the-lesson-at-your-files" class="nav-link" data-scroll-target="#stage-5-point-the-lesson-at-your-files"><span class="header-section-number">7.5</span> Stage 5 — Point the lesson at your files</a></li>
-  <li><a href="#stage-6-who-is-sent-to-google-and-who-is-kept-for-the-comparison" id="toc-stage-6-who-is-sent-to-google-and-who-is-kept-for-the-comparison" class="nav-link" data-scroll-target="#stage-6-who-is-sent-to-google-and-who-is-kept-for-the-comparison"><span class="header-section-number">7.6</span> Stage 6 — Who is sent to Google, and who is kept for the comparison</a></li>
-  <li><a href="#stage-7-open-the-account-the-project-and-the-bill" id="toc-stage-7-open-the-account-the-project-and-the-bill" class="nav-link" data-scroll-target="#stage-7-open-the-account-the-project-and-the-bill"><span class="header-section-number">7.7</span> Stage 7 — Open the account, the project, and the bill</a></li>
-  <li><a href="#stage-8-sign-in-and-create-the-bucket" id="toc-stage-8-sign-in-and-create-the-bucket" class="nav-link" data-scroll-target="#stage-8-sign-in-and-create-the-bucket"><span class="header-section-number">7.8</span> Stage 8 — Sign in and create the bucket</a></li>
-  <li><a href="#stage-9-start-the-training-from-this-document" id="toc-stage-9-start-the-training-from-this-document" class="nav-link" data-scroll-target="#stage-9-start-the-training-from-this-document"><span class="header-section-number">7.9</span> Stage 9 — Start the training from this document</a></li>
-  <li><a href="#stage-10-read-the-probabilities" id="toc-stage-10-read-the-probabilities" class="nav-link" data-scroll-target="#stage-10-read-the-probabilities"><span class="header-section-number">7.10</span> Stage 10 — Read the probabilities</a></li>
-  <li><a href="#stage-11-compare-the-probabilities-with-the-logistic-models" id="toc-stage-11-compare-the-probabilities-with-the-logistic-models" class="nav-link" data-scroll-target="#stage-11-compare-the-probabilities-with-the-logistic-models"><span class="header-section-number">7.11</span> Stage 11 — Compare the probabilities with the logistic models</a></li>
-  <li><a href="#stage-12-does-the-campaign-decision-change" id="toc-stage-12-does-the-campaign-decision-change" class="nav-link" data-scroll-target="#stage-12-does-the-campaign-decision-change"><span class="header-section-number">7.12</span> Stage 12 — Does the campaign decision change?</a></li>
-  <li><a href="#stage-13-delete-the-cloud-resources" id="toc-stage-13-delete-the-cloud-resources" class="nav-link" data-scroll-target="#stage-13-delete-the-cloud-resources"><span class="header-section-number">7.13</span> Stage 13 — Delete the cloud resources</a></li>
+  <li><a href="#retrieval-of-the-data" id="toc-retrieval-of-the-data" class="nav-link active" data-scroll-target="#retrieval-of-the-data"><span class="header-section-number">7.1</span> Retrieval of the data</a>
+  <ul class="collapse">
+  <li><a href="#paths-columns-and-the-split" id="toc-paths-columns-and-the-split" class="nav-link" data-scroll-target="#paths-columns-and-the-split"><span class="header-section-number">7.1.1</span> Paths, columns, and the split</a></li>
+  <li><a href="#gather-the-two-files" id="toc-gather-the-two-files" class="nav-link" data-scroll-target="#gather-the-two-files"><span class="header-section-number">7.1.2</span> Gather the two files</a></li>
+  <li><a href="#separate-fit-rows-and-test-rows" id="toc-separate-fit-rows-and-test-rows" class="nav-link" data-scroll-target="#separate-fit-rows-and-test-rows"><span class="header-section-number">7.1.3</span> Separate fit rows and test rows</a></li>
+  </ul></li>
+  <li><a href="#retrieval-of-the-previous-results" id="toc-retrieval-of-the-previous-results" class="nav-link" data-scroll-target="#retrieval-of-the-previous-results"><span class="header-section-number">7.2</span> Retrieval of the previous results</a>
+  <ul class="collapse">
+  <li><a href="#paths-of-the-saved-results" id="toc-paths-of-the-saved-results" class="nav-link" data-scroll-target="#paths-of-the-saved-results"><span class="header-section-number">7.2.1</span> Paths of the saved results</a></li>
+  <li><a href="#attach-the-scores-and-the-costs" id="toc-attach-the-scores-and-the-costs" class="nav-link" data-scroll-target="#attach-the-scores-and-the-costs"><span class="header-section-number">7.2.2</span> Attach the scores and the costs</a></li>
+  </ul></li>
+  <li><a href="#gemini" id="toc-gemini" class="nav-link" data-scroll-target="#gemini"><span class="header-section-number">7.3</span> Gemini</a>
+  <ul class="collapse">
+  <li><a href="#account-project-and-bill" id="toc-account-project-and-bill" class="nav-link" data-scroll-target="#account-project-and-bill"><span class="header-section-number">7.3.1</span> Account, project, and bill</a></li>
+  <li><a href="#the-api" id="toc-the-api" class="nav-link" data-scroll-target="#the-api"><span class="header-section-number">7.3.2</span> The API</a></li>
+  <li><a href="#quantities-the-job-reads" id="toc-quantities-the-job-reads" class="nav-link" data-scroll-target="#quantities-the-job-reads"><span class="header-section-number">7.3.3</span> Quantities the job reads</a></li>
+  <li><a href="#the-two-uploads" id="toc-the-two-uploads" class="nav-link" data-scroll-target="#the-two-uploads"><span class="header-section-number">7.3.4</span> The two uploads</a></li>
+  <li><a href="#what-is-billed" id="toc-what-is-billed" class="nav-link" data-scroll-target="#what-is-billed"><span class="header-section-number">7.3.5</span> What is billed</a></li>
+  <li><a href="#sign-in-and-create-the-bucket" id="toc-sign-in-and-create-the-bucket" class="nav-link" data-scroll-target="#sign-in-and-create-the-bucket"><span class="header-section-number">7.3.6</span> Sign in and create the bucket</a></li>
+  <li><a href="#train-and-score" id="toc-train-and-score" class="nav-link" data-scroll-target="#train-and-score"><span class="header-section-number">7.3.7</span> Train and score</a></li>
+  <li><a href="#copy-a-finished-batch-prediction-into-the-comparison-file" id="toc-copy-a-finished-batch-prediction-into-the-comparison-file" class="nav-link" data-scroll-target="#copy-a-finished-batch-prediction-into-the-comparison-file"><span class="header-section-number">7.3.8</span> Copy a finished batch prediction into the comparison file</a></li>
+  <li><a href="#add-the-gemini-scores-to-the-comparison-file" id="toc-add-the-gemini-scores-to-the-comparison-file" class="nav-link" data-scroll-target="#add-the-gemini-scores-to-the-comparison-file"><span class="header-section-number">7.3.9</span> Add the Gemini scores to the comparison file</a></li>
+  <li><a href="#compare-the-scores" id="toc-compare-the-scores" class="nav-link" data-scroll-target="#compare-the-scores"><span class="header-section-number">7.3.10</span> Compare the scores</a></li>
+  <li><a href="#does-the-campaign-decision-change" id="toc-does-the-campaign-decision-change" class="nav-link" data-scroll-target="#does-the-campaign-decision-change"><span class="header-section-number">7.3.11</span> Does the campaign decision change?</a></li>
+  <li><a href="#delete-the-cloud-resources" id="toc-delete-the-cloud-resources" class="nav-link" data-scroll-target="#delete-the-cloud-resources"><span class="header-section-number">7.3.12</span> Delete the cloud resources</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -233,13 +275,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Sections 2.e and 2.f already produced a probability of churn for each held-out customer. A logistic regression produced it, on this computer, from the customer table and from the communications.</p>
-<p>This session asks a cloud service to produce its own probability for the same customers. You then compare the two sets of numbers, and you see whether the campaign decision changes.</p>
-<p>You can follow the document in two ways.</p>
+<p>Chapters 5 and 6 left two kinds of information.</p>
 <ul>
-<li><strong>Read the comparison.</strong> Leave every switch as it is written. The cells use files already saved on this computer. Google is not called.</li>
-<li><strong>Train a model on Google.</strong> Follow the account steps, then change one line, <code>START_PAID_TRAINING = False</code>, to <code>True</code>.</li>
+<li>The customer tables, and the quantities that split them into fit rows and test rows.</li>
+<li>The scores of those rows, and the campaign costs of the test rows.</li>
 </ul>
+<p>The first objective is to gather both. Gemini is not used in this part. The fit table and the test table are what Gemini will receive. The comparison file is the test rows Gemini’s scores will be added to.</p>
+<p>Telco is the example. Another dataset uses the same capital-letter names and other paths.</p>
+<p>The only <code>CLOUD_MODE</code> line to edit is in <strong>Paths of the saved results</strong>. Leave it as <code>"LOAD"</code>. <code>"LOAD"</code> reads files already on this computer. <code>"SAVE"</code> rebuilds those files on this computer. Neither value calls Google. A later cell repeats <code>"LOAD"</code> so that the final read does not rebuild. The only line that spends money is <code>START_PAID_TRAINING = True</code>, in the Gemini section.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -250,205 +293,70 @@ Money is spent only if you change that line
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Rendering this file does not create a Google resource and does not start a training job. The training cell spends money only when <code>START_PAID_TRAINING</code> is <code>True</code>.</p>
+<p>Rendering this file does not create a Google resource and does not start a training job.</p>
 </div>
 </div>
-<p>Run the cells from top to bottom. Read the paragraph under each table before you continue.</p>
-<section id="stage-1-what-you-already-have-and-what-the-cloud-adds" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="stage-1-what-you-already-have-and-what-the-cloud-adds"><span class="header-section-number">7.1</span> Stage 1 — What you already have, and what the cloud adds</h2>
-<p>From Section 2.e you have two scores for the customers who were held out of the fit:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Column in the result file</th>
-<th>Where it comes from</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>p_logistic_tabular</code></td>
-<td>Logistic regression on the structured customer fields</td>
-</tr>
-<tr class="even">
-<td><code>p_logistic_text</code></td>
-<td>Logistic regression on those fields plus the communications</td>
-</tr>
-</tbody>
-</table>
-<p>From Section 2.f you have, for the same customers, a contact cost, a loss if the customer leaves, and a campaign probability <code>p1</code>.</p>
-<p>The cloud service does not use those scores. You send it a table. It tries several models, keeps one, and returns a new probability for each customer you ask it to score. That probability is the chance the customer leaves. The service names it from your target column and your positive label. In the course files the column that comes back is <code>Churn_Yes_score</code>. This lesson stores it as <code>p_automl_tabular</code> or <code>p_automl_text</code>.</p>
-<p>The comparison uses the same validation customers for every model. A higher ranking score is not assumed to produce a cheaper campaign. The last tables show the two results side by side.</p>
-</section>
-<section id="stage-2-the-three-places-you-will-work" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="stage-2-the-three-places-you-will-work"><span class="header-section-number">7.2</span> Stage 2 — The three places you will work</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Place</th>
-<th>What it is</th>
-<th>What you do there</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>This document</td>
-<td>The workshop on your computer</td>
-<td>Choose the files, start the job, read the probabilities</td>
-</tr>
-<tr class="even">
-<td>Google Cloud console</td>
-<td>The website <a href="https://console.cloud.google.com/" class="uri">https://console.cloud.google.com/</a></td>
-<td>Create the account, the project, and the billing</td>
-</tr>
-<tr class="odd">
-<td>The terminal</td>
-<td>The command window in the project folder</td>
-<td>Sign in, and create the storage folder</td>
-</tr>
-</tbody>
-</table>
-<p>The project folder is the folder that contains <code>_quarto.yml</code>, <code>lessons/</code>, and <code>data/</code>.</p>
-</section>
-<section id="stage-3-words-used-from-here-on" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="stage-3-words-used-from-here-on"><span class="header-section-number">7.3</span> Stage 3 — Words used from here on</h2>
-<p><strong>Google account.</strong> The login you use for the console. Create one at <a href="https://accounts.google.com/" class="uri">https://accounts.google.com/</a> if you do not have one.</p>
-<p><strong>Project.</strong> A named container for one piece of work. The training job, the stored files, and the bill sit inside one project. The project has a display name, which you choose, and a <strong>project ID</strong>, which is shorter. The commands use the project ID, for example <code>churn-workshop-123456</code>.</p>
-<p><strong>Billing account.</strong> The payment method attached to the project. Training is refused until a billing account is linked. New accounts are sometimes given trial credit. The billing page shows the amount that remains. When the credit is used, the payment method is charged.</p>
-<p><strong>Region.</strong> The group of data centers that will hold the files and run the job. This lesson uses <code>us-central1</code>. The storage folder and the job use the same region. The price list is different in another region.</p>
-<p><strong>Bucket.</strong> A named folder on Google’s disks. The training table is copied into it. The probabilities are written back into it, then copied onto your computer. The name is yours to choose. It must be unique across Google Cloud, and it may contain only lowercase letters, numbers, and hyphens.</p>
-<p><strong>Batch prediction.</strong> You send a file of customers. The service writes a file of probabilities. The computer that does this runs for that job and then stops.</p>
-<p><strong>Endpoint.</strong> A computer that stays on so that one customer can be scored at any moment. It is billed for every hour it stays on. This lesson uses batch prediction. It does not create an endpoint.</p>
-<p><strong>Node hour.</strong> One machine working for one hour. The training cap below is one node hour per model. The service can stop earlier. It does not train past the cap. Batch prediction is a separate charge and is not part of that cap.</p>
-</section>
-<section id="stage-4-what-an-api-is-and-how-it-reaches-this-file" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="stage-4-what-an-api-is-and-how-it-reaches-this-file"><span class="header-section-number">7.4</span> Stage 4 — What an API is, and how it reaches this file</h2>
-<p>An <strong>API</strong> (application programming interface) is a fixed list of requests that a program is allowed to send to a service. The console is for a person. The API is for a program.</p>
-<p>For this lesson the requests are: store this table, train a classification model, score this other table, delete what you created. You do not type those requests by hand.</p>
-<p>Three separate steps make the requests possible. None of the three starts the training.</p>
-<ol type="1">
-<li><p><strong>Allow the project to receive the requests.</strong> In the console, open these two pages and click <strong>Enable</strong> on each.</p>
-<ul>
-<li>Vertex AI API: <a href="https://console.cloud.google.com/apis/library/aiplatform.googleapis.com" class="uri">https://console.cloud.google.com/apis/library/aiplatform.googleapis.com</a></li>
-<li>Cloud Storage API: <a href="https://console.cloud.google.com/apis/library/storage.googleapis.com" class="uri">https://console.cloud.google.com/apis/library/storage.googleapis.com</a></li>
-</ul>
-<p>Enabling an API gives permission. It does not upload your customers and it does not train a model.</p></li>
-<li><p><strong>Install the translator on this computer.</strong> The Python package <code>google-cloud-aiplatform</code> turns the call in the training cell into one of those requests. <code>google-cloud-storage</code> copies the CSV files. Install them once, from the project folder, after you have decided to run a paid job:</p></li>
-</ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install google-cloud-aiplatform google-cloud-storage</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>On Windows, activate with <code>.venv\Scripts\activate</code>. You do not need these packages to read the saved comparison.</p>
-<ol start="3" type="1">
-<li><strong>Sign in, so the package can prove who is asking.</strong> The command is in Stage 7. It opens a browser. The proof stays in your user account on this computer. Do not download a key file into this project folder, and do not paste a password into a cell.</li>
-</ol>
-<p>The pages that describe this service sometimes say <strong>Gemini Enterprise Agent Platform</strong>. In the console the menu is <strong>Vertex AI</strong>. The Python package is <code>google-cloud-aiplatform</code>. Those are the current names for the same tabular training service. This lesson uses that service.</p>
-<p>While a job is running you can watch it in the console: <strong>Vertex AI → Training</strong>, then <strong>Vertex AI → Batch predictions</strong>. The probabilities used in the tables below are the ones saved in the CSV on your computer.</p>
-</section>
-<section id="stage-5-point-the-lesson-at-your-files" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="stage-5-point-the-lesson-at-your-files"><span class="header-section-number">7.5</span> Stage 5 — Point the lesson at your files</h2>
-<p>The course example uses the telco files from Sections 2.e and 2.f. To use your own extract, replace the paths and the column names in the next cell, set <code>CLOUD_MODE</code> to <code>"SAVE"</code>, and run the cell again. <code>"SAVE"</code> rebuilds the files on this computer. It does not call Google.</p>
-<p>Your customer file replaces <code>TABULAR_FILE</code>.</p>
-<ul>
-<li>One row per customer. The identifier is not repeated.</li>
-<li>The identifier column, the target column, and every column you list under the numeric and categorical features.</li>
-<li>The target has two labels. <code>POSITIVE_LABEL</code> is the label you care about. In the course file that label is <code>Yes</code>, the customer left. The saved scores code it as 1.</li>
-<li>Leave the identifier and the target out of the feature lists. Leave out any column that was filled in after the customer left.</li>
-</ul>
-<p>Your message file replaces <code>TEXT_FILE</code>.</p>
-<ul>
-<li>One row per message. A customer may have several messages.</li>
-<li>The same identifier column, a text column, and an order column. The order column numbers that customer’s messages. The same number is not used twice for one customer.</li>
-<li>Messages for one customer are sorted by that order and joined with a blank line. The cloud model receives that joined text in a column named <code>customer_text</code>. The logistic regression from Section 2.e does not receive the raw text. It uses the compressed text columns from that workshop. The comparison includes that difference.</li>
-<li>If your message file has no type column, set <code>TEXT_TYPE_COLUMN</code> to <code>""</code>.</li>
-</ul>
-<p><code>SAVED_PROBABILITY_FILE</code> is the file Section 2.e wrote for the logistic regression that uses the communications. In the course it is <code>data/processed/telco/test_probabilities_with_text.csv</code>. It must list the same test customers, in the same order, with the probability and the observed outcome. Set <code>RANDOM_STATE</code> and <code>TEST_SIZE</code> to the values that produced that file. In the course those values are <code>42</code> and <code>0.25</code>.</p>
-<p><code>ECONOMICS_FILE</code> is the campaign file from Section 2.f. One row per customer, with the campaign probability, the contact cost, and the loss if the customer churns. The four column-name settings under the paths must match that file.</p>
-<p>The service accepts a training table of at least 1,000 rows. With <code>TEST_SIZE</code> at <code>0.25</code>, the customer file needs more than about 1,400 rows. Blank numeric values are stored as zero.</p>
-<p>The training cap is saved when the files are built. If you change <code>BUDGET_MILLI_NODE_HOURS</code>, set <code>CLOUD_MODE</code> to <code>"SAVE"</code> and run the next two cells again before you start a paid job. <code>1000</code> is one node hour, and it is the smallest cap the service accepts.</p>
-<div id="3a271795" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> Path(<span class="st">"data/raw/telco/telco_customers.csv"</span>).exists():</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    os.chdir(Path(<span class="st">".."</span>).resolve())</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">str</span>(Path.cwd()) <span class="kw">not</span> <span class="kw">in</span> sys.path:</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(Path.cwd()))</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> python.workshop_automl <span class="im">as</span> automl</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>automl.use_course_example()</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Your files. Replace the four paths, and the folder, for another dataset.</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>automl.TABULAR_FILE <span class="op">=</span> <span class="st">"data/raw/telco/telco_customers.csv"</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>automl.TEXT_FILE <span class="op">=</span> <span class="st">"data/raw/telco/customer_communications.csv"</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>automl.SAVED_PROBABILITY_FILE <span class="op">=</span> <span class="st">"data/processed/telco/test_probabilities_with_text.csv"</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_FILE <span class="op">=</span> <span class="st">"data/processed/telco/campaign_example_population.csv"</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>automl.OUTPUT_DIR <span class="op">=</span> <span class="st">"data/processed/telco/automl"</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Column names in those files.</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>automl.ID_COLUMN <span class="op">=</span> <span class="st">"customerID"</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>automl.TARGET_COLUMN <span class="op">=</span> <span class="st">"Churn"</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>automl.POSITIVE_LABEL <span class="op">=</span> <span class="st">"Yes"</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>automl.TEXT_COLUMN <span class="op">=</span> <span class="st">"text"</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>automl.TEXT_ORDER_COLUMN <span class="op">=</span> <span class="st">"text_index"</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>automl.TEXT_TYPE_COLUMN <span class="op">=</span> <span class="st">"communication_type"</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>automl.SAVED_PROBABILITY_ID <span class="op">=</span> <span class="st">"customer_id"</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>automl.SAVED_PROBABILITY_COLUMN <span class="op">=</span> <span class="st">"p0"</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>automl.SAVED_OUTCOME_COLUMN <span class="op">=</span> <span class="st">"observed_outcome"</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_ID_COLUMN <span class="op">=</span> <span class="st">"customer_id"</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_P1_COLUMN <span class="op">=</span> <span class="st">"p1"</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_COST_COLUMN <span class="op">=</span> <span class="st">"example_cost"</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_LOSS_COLUMN <span class="op">=</span> <span class="st">"example_loss"</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>automl.NUMERIC_FEATURES <span class="op">=</span> [<span class="st">"tenure"</span>, <span class="st">"MonthlyCharges"</span>, <span class="st">"TotalCharges"</span>]</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>automl.CATEGORICAL_FEATURES <span class="op">=</span> [</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gender"</span>,</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SeniorCitizen"</span>,</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Partner"</span>,</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dependents"</span>,</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PhoneService"</span>,</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MultipleLines"</span>,</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"InternetService"</span>,</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OnlineSecurity"</span>,</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OnlineBackup"</span>,</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DeviceProtection"</span>,</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TechSupport"</span>,</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StreamingTV"</span>,</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StreamingMovies"</span>,</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Contract"</span>,</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PaperlessBilling"</span>,</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PaymentMethod"</span>,</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co"># The same split that wrote SAVED_PROBABILITY_FILE.</span></span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>automl.RANDOM_STATE <span class="op">=</span> <span class="dv">42</span></span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>automl.TEST_SIZE <span class="op">=</span> <span class="fl">0.25</span></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Half of that earlier test set is the comparison set. The other half is kept aside.</span></span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>automl.HOLDOUT_VALIDATION_FRACTION <span class="op">=</span> <span class="fl">0.5</span></span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>automl.DECISION_THRESHOLD <span class="op">=</span> <span class="fl">0.5</span></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="co"># 1000 milli node hours = 1 node hour per model. The smallest cap.</span></span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>automl.BUDGET_MILLI_NODE_HOURS <span class="op">=</span> <span class="dv">1000</span></span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="co"># A third model, communications only, is off. True adds one more training cap.</span></span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>automl.INCLUDE_TEXT_ONLY <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="co"># The campaign budget from Section 2.f, applied to the comparison customers.</span></span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>automl.BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="co"># "LOAD" reads saved files. "SAVE" rebuilds them here. Neither calls Google.</span></span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>automl.CLOUD_MODE <span class="op">=</span> <span class="st">"LOAD"</span></span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="dv">8</span>)</span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.width"</span>, <span class="dv">120</span>)</span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_colwidth"</span>, <span class="dv">60</span>)</span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.float_format"</span>, <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>automl.active_settings()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Run the cells from top to bottom.</p>
+<section id="retrieval-of-the-data" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="retrieval-of-the-data"><span class="header-section-number">7.1</span> Retrieval of the data</h2>
+<section id="paths-columns-and-the-split" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="paths-columns-and-the-split"><span class="header-section-number">7.1.1</span> Paths, columns, and the split</h3>
+<p><code>use_course_example()</code> takes no input. It fills every capital-letter name with the telco example. It returns nothing. The assignments under it are the values the next functions read. Replace them for another dataset.</p>
+<p><code>TABULAR_FILE</code> is one row per customer. <code>TEXT_FILE</code> is one row per message. <code>ID_COLUMN</code> is the shared identifier. <code>TARGET_COLUMN</code> is the outcome. <code>POSITIVE_LABEL</code> is the label counted as a leave. In the example that label is <code>Yes</code>, later coded <code>1</code>.</p>
+<p><code>TEXT_COLUMN</code> is the message. <code>TEXT_ORDER_COLUMN</code> numbers one customer’s messages. <code>TEXT_TYPE_COLUMN</code> names the kind of message. Set it to <code>""</code> when the file has no such column. <code>TEXT_FEATURE</code> is the name of the joined-text column this lesson will add. It is not a column of the source files.</p>
+<p><code>NUMERIC_FEATURES</code> and <code>CATEGORICAL_FEATURES</code> are the predictors. Do not put <code>ID_COLUMN</code> or <code>TARGET_COLUMN</code> in those lists.</p>
+<p><code>RANDOM_STATE</code> is the seed. <code>TEST_SIZE</code> is the share of customers held out of the fit. Chapter 5 used <code>42</code> and <code>0.25</code>. The same two numbers rebuild that split.</p>
+<div id="51860bc7" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> Path(<span class="st">"data/raw/telco/telco_customers.csv"</span>).exists():</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    os.chdir(Path(<span class="st">".."</span>).resolve())</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">str</span>(Path.cwd()) <span class="kw">not</span> <span class="kw">in</span> sys.path:</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(Path.cwd()))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> python.workshop_automl <span class="im">as</span> automl</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>automl.use_course_example()</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>automl.TABULAR_FILE <span class="op">=</span> <span class="st">"data/raw/telco/telco_customers.csv"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>automl.TEXT_FILE <span class="op">=</span> <span class="st">"data/raw/telco/customer_communications.csv"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>automl.ID_COLUMN <span class="op">=</span> <span class="st">"customerID"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>automl.TARGET_COLUMN <span class="op">=</span> <span class="st">"Churn"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>automl.POSITIVE_LABEL <span class="op">=</span> <span class="st">"Yes"</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>automl.TEXT_COLUMN <span class="op">=</span> <span class="st">"text"</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>automl.TEXT_ORDER_COLUMN <span class="op">=</span> <span class="st">"text_index"</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>automl.TEXT_TYPE_COLUMN <span class="op">=</span> <span class="st">"communication_type"</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>automl.TEXT_FEATURE <span class="op">=</span> <span class="st">"customer_text"</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>automl.NUMERIC_FEATURES <span class="op">=</span> [<span class="st">"tenure"</span>, <span class="st">"MonthlyCharges"</span>, <span class="st">"TotalCharges"</span>]</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>automl.CATEGORICAL_FEATURES <span class="op">=</span> [</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gender"</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SeniorCitizen"</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Partner"</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dependents"</span>,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PhoneService"</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MultipleLines"</span>,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"InternetService"</span>,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OnlineSecurity"</span>,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OnlineBackup"</span>,</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DeviceProtection"</span>,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TechSupport"</span>,</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StreamingTV"</span>,</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StreamingMovies"</span>,</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Contract"</span>,</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PaperlessBilling"</span>,</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PaymentMethod"</span>,</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>automl.RANDOM_STATE <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>automl.TEST_SIZE <span class="op">=</span> <span class="fl">0.25</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Working directory:"</span>, Path.cwd())</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>automl.active_settings()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Working directory: /Users/heuchennecedric/Documents/data-extraction-lesson</code></pre>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
@@ -500,7 +408,7 @@ Money is spent only if you change that line
 <tr class="even">
 <td data-quarto-table-cell-role="th">7</td>
 <td>CATEGORICAL_FEATURES</td>
-<td>gender, SeniorCitizen, Partner, Dependents, PhoneService...</td>
+<td>gender, SeniorCitizen, Partner, Dependents, Ph...</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">8</td>
@@ -509,66 +417,91 @@ Money is spent only if you change that line
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">9</td>
+<td>SPLIT_COLUMN</td>
+<td>ml_split</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>OBSERVED_COLUMN</td>
+<td>observed_outcome</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>MODEL_ROWS_ID_COLUMN</td>
+<td>customer_id</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>GCS_PREFIX</td>
+<td>telco-automl</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
 <td>RANDOM_STATE</td>
 <td>42</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">10</td>
-<td>TEST_SIZE</td>
-<td>0.250</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">11</td>
-<td>HOLDOUT_VALIDATION_FRACTION</td>
-<td>0.500</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">12</td>
-<td>PLATFORM_VALIDATE_FRACTION</td>
-<td>0.100</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">13</td>
-<td>PLATFORM_TEST_FRACTION</td>
-<td>0.100</td>
-</tr>
-<tr class="odd">
 <td data-quarto-table-cell-role="th">14</td>
-<td>DECISION_THRESHOLD</td>
-<td>0.500</td>
+<td>TEST_SIZE</td>
+<td>0.25</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">15</td>
+<td>HOLDOUT_VALIDATION_FRACTION</td>
+<td>0.5</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>PLATFORM_VALIDATE_FRACTION</td>
+<td>0.1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17</td>
+<td>PLATFORM_TEST_FRACTION</td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">18</td>
+<td>DECISION_THRESHOLD</td>
+<td>0.5</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">19</td>
 <td>OPTIMIZATION_OBJECTIVE</td>
 <td>minimize-log-loss</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">16</td>
+<td data-quarto-table-cell-role="th">20</td>
 <td>BUDGET_MILLI_NODE_HOURS</td>
 <td>1000</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">17</td>
+<td data-quarto-table-cell-role="th">21</td>
 <td>INCLUDE_TEXT_ONLY</td>
 <td>False</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">18</td>
+<td data-quarto-table-cell-role="th">22</td>
 <td>BUDGET</td>
-<td>8000</td>
+<td>8000.0</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">19</td>
+<td data-quarto-table-cell-role="th">23</td>
 <td>ECONOMICS_FILE</td>
-<td>data/processed/telco/campaign_example_population.csv</td>
+<td>data/processed/telco/campaign_example_populati...</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">20</td>
+<td data-quarto-table-cell-role="th">24</td>
 <td>SAVED_PROBABILITY_FILE</td>
-<td>data/processed/telco/test_probabilities_with_text.csv</td>
+<td>data/processed/telco/test_probabilities_with_t...</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">21</td>
+<td data-quarto-table-cell-role="th">25</td>
+<td>MODEL_ROWS_FILE</td>
+<td>data/processed/telco/model_rows.csv</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">26</td>
 <td>OUTPUT_DIR</td>
 <td>data/processed/telco/automl</td>
 </tr>
@@ -578,18 +511,22 @@ Money is spent only if you change that line
 </div>
 </div>
 </div>
-<p>Check the table. The paths and the column names in the table are the ones the next cell will use.</p>
 </section>
-<section id="stage-6-who-is-sent-to-google-and-who-is-kept-for-the-comparison" class="level2" data-number="7.6">
-<h2 data-number="7.6" class="anchored" data-anchor-id="stage-6-who-is-sent-to-google-and-who-is-kept-for-the-comparison"><span class="header-section-number">7.6</span> Stage 6 — Who is sent to Google, and who is kept for the comparison</h2>
-<p>Section 2.e held out 25 percent of customers. Those held-out customers are the ones in <code>SAVED_PROBABILITY_FILE</code>. This lesson does not draw a new split of the whole table.</p>
-<p>The training file contains only the customers who were used to fit the logistic regression. Google may split that file internally. A column named <code>ml_split</code> gives it the three labels it requires: <code>TRAIN</code>, <code>VALIDATE</code>, and <code>TEST</code>. Those labels are written on training customers only. Google uses its <code>VALIDATE</code> rows to choose a model. The current documentation says the model that is kept can be fit again on every uploaded row. That is why the comparison customers are not in the upload.</p>
-<p>The earlier test set is split in half, with the same <code>RANDOM_STATE</code>. One half is the <strong>validation</strong> set. Every table from here on uses that half. The other half is a final test set. Its identifiers are saved, and it is not scored.</p>
-<div id="d84a9c30" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> automl.load_workshop()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>state[<span class="st">"split_summary"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="gather-the-two-files" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="gather-the-two-files"><span class="header-section-number">7.1.2</span> Gather the two files</h3>
+<p><code>gather_sources()</code> takes no argument. It reads the paths and column names above. It sorts each customer’s messages by <code>TEXT_ORDER_COLUMN</code>, joins them with a blank line, and stores the text in <code>customer_text</code> (<code>TEXT_FEATURE</code>). It returns one row per customer. It does not split. It does not call Google.</p>
+<div id="319acff8" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> automl.gather_sources()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>shown <span class="op">=</span> customers[[automl.ID_COLUMN, automl.TARGET_COLUMN, automl.TEXT_FEATURE]].head(<span class="dv">2</span>).copy()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>shown[automl.TEXT_FEATURE] <span class="op">=</span> (</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    shown[automl.TEXT_FEATURE].<span class="bu">str</span>.replace(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>, <span class="st">" "</span>, regex<span class="op">=</span><span class="va">False</span>).<span class="bu">str</span>.<span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">80</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>shown</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>AutoML probabilities are not in the saved file. The tables below use the local logistic regressions. A render does not start a training job.</code></pre>
+<pre><code>Tabular file: data/raw/telco/telco_customers.csv
+Text file: data/raw/telco/customer_communications.csv
+Blank numeric values replaced with zero: 0
+Gathered 7043 customers. Joined messages are in customer_text.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <div>
@@ -599,61 +536,23 @@ Money is spent only if you change that line
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Group</th>
-<th data-quarto-table-cell-role="th">Rows</th>
-<th data-quarto-table-cell-role="th">Positive</th>
-<th data-quarto-table-cell-role="th">Positive rate</th>
+<th data-quarto-table-cell-role="th">customerID</th>
+<th data-quarto-table-cell-role="th">Churn</th>
+<th data-quarto-table-cell-role="th">customer_text</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>Previous training</td>
-<td>5282</td>
-<td>1402</td>
-<td>0.265</td>
+<td>7590-VHVEG</td>
+<td>No</td>
+<td>**Customer:** I am calling about the service. ...</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>Previous test</td>
-<td>1761</td>
-<td>467</td>
-<td>0.265</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>Validation, used for comparison</td>
-<td>880</td>
-<td>233</td>
-<td>0.265</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>Final test, not scored</td>
-<td>881</td>
-<td>234</td>
-<td>0.266</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>Platform TRAIN inside previous training</td>
-<td>4224</td>
-<td>1122</td>
-<td>0.266</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>Platform VALIDATE inside previous training</td>
-<td>529</td>
-<td>140</td>
-<td>0.265</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">6</td>
-<td>Platform TEST inside previous training</td>
-<td>529</td>
-<td>140</td>
-<td>0.265</td>
+<td>5575-GNVDE</td>
+<td>No</td>
+<td>**Agent:** Support here. I can help with the s...</td>
 </tr>
 </tbody>
 </table>
@@ -661,11 +560,409 @@ Money is spent only if you change that line
 </div>
 </div>
 </div>
-<p><code>Previous training</code> is the file Google receives. <code>Validation, used for comparison</code> is the file Google is asked to score after training. <code>Final test, not scored</code> stays on this computer. The three <code>Platform</code> rows are the labels inside the training file. They are not the validation customers.</p>
-<p>The next cell shows the first rows of the training file that includes the communications. <code>customerID</code> is kept so the probabilities can be matched later. It is not used as a predictor. <code>Churn</code> is the target. <code>ml_split</code> is the label from the table above. <code>customer_text</code> is the joined messages. The service is told that this column is text, so it uses the words. The other experiment is the same table without <code>customer_text</code>.</p>
-<div id="55f6648d" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>automl.training_preview(<span class="st">"tabular_text"</span>, rows<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+</section>
+<section id="separate-fit-rows-and-test-rows" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="separate-fit-rows-and-test-rows"><span class="header-section-number">7.1.3</span> Separate fit rows and test rows</h3>
+<p><code>separate_fit_test(customers)</code> takes the table just returned. It also reads <code>RANDOM_STATE</code>, <code>TEST_SIZE</code>, <code>ID_COLUMN</code>, <code>TARGET_COLUMN</code> and <code>POSITIVE_LABEL</code>. It returns two tables, <code>fit_table</code> and <code>test_table</code>. The split is stratified on the target. A row in <code>test_table</code> was not used to fit the Chapter 5 models. The row counts are the Chapter 5 counts when the seed and <code>TEST_SIZE</code> are unchanged.</p>
+<p><code>fit_table</code> is the table Gemini will train on. <code>test_table</code> is the table from which the scored customers are taken.</p>
+<div id="664e1f40" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_table, test_table <span class="op">=</span> automl.separate_fit_test(customers)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Fit rows:"</span>, <span class="bu">len</span>(fit_table))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test rows:"</span>, <span class="bu">len</span>(test_table))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Training rows: 5282. Test rows: 1761. Random seed: 42.
+Fit rows: 5282
+Test rows: 1761</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="retrieval-of-the-previous-results" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="retrieval-of-the-previous-results"><span class="header-section-number">7.2</span> Retrieval of the previous results</h2>
+<p>The scores and the campaign quantities are loaded here. <code>p1</code>, <code>cost</code> and <code>loss</code> are not model scores. Chapter 6 stored them for the test customers. They are loaded now because the comparison at the end uses them, and only them, as the campaign inputs.</p>
+<section id="paths-of-the-saved-results" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="paths-of-the-saved-results"><span class="header-section-number">7.2.1</span> Paths of the saved results</h3>
+<p><code>MODEL_ROWS_FILE</code> is the file Chapter 5 writes with <code>save_model_rows</code>. One row per customer. <code>role</code> is <code>fit</code> or <code>test</code>. <code>p_logistic_tabular</code> is the structured-fields score. <code>p_logistic_text</code> is the score that also uses the communications. <code>observed_outcome</code> is <code>1</code> or <code>0</code>. <code>MODEL_ROWS_ID_COLUMN</code> is the identifier column of that file. In the example it is <code>customer_id</code>. <code>ID_COLUMN</code> in the customer table is <code>customerID</code>. The two names are joined. The example path is <code>data/processed/telco/model_rows.csv</code>. Until that cell in Chapter 5 has been run, the file is absent. This lesson then uses <code>SAVED_PROBABILITY_FILE</code> for <code>p_logistic_text</code> and refits the tabular score when <code>CLOUD_MODE</code> is <code>"SAVE"</code>.</p>
+<p><code>SAVED_PROBABILITY_FILE</code> is the file <code>save_scores</code> (in Chapter 5) wrote for Chapter 6. In the example, <code>p0</code> (<code>SAVED_PROBABILITY_COLUMN</code>) is <code>p_logistic_text</code> on the test rows, and <code>observed_outcome</code> (<code>SAVED_OUTCOME_COLUMN</code>) is the same 0/1 outcome. <code>SAVED_PROBABILITY_ID</code> is the identifier column of that file.</p>
+<p><code>ECONOMICS_FILE</code> is Chapter 6’s <code>POPULATION_FILE</code>. <code>ECONOMICS_P1_COLUMN</code> (<code>p1</code>) is the probability of staying if contacted. <code>ECONOMICS_COST_COLUMN</code> (<code>example_cost</code>) becomes <code>cost</code>. <code>ECONOMICS_LOSS_COLUMN</code> (<code>example_loss</code>) becomes <code>loss</code>. The file has the test customers, not the fit customers.</p>
+<p><code>HOLDOUT_VALIDATION_FRACTION = 0.5</code> keeps half of <code>test_table</code> for the comparison file. The other half is not scored. The comparison customers stay out of the training upload: the model Gemini keeps can be fit again on every uploaded row. <code>OUTPUT_DIR</code> is the folder of the files this lesson writes.</p>
+<p><code>OBSERVED_COLUMN</code> is the 0/1 column of the comparison file. <code>1</code> means <code>TARGET_COLUMN</code> equals <code>POSITIVE_LABEL</code>. In the example, <code>1</code> means <code>Churn</code> is <code>Yes</code>: the customer left. The functions read <code>OBSERVED_COLUMN</code>. Change <code>TARGET_COLUMN</code> in <strong>Paths, columns, and the split</strong> to use another outcome.</p>
+<p><code>CLOUD_MODE</code> has two values. <code>"LOAD"</code> reads <code>validation_probabilities.csv</code> and the Gemini files in <code>OUTPUT_DIR</code>. <code>"SAVE"</code> rebuilds those files. The assignment below is the only line to edit. The later cells read it. After a rebuild, set this line back to <code>"LOAD"</code> before <strong>Add the Gemini scores to the comparison file</strong>.</p>
+<p><code>DECISION_THRESHOLD = 0.5</code> means a score of at least <code>0.5</code> is counted as a predicted leave. The comparison section uses it. The probabilities themselves are not changed by it.</p>
+<div id="bcb745a7" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>automl.MODEL_ROWS_FILE <span class="op">=</span> <span class="st">"data/processed/telco/model_rows.csv"</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>automl.MODEL_ROWS_ID_COLUMN <span class="op">=</span> <span class="st">"customer_id"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>automl.OBSERVED_COLUMN <span class="op">=</span> <span class="st">"observed_outcome"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>automl.SAVED_PROBABILITY_FILE <span class="op">=</span> <span class="st">"data/processed/telco/test_probabilities_with_text.csv"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>automl.SAVED_PROBABILITY_ID <span class="op">=</span> <span class="st">"customer_id"</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>automl.SAVED_PROBABILITY_COLUMN <span class="op">=</span> <span class="st">"p0"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>automl.SAVED_OUTCOME_COLUMN <span class="op">=</span> <span class="st">"observed_outcome"</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_FILE <span class="op">=</span> <span class="st">"data/processed/telco/campaign_example_population.csv"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_ID_COLUMN <span class="op">=</span> <span class="st">"customer_id"</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_P1_COLUMN <span class="op">=</span> <span class="st">"p1"</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_COST_COLUMN <span class="op">=</span> <span class="st">"example_cost"</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>automl.ECONOMICS_LOSS_COLUMN <span class="op">=</span> <span class="st">"example_loss"</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>automl.HOLDOUT_VALIDATION_FRACTION <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>automl.DECISION_THRESHOLD <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>automl.OUTPUT_DIR <span class="op">=</span> <span class="st">"data/processed/telco/automl"</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Only line to edit. Use exactly "LOAD" or exactly "SAVE".</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># "LOAD" reads the files. "SAVE" rebuilds them. Neither calls Google.</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>automl.CLOUD_MODE <span class="op">=</span> <span class="st">"LOAD"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="attach-the-scores-and-the-costs" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="attach-the-scores-and-the-costs"><span class="header-section-number">7.2.2</span> Attach the scores and the costs</h3>
+<p><code>retrieve_results(fit_table, test_table)</code> takes those two tables. It reads the paths in the cell above.</p>
+<p>It returns a dictionary.</p>
+<ul>
+<li><code>retrieved["fit"]</code> is the fit rows. <code>p_logistic_tabular</code> and <code>p_logistic_text</code> are filled when <code>MODEL_ROWS_FILE</code> exists. Fit rows have no <code>p1</code>, <code>cost</code> or <code>loss</code>: Chapter 6 did not store campaign quantities for them.</li>
+<li><code>retrieved["test"]</code> is every test row. <code>p_logistic_text</code> comes from <code>MODEL_ROWS_FILE</code>, or from <code>p0</code> in <code>SAVED_PROBABILITY_FILE</code>. <code>p1</code>, <code>cost</code> and <code>loss</code> come from <code>ECONOMICS_FILE</code>. Without <code>MODEL_ROWS_FILE</code>, <code>p_logistic_tabular</code> is filled only on the comparison rows. The other test rows have that column empty.</li>
+<li><code>retrieved["comparison"]</code> is the share <code>HOLDOUT_VALIDATION_FRACTION</code> of the test rows. This is the file Gemini will complete. <code>write=True</code> writes it to <code>OUTPUT_DIR/validation_probabilities.csv</code>. <code>write=False</code> reads that file and fits no model.</li>
+</ul>
+<p><code>retrieve_results</code> does not read <code>CLOUD_MODE</code>. The argument <code>write</code> does. <code>write_files</code> is that argument. It is <code>True</code> only when the line above is exactly <code>"SAVE"</code>.</p>
+<!--
+`strip()` deletes spaces at the two ends of a string. `upper()` turns each letter into a capital. `" save ".strip().upper()` is `"SAVE"`. That extra spelling is not used. `"save"` and `" SAVE "` do not count. The line above must be `"LOAD"` or `"SAVE"`.-->
+<div id="335208f8" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do not assign CLOUD_MODE here. This reads the line in the cell above.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>write_files <span class="op">=</span> automl.CLOUD_MODE <span class="op">==</span> <span class="st">"SAVE"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>retrieved <span class="op">=</span> automl.retrieve_results(fit_table, test_table, write<span class="op">=</span>write_files)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Fit rows:"</span>, <span class="bu">len</span>(retrieved[<span class="st">"fit"</span>]))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test rows:"</span>, <span class="bu">len</span>(retrieved[<span class="st">"test"</span>]))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Comparison rows:"</span>, <span class="bu">len</span>(retrieved[<span class="st">"comparison"</span>]))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>retrieved[<span class="st">"comparison"</span>].head(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loaded validation_probabilities.csv. No model was fitted.
+Fit rows: 5282
+Test rows: 1761
+Comparison rows: 880</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">customerID</th>
+<th data-quarto-table-cell-role="th">observed_outcome</th>
+<th data-quarto-table-cell-role="th">p_logistic_tabular</th>
+<th data-quarto-table-cell-role="th">p_logistic_text</th>
+<th data-quarto-table-cell-role="th">p1</th>
+<th data-quarto-table-cell-role="th">cost</th>
+<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">p_automl_tabular</th>
+<th data-quarto-table-cell-role="th">p_automl_text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>7996-BPXHY</td>
+<td>0</td>
+<td>0.116089</td>
+<td>0.053209</td>
+<td>0.046685</td>
+<td>30.0</td>
+<td>300.0</td>
+<td>0.040444</td>
+<td>0.022887</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0376-YMCJC</td>
+<td>1</td>
+<td>0.773286</td>
+<td>0.557476</td>
+<td>0.430424</td>
+<td>30.0</td>
+<td>1087.2</td>
+<td>0.528902</td>
+<td>0.241196</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><code>validation_probabilities.csv</code> holds the comparison rows and the local columns: <code>ID_COLUMN</code>, <code>OBSERVED_COLUMN</code>, <code>p_logistic_tabular</code>, <code>p_logistic_text</code>, <code>p1</code>, <code>cost</code> and <code>loss</code>. In the example those first two names are <code>customerID</code> and <code>observed_outcome</code>. A Gemini score is added later, by <code>import_saved_scores</code> or by the paid cell.</p>
+</section>
+</section>
+<section id="gemini" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="gemini"><span class="header-section-number">7.3</span> Gemini</h2>
+<p>Gemini, in this lesson, is the tabular AutoML service on Google Cloud. In the console the menu is <strong>Vertex AI</strong>. Some pages say <strong>Gemini Enterprise Agent Platform</strong>. The Python package is <code>google-cloud-aiplatform</code>. It is not the chat model.</p>
+<p>You send <code>fit_table</code>. The service searches among model types and keeps one model. You then send the comparison rows, with no target. It returns a probability that the row has the positive label. In the example that label is <code>Yes</code> in <code>Churn</code>: the customer left. That probability is written back into <code>validation_probabilities.csv</code>.</p>
+<section id="account-project-and-bill" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="account-project-and-bill"><span class="header-section-number">7.3.1</span> Account, project, and bill</h3>
+<p>Do this in the browser before the training cell.</p>
+<ol type="1">
+<li>Open <a href="https://console.cloud.google.com/" class="uri">https://console.cloud.google.com/</a> and sign in.</li>
+<li>Open <a href="https://console.cloud.google.com/projectcreate" class="uri">https://console.cloud.google.com/projectcreate</a>. Create a project. Copy the <strong>project ID</strong>. It is not the display name.</li>
+<li>Open <a href="https://console.cloud.google.com/billing" class="uri">https://console.cloud.google.com/billing</a>. Link a billing account to the project. Read the credit that remains.</li>
+<li>Open <a href="https://cloud.google.com/vertex-ai/pricing" class="uri">https://cloud.google.com/vertex-ai/pricing</a>. Read the tabular AutoML training price and the batch prediction price for the region you will set below.</li>
+</ol>
+<p><strong>Project.</strong> The container for the job, the files, and the bill.</p>
+<p><strong>Billing account.</strong> Training is refused until one is linked.</p>
+<p><strong>Region.</strong> The group of data centers. This lesson uses <code>us-central1</code>. The stored files and the job use the same region.</p>
+</section>
+<section id="the-api" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="the-api"><span class="header-section-number">7.3.2</span> The API</h3>
+<p>An <strong>API</strong> is the list of requests a program may send. The requests used here are: store this table, train a classification model, score this other table, delete what was created.</p>
+<ol type="1">
+<li><p>Enable the two APIs. Enabling them does not upload customers and does not train.</p>
+<ul>
+<li>Vertex AI API: <a href="https://console.cloud.google.com/apis/library/aiplatform.googleapis.com" class="uri">https://console.cloud.google.com/apis/library/aiplatform.googleapis.com</a></li>
+<li>Cloud Storage API: <a href="https://console.cloud.google.com/apis/library/storage.googleapis.com" class="uri">https://console.cloud.google.com/apis/library/storage.googleapis.com</a></li>
+</ul></li>
+<li><p>Install the packages once, from the project folder, when you have decided to run a paid job.</p></li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install google-cloud-aiplatform google-cloud-storage</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On Windows, activate with <code>.venv\Scripts\activate</code>. Reading the saved comparison does not need these packages.</p>
+<p><code>google-cloud-aiplatform</code> is the Python client for Vertex AI. <code>run_cloud()</code> uses it to create the dataset, start the training job, and start the batch prediction. <code>google-cloud-storage</code> is the Python client for the bucket. <code>run_cloud()</code> uses it to upload the training CSV and to download the score file. Installing the packages does not upload a table and does not start a job. The bucket itself is created later, with the <code>gcloud storage buckets create</code> command.</p>
+<ol start="3" type="1">
+<li>Sign in from the terminal in the next section. Do not put a key file in this project folder.</li>
+</ol>
+</section>
+<section id="quantities-the-job-reads" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="quantities-the-job-reads"><span class="header-section-number">7.3.3</span> Quantities the job reads</h3>
+<p><code>BUDGET_MILLI_NODE_HOURS</code> is the training cap, in milli node hours. A <strong>node</strong> is one machine Google starts for the search, then stops. A <strong>node hour</strong> is that machine working for one hour. <code>1000</code> milli node hours <code>=</code> <code>1</code> node hour. <code>1000</code> is the smallest cap the service accepts. This lesson also refuses a value above <code>72000</code>. The cap is the maximum machine-time of the search. The search keeps the best model found inside the cap. It is not a memory size. Scoring the comparison rows is a second machine and is not part of this number.</p>
+<p><code>PLATFORM_VALIDATE_FRACTION = 0.10</code> and <code>PLATFORM_TEST_FRACTION = 0.10</code> label the fit rows only. Gemini requires a column <code>ml_split</code> with the labels <code>TRAIN</code>, <code>VALIDATE</code> and <code>TEST</code>. Ten percent of the fit rows are <code>VALIDATE</code>, ten percent are <code>TEST</code>, and the rest are <code>TRAIN</code>. <!--
+`VALIDATE` is how the search chooses a model. --></p>
+<p>These labels are not <code>test_table</code>.</p>
+<p><code>OPTIMIZATION_OBJECTIVE = "minimize-log-loss"</code> tells the search to prefer probabilities that match <code>OBSERVED_COLUMN</code>.</p>
+<p><code>SPLIT_COLUMN</code> is the column this lesson adds to each training file. The service reads it. The labels are <code>TRAIN</code>, <code>VALIDATE</code> and <code>TEST</code>. It is not a predictor. The example name is <code>ml_split</code>.</p>
+<p><code>GCS_PREFIX</code> is the first folder inside the bucket. It is not a column of the table, and it is not a model. The example is <code>telco-automl</code>. One run writes its files under that folder, then under a timestamp. Set another prefix when a second dataset should not share the first dataset’s folder.</p>
+<p><code>INCLUDE_TEXT_ONLY = False</code> leaves out a third model that would use <code>TEXT_FEATURE</code> alone. <code>True</code> adds one more cap and a column <code>p_automl_text_only</code>. In the example <code>TEXT_FEATURE</code> is <code>customer_text</code>.</p>
+<p><code>BUDGET = 8000</code> is the campaign budget from Chapter 6, in the same unit as <code>cost</code>. It is not the training cap.</p>
+<p><code>manifest.json</code> is a local file in <code>OUTPUT_DIR</code>. It is the record of the upload. It is not the training table. <code>build_gemini_files(..., write=True)</code> writes it. <code>write=False</code> leaves the file as it is.</p>
+<p>The fields the next steps read are:</p>
+<ul>
+<li><code>budget_milli_node_hours</code>, the training cap. The paid job reads this number, not the Python name <code>BUDGET_MILLI_NODE_HOURS</code>.</li>
+<li><code>experiments</code>, the paths of <code>training_*.csv</code> and <code>predict_validation_*.csv</code>.</li>
+<li><code>validation_ids</code>, the comparison customers, in the order of <code>validation_probabilities.csv</code>.</li>
+<li><code>id_column</code>, <code>target_column</code>, <code>positive_label</code>, <code>text_feature</code>, <code>optimization_objective</code>.</li>
+<li><code>n_training</code>, <code>n_validation</code>, <code>n_final_test</code>, and <code>split_summary</code>.</li>
+</ul>
+<p>Changing <code>BUDGET_MILLI_NODE_HOURS</code> in the cell below changes the Python name only. To put the new number into <code>manifest.json</code>, set the one <code>CLOUD_MODE</code> line, in <strong>Paths of the saved results</strong>, to <code>"SAVE"</code>. Then run the cells from that line through <strong>The two uploads</strong>. Then set that same line back to <code>"LOAD"</code>. Do not add a second <code>CLOUD_MODE</code> assignment in this cell. <code>"SAVE"</code> rebuilds the local files. It does not call Google, and it is not a new dataset.</p>
+<div id="0ffd5037" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>automl.BUDGET_MILLI_NODE_HOURS <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>automl.PLATFORM_VALIDATE_FRACTION <span class="op">=</span> <span class="fl">0.10</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>automl.PLATFORM_TEST_FRACTION <span class="op">=</span> <span class="fl">0.10</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>automl.OPTIMIZATION_OBJECTIVE <span class="op">=</span> <span class="st">"minimize-log-loss"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>automl.SPLIT_COLUMN <span class="op">=</span> <span class="st">"ml_split"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>automl.GCS_PREFIX <span class="op">=</span> <span class="st">"telco-automl"</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>automl.INCLUDE_TEXT_ONLY <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>automl.BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>automl.active_settings()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Setting</th>
+<th data-quarto-table-cell-role="th">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>CLOUD_MODE</td>
+<td>LOAD</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>TABULAR_FILE</td>
+<td>data/raw/telco/telco_customers.csv</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>TEXT_FILE</td>
+<td>data/raw/telco/customer_communications.csv</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>ID_COLUMN</td>
+<td>customerID</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>TARGET_COLUMN</td>
+<td>Churn</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>POSITIVE_LABEL</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>NUMERIC_FEATURES</td>
+<td>tenure, MonthlyCharges, TotalCharges</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>CATEGORICAL_FEATURES</td>
+<td>gender, SeniorCitizen, Partner, Dependents, Ph...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>TEXT_FEATURE</td>
+<td>customer_text</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>SPLIT_COLUMN</td>
+<td>ml_split</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>OBSERVED_COLUMN</td>
+<td>observed_outcome</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>MODEL_ROWS_ID_COLUMN</td>
+<td>customer_id</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>GCS_PREFIX</td>
+<td>telco-automl</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>RANDOM_STATE</td>
+<td>42</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>TEST_SIZE</td>
+<td>0.25</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">15</td>
+<td>HOLDOUT_VALIDATION_FRACTION</td>
+<td>0.5</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>PLATFORM_VALIDATE_FRACTION</td>
+<td>0.1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17</td>
+<td>PLATFORM_TEST_FRACTION</td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">18</td>
+<td>DECISION_THRESHOLD</td>
+<td>0.5</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">19</td>
+<td>OPTIMIZATION_OBJECTIVE</td>
+<td>minimize-log-loss</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">20</td>
+<td>BUDGET_MILLI_NODE_HOURS</td>
+<td>1000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">21</td>
+<td>INCLUDE_TEXT_ONLY</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">22</td>
+<td>BUDGET</td>
+<td>8000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">23</td>
+<td>ECONOMICS_FILE</td>
+<td>data/processed/telco/campaign_example_populati...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">24</td>
+<td>SAVED_PROBABILITY_FILE</td>
+<td>data/processed/telco/test_probabilities_with_t...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">25</td>
+<td>MODEL_ROWS_FILE</td>
+<td>data/processed/telco/model_rows.csv</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">26</td>
+<td>OUTPUT_DIR</td>
+<td>data/processed/telco/automl</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><code>active_settings()</code> takes no argument. It reads the capital-letter names and returns a table with columns <code>Setting</code> and <code>Value</code>. It does not write a file and it does not call Google.</p>
+</section>
+<section id="the-two-uploads" class="level3" data-number="7.3.4">
+<h3 data-number="7.3.4" class="anchored" data-anchor-id="the-two-uploads"><span class="header-section-number">7.3.4</span> The two uploads</h3>
+<p><code>build_gemini_files(retrieved)</code> takes the dictionary from <code>retrieve_results</code>. With <code>write=True</code> it also reads the quantities in the cell above, including <code>SPLIT_COLUMN</code>. <code>GCS_PREFIX</code> is not written into these files. It is the folder used later, in the bucket.</p>
+<p>It writes, in <code>OUTPUT_DIR</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Rows</th>
+<th>What Gemini does with it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>training_tabular.csv</code></td>
+<td>fit rows</td>
+<td>Train on the structured fields. <code>SPLIT_COLUMN</code> is included. <code>ID_COLUMN</code> is not a predictor.</td>
+</tr>
+<tr class="even">
+<td><code>training_tabular_text.csv</code></td>
+<td>the same fit rows</td>
+<td>The same training, plus <code>TEXT_FEATURE</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>predict_validation_tabular.csv</code></td>
+<td>comparison rows</td>
+<td>Score these rows. The target is not in the file.</td>
+</tr>
+<tr class="even">
+<td><code>predict_validation_tabular_text.csv</code></td>
+<td>the same comparison rows</td>
+<td>The same scoring, plus <code>TEXT_FEATURE</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The comparison rows are not in the training file. The model Gemini keeps can be fit again on every uploaded row, so a customer who is in both files would not be a clean test. The other half of <code>test_table</code> is <code>final_test_ids.csv</code>. It is not uploaded.</p>
+<p><code>build_gemini_files</code> returns the first rows of <code>training_tabular_text.csv</code>. <code>TEXT_FEATURE</code> is cut to 140 characters on screen. In the example that column is <code>customer_text</code>. With <code>write=False</code> it only reads the files already saved.</p>
+<p>The service accepts at least 1,000 training rows. With <code>TEST_SIZE = 0.25</code>, <code>TABULAR_FILE</code> needs more than about 1,400 customers.</p>
+<div id="ba041574" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do not assign CLOUD_MODE here. Same line as in "Paths of the saved results".</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "SAVE" rewrites manifest.json, including budget_milli_node_hours.</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># "LOAD" reads the training file already on disk.</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>preview <span class="op">=</span> automl.build_gemini_files(retrieved, write<span class="op">=</span>(automl.CLOUD_MODE <span class="op">==</span> <span class="st">"SAVE"</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>preview</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -677,7 +974,19 @@ Money is spent only if you change that line
 <th data-quarto-table-cell-role="th">tenure</th>
 <th data-quarto-table-cell-role="th">MonthlyCharges</th>
 <th data-quarto-table-cell-role="th">TotalCharges</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">SeniorCitizen</th>
+<th data-quarto-table-cell-role="th">Partner</th>
+<th data-quarto-table-cell-role="th">Dependents</th>
+<th data-quarto-table-cell-role="th">PhoneService</th>
+<th data-quarto-table-cell-role="th">MultipleLines</th>
 <th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">DeviceProtection</th>
+<th data-quarto-table-cell-role="th">TechSupport</th>
+<th data-quarto-table-cell-role="th">StreamingTV</th>
+<th data-quarto-table-cell-role="th">StreamingMovies</th>
+<th data-quarto-table-cell-role="th">Contract</th>
+<th data-quarto-table-cell-role="th">PaperlessBilling</th>
 <th data-quarto-table-cell-role="th">PaymentMethod</th>
 <th data-quarto-table-cell-role="th">customer_text</th>
 <th data-quarto-table-cell-role="th">Churn</th>
@@ -689,11 +998,23 @@ Money is spent only if you change that line
 <td data-quarto-table-cell-role="th">0</td>
 <td>3704-IEAXF</td>
 <td>72</td>
-<td>53.650</td>
-<td>3784.000</td>
+<td>53.65</td>
+<td>3784.0</td>
+<td>Female</td>
+<td>0</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+<td>No phone service</td>
 <td>...</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Two year</td>
+<td>No</td>
 <td>Credit card (automatic)</td>
-<td>**Customer:** I am calling about the service. What I wan...</td>
+<td>**Customer:** I am calling about the service. ...</td>
 <td>No</td>
 <td>TRAIN</td>
 </tr>
@@ -701,11 +1022,23 @@ Money is spent only if you change that line
 <td data-quarto-table-cell-role="th">1</td>
 <td>5175-AOBHI</td>
 <td>4</td>
-<td>46.000</td>
-<td>193.600</td>
+<td>46.00</td>
+<td>193.6</td>
+<td>Female</td>
+<td>0</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
 <td>...</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Month-to-month</td>
+<td>Yes</td>
 <td>Mailed check</td>
-<td>**Subject:** Your monthly bill — $46.00\n\nHello,\n\nYou...</td>
+<td>**Subject:** Your monthly bill — $46.00&nbsp;&nbsp;Hello...</td>
 <td>Yes</td>
 <td>TRAIN</td>
 </tr>
@@ -716,193 +1049,132 @@ Money is spent only if you change that line
 </div>
 </div>
 </div>
-<p>A third experiment, communications only, is left out while <code>INCLUDE_TEXT_ONLY</code> is <code>False</code>.</p>
-<p>The files are in the folder you set as <code>OUTPUT_DIR</code>. For the course example that folder is <code>data/processed/telco/automl/</code>.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>File</th>
-<th>Who is in it</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>training_tabular.csv</code></td>
-<td>Training customers, structured fields, target, <code>ml_split</code></td>
-</tr>
-<tr class="even">
-<td><code>training_tabular_text.csv</code></td>
-<td>The same customers, plus <code>customer_text</code></td>
-</tr>
-<tr class="odd">
-<td><code>predict_validation_tabular.csv</code></td>
-<td>Validation customers, structured fields, no target</td>
-</tr>
-<tr class="even">
-<td><code>predict_validation_tabular_text.csv</code></td>
-<td>The same customers, plus <code>customer_text</code></td>
-</tr>
-<tr class="odd">
-<td><code>validation_probabilities.csv</code></td>
-<td>The comparison file. Local scores now. Cloud scores after Stage 9</td>
-</tr>
-</tbody>
-</table>
-<p>You can rebuild those files from a terminal. This command does not call Google.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> python/workshop_automl.py prepare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The same local rebuild, from a terminal, does not call Google:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> python/workshop_automl.py prepare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>prepare()</code> runs <code>gather_sources</code>, <code>separate_fit_test</code>, <code>retrieve_results(write=True)</code> and <code>build_gemini_files(write=True)</code>. It returns the check table from <code>verify_saved_files()</code>.</p>
 </section>
-<section id="stage-7-open-the-account-the-project-and-the-bill" class="level2" data-number="7.7">
-<h2 data-number="7.7" class="anchored" data-anchor-id="stage-7-open-the-account-the-project-and-the-bill"><span class="header-section-number">7.7</span> Stage 7 — Open the account, the project, and the bill</h2>
-<p>Do these steps in the browser before the training cell.</p>
-<ol type="1">
-<li>Open <a href="https://console.cloud.google.com/" class="uri">https://console.cloud.google.com/</a> and sign in. Accept the terms if the page asks.</li>
-<li>Open <a href="https://console.cloud.google.com/projectcreate" class="uri">https://console.cloud.google.com/projectcreate</a>. Type a project name, for example <code>Churn workshop</code>. You may edit the project ID. Click <strong>Create</strong>.</li>
-<li>Copy the <strong>project ID</strong>. Find it on the project dashboard, or under <strong>IAM &amp; Admin → Settings</strong>. It is not the display name.</li>
-<li>Open <a href="https://console.cloud.google.com/billing" class="uri">https://console.cloud.google.com/billing</a>. Create a billing account if you do not have one, add a payment method, and link the account to this project. Read the credit that remains.</li>
-<li>Enable the two APIs from Stage 4. Click <strong>Enable</strong> on each library page. If the button says <strong>Manage</strong>, the API is already enabled.</li>
-<li>Open <a href="https://cloud.google.com/vertex-ai/pricing" class="uri">https://cloud.google.com/vertex-ai/pricing</a>. Read the tabular AutoML <strong>training</strong> price and the <strong>batch prediction</strong> price for <code>us-central1</code>, or for the region you will type in the next cell.</li>
-</ol>
-<p>The training cell uses two models. Each one is capped at the node hours you set (<code>1000</code> means 1). Each one then has one batch prediction. The CSV files are stored in your bucket. A model that is stored and not deployed is not billed as a prediction machine. This lesson does not create an endpoint. If you cancel a training job, you pay for the time already used. A training failure other than a cancellation is not billed.</p>
-<div id="d2456845" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>automl.cost_table()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Component</th>
-<th data-quarto-table-cell-role="th">What is billed</th>
-<th data-quarto-table-cell-role="th">This run</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>Experiment A, tabular AutoML</td>
-<td>Training node hours, up to the cap, and batch-prediction...</td>
-<td>Training cap 1 node hour, then one batch prediction.</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>Experiment B, tabular AutoML plus text</td>
-<td>Training node hours, up to the cap, and batch-prediction...</td>
-<td>Training cap 1 node hour, then one batch prediction.</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>Online endpoint</td>
-<td>Node hours from deployment until the model is undeployed.</td>
-<td>Not created.</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>Cloud Storage</td>
-<td>Storage of the uploaded CSV files and the prediction out...</td>
-<td>Prefix telco-automl/ in the bucket you name.</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>Model registry</td>
-<td>A model that is not deployed is not charged for prediction.</td>
-<td>Created. Delete it with the cleanup command when you are...</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>The dollar amount is the rate on the pricing page times those hours. The table states the cap. It does not state a dollar figure, because the rate depends on the region and on the date you read the page.</p>
-</section>
-<section id="stage-8-sign-in-and-create-the-bucket" class="level2" data-number="7.8">
-<h2 data-number="7.8" class="anchored" data-anchor-id="stage-8-sign-in-and-create-the-bucket"><span class="header-section-number">7.8</span> Stage 8 — Sign in and create the bucket</h2>
-<p>Install the Google Cloud command-line tool once, from <a href="https://cloud.google.com/sdk/docs/install" class="uri">https://cloud.google.com/sdk/docs/install</a>. On macOS with Homebrew the installer is:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> google-cloud-sdk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Close the terminal and open it again in the project folder after the install.</p>
-<p>Type your project ID and bucket name in the next cell, then run it. The cell prints the commands. It does not run them. Copy the printed lines into the terminal.</p>
-<p>The bucket name must be new. If the create command says the name is already taken, change <code>BUCKET</code> and run the cell again. <code>--location</code> must be the same region as <code>REGION</code>.</p>
-<div id="674453d9" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>PROJECT_ID <span class="op">=</span> <span class="st">"YOUR_PROJECT_ID"</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>REGION <span class="op">=</span> <span class="st">"us-central1"</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>BUCKET <span class="op">=</span> <span class="st">"YOUR_BUCKET_NAME"</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Copy these lines into the terminal. Run them once."</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"gcloud auth application-default login"</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"gcloud config set project </span><span class="sc">{</span>PROJECT_ID<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"gcloud services enable aiplatform.googleapis.com storage.googleapis.com"</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"gcloud storage buckets create gs://</span><span class="sc">{</span>BUCKET<span class="sc">}</span><span class="ss"> "</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"--location=</span><span class="sc">{</span>REGION<span class="sc">}</span><span class="ss"> --uniform-bucket-level-access"</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-is-billed" class="level3" data-number="7.3.5">
+<h3 data-number="7.3.5" class="anchored" data-anchor-id="what-is-billed"><span class="header-section-number">7.3.5</span> What is billed</h3>
+<p>Three cloud objects appear after a search. Only one of them holds the fitted parameters.</p>
+<p><strong>Training pipeline.</strong> The search itself. It tries model types until the cap, or until early stopping. It is billed in node hours, up to <code>BUDGET_MILLI_NODE_HOURS</code> for each experiment. It does not keep a machine after it finishes.</p>
+<p><strong>Model.</strong> The registry entry written when the pipeline reaches <code>PIPELINE_STATE_SUCCEEDED</code>. This entry holds the fitted parameters: the chosen model and the numbers that turn a row into a probability of leaving. It is not a running computer. An entry that is only stored is not billed as a prediction machine.</p>
+<p><strong>Batch prediction.</strong> A machine that starts, loads that same registry entry, scores the comparison file, writes the score file into the bucket, and stops. The bill is the time that machine runs. This is the scoring step this lesson uses.</p>
+<p><strong>Endpoint.</strong> A second way to use the same registry entry. <strong>Deployment</strong> means loading the saved model onto a machine that stays on and answers one request at a time. The bill is the hours from that deployment until <strong>undeploy</strong>, which takes the model off the machine and stops the hourly charge. This lesson does not create an endpoint and does not deploy.</p>
+<p>The fitted parameters stay in the model registry. The endpoint and the batch job are only machines that load those parameters. The endpoint is for repeated single requests. The batch job is for one file. The comparison needs one file, so the lesson builds a batch job and does not build an endpoint.</p>
+<p><strong>Bucket.</strong> A named folder on Google’s disks. The training CSV is copied there. The scores are written there, then copied back.</p>
+<p><strong>Prefix.</strong> The path of this lesson’s files inside the bucket. <code>GCS_PREFIX</code> is only the first folder. You set it in <strong>Quantities the job reads</strong>. In the example it is <code>telco-automl</code>. The bucket name is <code>BUCKET</code>. A run then adds its own timestamp, and each experiment adds its own file. The prefix is not a model and it is not a separate charge. The charge is the storage of the files under that path.</p>
+<p>The tabular training file of the first run is (in my account) :</p>
+<p><code>gs://my-aidata-course-bucket/telco-automl/20261119T050528Z/training_tabular.csv</code></p>
+<p><code>my-aidata-course-bucket</code> is <code>BUCKET</code>. <code>telco-automl</code> is <code>GCS_PREFIX</code>. <code>20261119T050528Z</code> is the run id. <code>training_tabular.csv</code> is the upload. The scores of that same run are further along the same path, in <code>tabular/predictions/</code>, in the files named <code>prediction.results-</code>.</p>
+<p><strong>Node hour.</strong> Defined above. Each of the two searches is capped at <code>BUDGET_MILLI_NODE_HOURS</code>. Each search is followed by one batch prediction. A cancelled job is billed for the machine-time already used. Another training failure is not billed.</p>
+<p>The prediction price list has a standard virtual machine and a Spot virtual machine for the same machine type: <a href="https://cloud.google.com/products/gemini-enterprise-agent-platform/pricing#prediction-and-explanation" class="uri">https://cloud.google.com/products/gemini-enterprise-agent-platform/pricing#prediction-and-explanation</a>. A virtual machine is one computer. A Spot virtual machine is spare capacity, so its hourly price on that page is the lower one. Google can take a Spot machine back. That interruption is preemption. The preempted time is not billed.</p>
+<p>This lesson does not request a Spot machine. The training search is billed as AutoML node hours, up to the cap. It is not a virtual machine you choose on that page. Scoring uses one standard machine, and only after a model exists.</p>
+<p>The search has no pause. <code>PIPELINE_STATE_RUNNING</code> means it continues with no further command. <code>PIPELINE_STATE_SUCCEEDED</code> means the model is saved. <code>PIPELINE_STATE_CANCELLED</code> means the search was stopped. A cancelled or failed search does not continue later. Another search is a new training pipeline, from the beginning. The partial search is not handed to another machine.</p>
+<p>A Spot machine is useful when the lower hourly price still wins after some jobs are started again, and when you can wait. Custom training that writes a checkpoint can continue from that checkpoint on the next machine. A short scoring job can be cheaper on Spot even if a preempted job has to start again, because the preempted time is not billed.</p>
+<p>That is not this lesson. The AutoML search does not give you a checkpoint to pass to a replacement machine. If it is stopped, the next search starts over. A preempted scoring job also starts over: the replacement machine does not receive the unfinished score file as a place to continue. The saved model stays, so scoring starts again and the search does not. For these two tasks, a partial result is not reused. Spot would only change the price of a job that may have to be launched again.</p>
+<p><code>explain_costs()</code> takes no argument. It reads <code>BUDGET_MILLI_NODE_HOURS</code>, <code>GCS_PREFIX</code>, and the experiment list in <code>manifest.json</code> when that file exists. It returns one complete paragraph per component: the name, what is billed, and what this run does. It does not start a job and it does not compute a dollar amount. The dollar amount is the price on the pricing page in <strong>Account, project, and bill</strong> (above) times the node hours actually used. <code>cost_table()</code> returns the same facts as a table.</p>
+<div id="39919395" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(automl.explain_costs())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Copy these lines into the terminal. Run them once.
+<pre><code>Experiment A, tabular AutoML. What is billed: Training node hours, up to the cap, and batch-prediction node hours. This run: Training cap 1 node hour, then one batch prediction.
 
-gcloud auth application-default login
-gcloud config set project YOUR_PROJECT_ID
+Experiment B, tabular AutoML plus text. What is billed: Training node hours, up to the cap, and batch-prediction node hours. This run: Training cap 1 node hour, then one batch prediction.
+
+Online endpoint. What is billed: Node hours from deployment until the model is undeployed. This run: Not created.
+
+Cloud Storage. What is billed: Storage of the uploaded CSV files and the prediction output. This run: The files of one run are stored at gs://&lt;bucket&gt;/telco-automl/&lt;run id&gt;/.
+
+Model registry. What is billed: A model that is not deployed is not charged for prediction. This run: Created. Delete it with the cleanup command when you are finished.</code></pre>
+</div>
+</div>
+</section>
+<section id="sign-in-and-create-the-bucket" class="level3" data-number="7.3.6">
+<h3 data-number="7.3.6" class="anchored" data-anchor-id="sign-in-and-create-the-bucket"><span class="header-section-number">7.3.6</span> Sign in and create the bucket</h3>
+<p>Install the command-line tool once, from <a href="https://cloud.google.com/sdk/docs/install" class="uri">https://cloud.google.com/sdk/docs/install</a>. On macOS with Homebrew:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> google-cloud-sdk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Close the terminal and open it again in the project folder.</p>
+<p><code>PROJECT_ID</code>, <code>REGION</code> and <code>BUCKET</code> are names in the next cell, not columns. <code>PROJECT_ID</code> is the project id from <strong>Account, project, and bill</strong> above. <code>REGION</code> is the region. <code>BUCKET</code> is the bucket name you choose. It must be new, and it may contain only lowercase letters, numbers and hyphens. The cell prints commands. It does not run them.</p>
+<div id="c75d88cd" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>PROJECT_ID <span class="op">=</span> <span class="st">"my-aidata-course"</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>REGION <span class="op">=</span> <span class="st">"us-central1"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>BUCKET <span class="op">=</span> <span class="st">"my-aidata-course-bucket"</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"gcloud auth application-default login"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"gcloud config set project </span><span class="sc">{</span>PROJECT_ID<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"gcloud services enable aiplatform.googleapis.com storage.googleapis.com"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"gcloud storage buckets create gs://</span><span class="sc">{</span>BUCKET<span class="sc">}</span><span class="ss"> "</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"--location=</span><span class="sc">{</span>REGION<span class="sc">}</span><span class="ss"> --uniform-bucket-level-access"</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>gcloud auth application-default login
+gcloud config set project my-aidata-course
 gcloud services enable aiplatform.googleapis.com storage.googleapis.com
-gcloud storage buckets create gs://YOUR_BUCKET_NAME --location=us-central1 --uniform-bucket-level-access</code></pre>
+gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central1 --uniform-bucket-level-access</code></pre>
 </div>
 </div>
-<p><code>gcloud auth application-default login</code> opens a browser. Sign in with the same Google account that owns the project. Leave the terminal alone until it says the credentials have been saved.</p>
-<p>The same four lines, with the names still to fill in, are:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> auth application-default login</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> config set project YOUR_PROJECT_ID</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> services enable aiplatform.googleapis.com storage.googleapis.com</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> storage buckets create gs://YOUR_BUCKET <span class="at">--location</span><span class="op">=</span>us-central1 <span class="at">--uniform-bucket-level-access</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>gcloud auth application-default login</code> opens a browser. Sign in with the account that owns the project. Wait until the terminal says the credentials were saved.</p>
 </section>
-<section id="stage-9-start-the-training-from-this-document" class="level2" data-number="7.9">
-<h2 data-number="7.9" class="anchored" data-anchor-id="stage-9-start-the-training-from-this-document"><span class="header-section-number">7.9</span> Stage 9 — Start the training from this document</h2>
-<p>The next cell is the one that spends money. It uploads the training file, trains the tabular model, scores the validation customers, then does the same for the tabular-plus-text model. It writes <code>p_automl_tabular</code> and <code>p_automl_text</code> into <code>validation_probabilities.csv</code>, matched on the customer identifier.</p>
-<p>Leave <code>START_PAID_TRAINING</code> as <code>False</code> until the billing account is linked, the two APIs are enabled, the sign-in has finished, and the bucket exists. Then set it to <code>True</code> and run the cell. Leave it running. Setup adds time on the clock beyond the one-hour cap. If the cell stops after it has printed a pipeline name, run it again with the switch still <code>True</code>. It waits for that job. It does not submit a second training job for a model that is already recorded.</p>
-<p>The same job from a terminal, after the exports below, is the last block in this stage. Use the cell or the terminal, not both at the same time.</p>
-<div id="0802e2e0" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>START_PAID_TRAINING <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_PROJECT"</span>] <span class="op">=</span> PROJECT_ID</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_REGION"</span>] <span class="op">=</span> REGION</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_BUCKET"</span>] <span class="op">=</span> BUCKET</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> START_PAID_TRAINING:</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_SPEND"</span>] <span class="op">=</span> <span class="st">"yes"</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    automl.run_cloud(approve_spend<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_SPEND"</span>] <span class="op">=</span> <span class="st">"no"</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Training was not started. No Google call was made."</span>)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Set START_PAID_TRAINING = True in this cell when you accept the cost, then run the cell again."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="train-and-score" class="level3" data-number="7.3.7">
+<h3 data-number="7.3.7" class="anchored" data-anchor-id="train-and-score"><span class="header-section-number">7.3.7</span> Train and score</h3>
+<p>The next cell uploads the training file, trains the tabular model, scores the comparison rows, then repeats that for the file that includes <code>TEXT_FEATURE</code>. In the example, <code>TEXT_FEATURE</code> is <code>customer_text</code>.</p>
+<p>The score in the bucket is <code>TARGET_COLUMN</code>, then <code>_</code>, then <code>POSITIVE_LABEL</code>, then <code>_scores</code>. In the example that column is <code>Churn_Yes_scores</code>. A result file that uses <code>_score</code> is accepted as well. The copy in the next section writes that value onto the matching <code>ID_COLUMN</code> in <code>validation_probabilities.csv</code>.</p>
+<ul>
+<li><code>p_automl_tabular</code> is that score for the structured fields.</li>
+<li><code>p_automl_text</code> is that score for the structured fields plus <code>TEXT_FEATURE</code>.</li>
+</ul>
+<p>Leave <code>START_PAID_TRAINING</code> as <code>False</code> until billing is linked, both APIs are enabled, sign-in has finished, and the bucket exists. Waiting for a job to start can take longer than the one-hour cap. The cap limits the training machine, not that wait. The cell runs the tabular search first. After that pipeline succeeds, the same cell starts the search that includes <code>TEXT_FEATURE</code>. The second search does not start by itself if this cell has stopped. Run the cell again with the switch still <code>True</code>. An experiment whose score column is already complete is skipped. A recorded model is not trained again. The text search starts when that model is not recorded yet.</p>
+<p>Another dataset uses the same cell after its own files exist. The cells through <code>build_gemini_files</code> must already have been run for that dataset, with its paths and column names. Then set <code>PROJECT_ID</code>, <code>REGION</code>, <code>BUCKET</code> and <code>GCS_PREFIX</code>. <code>REGION</code> and the bucket must match. Also give that dataset its own <code>OUTPUT_DIR</code>, or delete <code>cloud_resources.json</code> in the current folder. Otherwise the paid cell scores with the model already recorded there.</p>
+<p>The text model of the example has not been trained, and it has no score file in the bucket. The tabular column <code>p_automl_tabular</code> is already in the comparison file, so the next paid run skips that search. It trains the text model, which is a new charge of up to one node hour, then scores the comparison rows. When that cell finishes, <code>p_automl_text</code> is in <code>validation_probabilities.csv</code>. If the score files are in the bucket and the column is still missing, run <code>import_saved_scores("tabular_text")</code>.</p>
+<p>Select the project in the console and set the region to the value of <code>REGION</code>. A pipeline list for another region is empty.</p>
+<ul>
+<li>Training, state <code>PIPELINE_STATE_PENDING</code>, <code>PIPELINE_STATE_RUNNING</code>, or <code>PIPELINE_STATE_SUCCEEDED</code>: <a href="https://console.cloud.google.com/vertex-ai/training/training-pipelines" class="uri">https://console.cloud.google.com/vertex-ai/training/training-pipelines</a></li>
+<li>Dataset built from the uploaded CSV: <a href="https://console.cloud.google.com/vertex-ai/datasets" class="uri">https://console.cloud.google.com/vertex-ai/datasets</a></li>
+<li>Files in the bucket, under <code>GCS_PREFIX</code> (<code>telco-automl</code> in the example): <a href="https://console.cloud.google.com/storage/browser" class="uri">https://console.cloud.google.com/storage/browser</a></li>
+<li>Model registry, after <code>PIPELINE_STATE_SUCCEEDED</code>: <a href="https://console.cloud.google.com/vertex-ai/models" class="uri">https://console.cloud.google.com/vertex-ai/models</a></li>
+<li>Batch prediction, after the model exists. Scores land in the bucket under <code>GCS_PREFIX</code>, then the run id, then <code>tabular/predictions/</code> or <code>tabular_text/predictions/</code>: <a href="https://console.cloud.google.com/vertex-ai/batch-predictions" class="uri">https://console.cloud.google.com/vertex-ai/batch-predictions</a></li>
+</ul>
+<p><code>run_cloud(approve_spend=True)</code> runs only when the switch is <code>True</code>. The argument and the environment name <code>AUTOML_APPROVE_SPEND=yes</code> are both required. The function also reads <code>GOOGLE_CLOUD_PROJECT</code>, <code>GOOGLE_CLOUD_REGION</code> and <code>GOOGLE_CLOUD_BUCKET</code>, which the cell sets from <code>PROJECT_ID</code>, <code>REGION</code> and <code>BUCKET</code>. It reads <code>manifest.json</code> for the file paths and for the training cap. It returns <code>0</code> when the scores are saved, <code>1</code> when the local files are missing or the training file has fewer than 1,000 rows, and <code>2</code> when the approval is missing.</p>
+<div id="cb5b73c1" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>START_PAID_TRAINING <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_PROJECT"</span>] <span class="op">=</span> PROJECT_ID</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_REGION"</span>] <span class="op">=</span> REGION</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_BUCKET"</span>] <span class="op">=</span> BUCKET</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> START_PAID_TRAINING:</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_SPEND"</span>] <span class="op">=</span> <span class="st">"yes"</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    automl.run_cloud(approve_spend<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_SPEND"</span>] <span class="op">=</span> <span class="st">"no"</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Training was not started. No Google call was made."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Training was not started. No Google call was made.
-Set START_PAID_TRAINING = True in this cell when you accept the cost, then run the cell again.</code></pre>
+<pre><code>Training was not started. No Google call was made.</code></pre>
 </div>
 </div>
-<p>From the terminal, the same approval is two lines. The command prints the cost table again and stops if either line is missing.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_CLOUD_PROJECT</span><span class="op">=</span>YOUR_PROJECT_ID</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_CLOUD_REGION</span><span class="op">=</span>us-central1</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_CLOUD_BUCKET</span><span class="op">=</span>YOUR_BUCKET</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AUTOML_APPROVE_SPEND</span><span class="op">=</span>yes</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> python/workshop_automl.py run <span class="at">--approve-spend</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>On Windows PowerShell the exports are:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">GOOGLE_CLOUD_PROJECT</span> <span class="op">=</span> <span class="st">"YOUR_PROJECT_ID"</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">GOOGLE_CLOUD_REGION</span> <span class="op">=</span> <span class="st">"us-central1"</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">GOOGLE_CLOUD_BUCKET</span> <span class="op">=</span> <span class="st">"YOUR_BUCKET"</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">AUTOML_APPROVE_SPEND</span> <span class="op">=</span> <span class="st">"yes"</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>python python<span class="op">/</span>workshop_automl<span class="op">.</span><span class="fu">py</span> run <span class="op">--</span>approve-spend</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The same job from the terminal:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_CLOUD_PROJECT</span><span class="op">=</span>YOUR_PROJECT_ID</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_CLOUD_REGION</span><span class="op">=</span>us-central1</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_CLOUD_BUCKET</span><span class="op">=</span>YOUR_BUCKET</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AUTOML_APPROVE_SPEND</span><span class="op">=</span>yes</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> python/workshop_automl.py run <span class="at">--approve-spend</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On Windows PowerShell:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">GOOGLE_CLOUD_PROJECT</span> <span class="op">=</span> <span class="st">"YOUR_PROJECT_ID"</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">GOOGLE_CLOUD_REGION</span> <span class="op">=</span> <span class="st">"us-central1"</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">GOOGLE_CLOUD_BUCKET</span> <span class="op">=</span> <span class="st">"YOUR_BUCKET"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">AUTOML_APPROVE_SPEND</span> <span class="op">=</span> <span class="st">"yes"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>python python<span class="op">/</span>workshop_automl<span class="op">.</span><span class="fu">py</span> run <span class="op">--</span>approve-spend</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="stage-10-read-the-probabilities" class="level2" data-number="7.10">
-<h2 data-number="7.10" class="anchored" data-anchor-id="stage-10-read-the-probabilities"><span class="header-section-number">7.10</span> Stage 10 — Read the probabilities</h2>
-<p>Run the next cell after Stage 9. If you left the switch at <code>False</code>, the cloud columns are absent and the message says so. The logistic columns are still there. If the paid cell finished, the cloud columns are in the same rows, one row per validation customer, each probability between 0 and 1.</p>
-<p><code>observed_churn</code> is 1 when the customer left and 0 otherwise. <code>p_logistic_tabular</code> and <code>p_logistic_text</code> are the earlier models. <code>p_automl_tabular</code> is the cloud model on the structured fields. <code>p_automl_text</code> is the cloud model on those fields plus the joined messages. <code>p1</code>, <code>cost</code>, and <code>loss</code> are the campaign inputs from Section 2.f. They do not change when the churn probability changes.</p>
-<div id="c7bc0ec2" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> automl.load_workshop()</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>state[<span class="st">"probabilities"</span>].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<section id="copy-a-finished-batch-prediction-into-the-comparison-file" class="level3" data-number="7.3.8">
+<h3 data-number="7.3.8" class="anchored" data-anchor-id="copy-a-finished-batch-prediction-into-the-comparison-file"><span class="header-section-number">7.3.8</span> Copy a finished batch prediction into the comparison file</h3>
+<p><code>import_saved_scores(experiment)</code> reads one finished batch prediction and writes its positive-class score into <code>validation_probabilities.csv</code>.</p>
+<p><code>experiment</code> is <code>"tabular"</code> or <code>"tabular_text"</code>. <code>"tabular"</code> writes <code>p_automl_tabular</code>. <code>"tabular_text"</code> writes <code>p_automl_text</code>. The bucket path is <code>gcs_predictions</code> in <code>cloud_resources.json</code>. The files read are those named <code>prediction.results-</code>. Error tables and temporary files in the same folder are left unread.</p>
+<p>The call does not train a model and does not start a batch prediction. Run the same cell again after a later job. The column already in the file is replaced. <code>"tabular_text"</code> waits until that second batch prediction has written its files.</p>
+<div id="58b97196" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>copied <span class="op">=</span> automl.import_saved_scores(<span class="st">"tabular_text"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>copied[[automl.ID_COLUMN, <span class="st">"p_automl_text"</span>]].head(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Wrote p_automl_text for 880 comparison customers from gs://my-aidata-course-bucket/telco-automl/20261119T172255Z/tabular_text/predictions/.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -911,64 +1183,19 @@ Set START_PAID_TRAINING = True in this cell when you accept the cost, then run t
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">customerID</th>
-<th data-quarto-table-cell-role="th">observed_churn</th>
-<th data-quarto-table-cell-role="th">p_logistic_tabular</th>
-<th data-quarto-table-cell-role="th">p_logistic_text</th>
-<th data-quarto-table-cell-role="th">p1</th>
-<th data-quarto-table-cell-role="th">cost</th>
-<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">p_automl_text</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>7996-BPXHY</td>
-<td>0</td>
-<td>0.116</td>
-<td>0.053</td>
-<td>0.047</td>
-<td>30.000</td>
-<td>300.000</td>
+<td>0.022887</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>0376-YMCJC</td>
-<td>1</td>
-<td>0.773</td>
-<td>0.557</td>
-<td>0.430</td>
-<td>30.000</td>
-<td>1087.200</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>5666-MBJPT</td>
-<td>0</td>
-<td>0.020</td>
-<td>0.010</td>
-<td>0.009</td>
-<td>30.000</td>
-<td>301.200</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>6507-ZJSUR</td>
-<td>0</td>
-<td>0.867</td>
-<td>0.734</td>
-<td>0.435</td>
-<td>45.000</td>
-<td>1085.400</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>4701-AHWMW</td>
-<td>1</td>
-<td>0.332</td>
-<td>0.217</td>
-<td>0.173</td>
-<td>30.000</td>
-<td>654.600</td>
+<td>0.241196</td>
 </tr>
 </tbody>
 </table>
@@ -976,16 +1203,143 @@ Set START_PAID_TRAINING = True in this cell when you accept the cost, then run t
 </div>
 </div>
 </div>
-<p>A later session can pass any probability column to the targeting calculation as the baseline probability. That session reads this CSV. It does not call Google.</p>
 </section>
-<section id="stage-11-compare-the-probabilities-with-the-logistic-models" class="level2" data-number="7.11">
-<h2 data-number="7.11" class="anchored" data-anchor-id="stage-11-compare-the-probabilities-with-the-logistic-models"><span class="header-section-number">7.11</span> Stage 11 — Compare the probabilities with the logistic models</h2>
-<p>Accuracy, precision, and recall use the cutoff in <code>DECISION_THRESHOLD</code>, which is 0.5. ROC-AUC, PR-AUC, log-loss, and the Brier score do not use a cutoff.</p>
-<p>ROC-AUC and PR-AUC describe the ranking. Log-loss, the Brier score, and the calibration plot describe the probabilities themselves. The campaign cost uses the probability. A model can rank customers well and still be too high or too low as a probability.</p>
-<p>The logistic models were fit with balanced class weights, as in Section 2.e. The cloud models are trained to keep the probabilities accurate, without that reweighting. Read the calibration plot with that difference in mind.</p>
-<div id="00f62f0f" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>automl.metrics_table(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<section id="add-the-gemini-scores-to-the-comparison-file" class="level3" data-number="7.3.9">
+<h3 data-number="7.3.9" class="anchored" data-anchor-id="add-the-gemini-scores-to-the-comparison-file"><span class="header-section-number">7.3.9</span> Add the Gemini scores to the comparison file</h3>
+<p><code>load_workshop()</code> takes no argument. It reads <code>CLOUD_MODE</code> and <code>OUTPUT_DIR</code>. <code>"LOAD"</code> opens <code>manifest.json</code> and <code>validation_probabilities.csv</code>. <code>"SAVE"</code> runs <code>prepare()</code> again and fits the tabular model a second time. <code>"RUN"</code> is refused. The paid call is <code>run_cloud()</code>.</p>
+<p>This cell is not a third switch. Keep the assignment below as <code>"LOAD"</code>. The line you edit is still the one in <strong>Paths of the saved results</strong>. If that line is <code>"SAVE"</code> when this cell runs, <code>load_workshop()</code> rebuilds the files again.</p>
+<p>It returns a dictionary. <code>state["probabilities"]</code> is the comparison file, one row per comparison customer. A column written by <code>import_saved_scores</code> is on those rows. <code>state["split_summary"]</code> counts the fit rows, the test rows, the comparison rows, the unused test rows, and the three <code>ml_split</code> labels. <code>state["automl_columns"]</code> lists the Gemini columns present in the file.</p>
+<div id="a0ced55d" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep "LOAD". Do not use this line to rebuild.</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The rebuild line is CLOUD_MODE in "Paths of the saved results".</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>automl.CLOUD_MODE <span class="op">=</span> <span class="st">"LOAD"</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> automl.load_workshop()</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>state[<span class="st">"probabilities"</span>].head(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loaded saved AutoML probabilities from validation_probabilities.csv.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">customerID</th>
+<th data-quarto-table-cell-role="th">observed_outcome</th>
+<th data-quarto-table-cell-role="th">p_logistic_tabular</th>
+<th data-quarto-table-cell-role="th">p_logistic_text</th>
+<th data-quarto-table-cell-role="th">p1</th>
+<th data-quarto-table-cell-role="th">cost</th>
+<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">p_automl_tabular</th>
+<th data-quarto-table-cell-role="th">p_automl_text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>7996-BPXHY</td>
+<td>0</td>
+<td>0.116089</td>
+<td>0.053209</td>
+<td>0.046685</td>
+<td>30.0</td>
+<td>300.0</td>
+<td>0.040444</td>
+<td>0.022887</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0376-YMCJC</td>
+<td>1</td>
+<td>0.773286</td>
+<td>0.557476</td>
+<td>0.430424</td>
+<td>30.0</td>
+<td>1087.2</td>
+<td>0.528902</td>
+<td>0.241196</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it is</th>
+<th>Where it comes from</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>customerID</code></td>
+<td>Identifier</td>
+<td><code>ID_COLUMN</code> in the example</td>
+</tr>
+<tr class="even">
+<td><code>observed_outcome</code></td>
+<td><code>1</code> when <code>TARGET_COLUMN</code> equals <code>POSITIVE_LABEL</code>, else <code>0</code></td>
+<td><code>OBSERVED_COLUMN</code>. In the example, the customer left</td>
+</tr>
+<tr class="odd">
+<td><code>p_logistic_tabular</code></td>
+<td>Logistic score, structured fields</td>
+<td><code>MODEL_ROWS_FILE</code>, or a refit on <code>SAVE</code></td>
+</tr>
+<tr class="even">
+<td><code>p_logistic_text</code></td>
+<td>Logistic score, fields plus communications</td>
+<td><code>p0</code> in <code>SAVED_PROBABILITY_FILE</code></td>
+</tr>
+<tr class="odd">
+<td><code>p1</code></td>
+<td>Probability of staying if contacted</td>
+<td><code>ECONOMICS_FILE</code></td>
+</tr>
+<tr class="even">
+<td><code>cost</code></td>
+<td>Contact cost</td>
+<td><code>example_cost</code></td>
+</tr>
+<tr class="odd">
+<td><code>loss</code></td>
+<td>Loss if the customer leaves</td>
+<td><code>example_loss</code></td>
+</tr>
+<tr class="even">
+<td><code>p_automl_tabular</code></td>
+<td>Gemini score, structured fields</td>
+<td><code>import_saved_scores("tabular")</code>. The bucket column is <code>TARGET_COLUMN</code>, <code>_</code>, <code>POSITIVE_LABEL</code>, <code>_scores</code>. In the example, <code>Churn_Yes_scores</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>p_automl_text</code></td>
+<td>Gemini score, fields plus <code>TEXT_FEATURE</code></td>
+<td><code>import_saved_scores("tabular_text")</code>, after that batch prediction exists</td>
+</tr>
+</tbody>
+</table>
+<p><code>p1</code>, <code>cost</code> and <code>loss</code> do not change when the score changes.</p>
+</section>
+<section id="compare-the-scores" class="level3" data-number="7.3.10">
+<h3 data-number="7.3.10" class="anchored" data-anchor-id="compare-the-scores"><span class="header-section-number">7.3.10</span> Compare the scores</h3>
+<p>Accuracy, precision and recall use <code>DECISION_THRESHOLD</code>. ROC-AUC, PR-AUC, log-loss and the Brier score do not. They use <code>OBSERVED_COLUMN</code> and the score column. ROC-AUC and PR-AUC describe the ranking. Log-loss, the Brier score and the calibration plot describe the probabilities. The campaign calculation uses the probability. In the example, <code>OBSERVED_COLUMN</code> is <code>observed_outcome</code> and <code>1</code> means the customer left.</p>
+<p>In Chapter 5, under <strong>The idea, before the command</strong>, each fit row is weighted in the log-likelihood by <code>1 / (2 × the share of its own class)</code>. Leavers are fewer, so each leaver has the larger weight, and the two classes have the same total weight. The Gemini models fit without those weights. On the calibration plot, the logistic curve and the Gemini curve are scores from those two fits.</p>
+<p><strong>PR-AUC.</strong> Chapter 5, under <strong>Ranking, across cutoffs</strong>, defines ROC-AUC as the probability that a random leaver receives a higher score than a random stayer. That is one leaver compared with one stayer. PR-AUC reads the list those scores produce. Order the comparison customers from the highest score to the lowest. Pick a leaver at random, each leaver equally likely. Keep that leaver and every customer ranked at least as high. Customers with the same score are kept together. Precision at that leaver is the share of the kept group who left. PR-AUC is the expected value of that precision. It is the area under the precision-recall curve: as the cutoff moves, recall is the share of leavers who are kept, and precision is the share of the kept group who left. A value of 1 means the kept group contains only leavers, whichever leaver is chosen. A ranking with no link to the outcome has PR-AUC equal to the share of leavers in the comparison rows. ROC-AUC can stand well above one half while this expected precision stays near that share, because many stayers can still sit above a leaver. The column <code>PR-AUC</code> in the next table is this average.</p>
+<p><code>metrics_table(state["probabilities"])</code> takes the comparison table and reads <code>DECISION_THRESHOLD</code>. It uses every score column that is present. It returns one row per model.</p>
+<div id="b3c4dcbd" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>automl.metrics_table(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 
 
@@ -1007,24 +1361,46 @@ Set START_PAID_TRAINING = True in this cell when you accept the cost, then run t
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>Logistic regression, tabular</td>
-<td>0.820</td>
-<td>0.589</td>
-<td>0.718</td>
-<td>0.480</td>
-<td>0.764</td>
-<td>0.524</td>
-<td>0.180</td>
+<td>0.820054</td>
+<td>0.588996</td>
+<td>0.718182</td>
+<td>0.479784</td>
+<td>0.763948</td>
+<td>0.524487</td>
+<td>0.180377</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>Logistic regression, tabular and text</td>
-<td>0.895</td>
-<td>0.770</td>
-<td>0.798</td>
-<td>0.586</td>
-<td>0.803</td>
-<td>0.407</td>
-<td>0.133</td>
+<td>0.894581</td>
+<td>0.770293</td>
+<td>0.797727</td>
+<td>0.586207</td>
+<td>0.802575</td>
+<td>0.406906</td>
+<td>0.132515</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>AutoML, tabular</td>
+<td>0.821686</td>
+<td>0.607995</td>
+<td>0.789773</td>
+<td>0.625000</td>
+<td>0.515021</td>
+<td>0.440350</td>
+<td>0.145734</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>AutoML, tabular and text</td>
+<td>0.897208</td>
+<td>0.777077</td>
+<td>0.844318</td>
+<td>0.755319</td>
+<td>0.609442</td>
+<td>0.347257</td>
+<td>0.108917</td>
 </tr>
 </tbody>
 </table>
@@ -1032,36 +1408,39 @@ Set START_PAID_TRAINING = True in this cell when you accept the cost, then run t
 </div>
 </div>
 </div>
-<div id="0eb36668" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>automl.plot_roc(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<p><code>plot_roc(state["probabilities"])</code> takes the same table. It returns one curve per score column. The number in the legend is the ROC-AUC. The vertical axis is the share of positive outcomes flagged. The horizontal axis is the share of negative outcomes flagged. In the example, a positive outcome is a customer who left.</p>
+<div id="9bf10859" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>automl.plot_roc(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 <figure class="figure">
-<p><img src="02g-cloud-automl_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="02g-cloud-automl_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="c727c4ff" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>automl.plot_calibration(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<p><code>plot_calibration(state["probabilities"])</code> takes the same table. It returns a figure: mean predicted probability against the share of those customers with <code>OBSERVED_COLUMN</code> equal to <code>1</code>.</p>
+<div id="a8629f23" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>automl.plot_calibration(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 <figure class="figure">
-<p><img src="02g-cloud-automl_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="02g-cloud-automl_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Until the paid cell has run, these displays contain the two logistic models. After it has run, run the three cells again. The added rows are the cloud models. Compare tabular logistic regression with tabular AutoML. Separately, compare logistic regression with text and AutoML with text. The table is the result. It is not a claim that the cloud model is better.</p>
+<p>Until the paid cell has run, the displays contain the two logistic models. After it has run, run the three cells again. Compare tabular logistic regression with tabular Gemini. Separately, compare the communications logistic regression with Gemini plus <code>TEXT_FEATURE</code>. The table is the result.</p>
 </section>
-<section id="stage-12-does-the-campaign-decision-change" class="level2" data-number="7.12">
-<h2 data-number="7.12" class="anchored" data-anchor-id="stage-12-does-the-campaign-decision-change"><span class="header-section-number">7.12</span> Stage 12 — Does the campaign decision change?</h2>
-<p>The contact cost, the loss, and <code>p1</code> stay the values from Section 2.f. Only the baseline probability of churn changes. The budget is <code>BUDGET</code>, the same 8000 as that workshop, applied to these validation customers.</p>
-<p>For each customer the rule from Section 2.f still holds. Target the customer when the expected loss avoided by the campaign is larger than the contact cost. The tables add those customer decisions.</p>
-<div id="ca1635b7" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> automl.economic_table(state[<span class="st">"probabilities"</span>])</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<section id="does-the-campaign-decision-change" class="level3" data-number="7.3.11">
+<h3 data-number="7.3.11" class="anchored" data-anchor-id="does-the-campaign-decision-change"><span class="header-section-number">7.3.11</span> Does the campaign decision change?</h3>
+<p>The calculation uses <code>p1</code>, <code>cost</code>, <code>loss</code> and <code>BUDGET</code>. Only the churn score changes: once <code>p_logistic_tabular</code>, once <code>p_logistic_text</code>, and, when those columns exist, once <code>p_automl_tabular</code> and once <code>p_automl_text</code>.</p>
+<p>The Chapter 6 rule is unchanged. Target the customer when the expected loss avoided by the campaign is larger than <code>cost</code>.</p>
+<p><code>economic_table(state["probabilities"])</code> takes the comparison table. It reads <code>BUDGET</code>, <code>OBSERVED_COLUMN</code>, <code>p1</code>, <code>cost</code>, <code>loss</code> and each score column. It returns one row per model: ROC-AUC, customers targeted, spend, expected cost, and the same figures under <code>BUDGET</code>. <code>summary</code> is that table.</p>
+<div id="0770c552" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> automl.economic_table(state[<span class="st">"probabilities"</span>])</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
 <div>
 
 
@@ -1073,7 +1452,8 @@ Set START_PAID_TRAINING = True in this cell when you accept the cost, then run t
 <th data-quarto-table-cell-role="th">ROC-AUC</th>
 <th data-quarto-table-cell-role="th">Customers targeted</th>
 <th data-quarto-table-cell-role="th">Campaign spend</th>
-<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">Expected cost</th>
+<th data-quarto-table-cell-role="th">Expected net benefit</th>
 <th data-quarto-table-cell-role="th">Budget customers</th>
 <th data-quarto-table-cell-role="th">Budget spend</th>
 <th data-quarto-table-cell-role="th">Budget expected cost</th>
@@ -1084,283 +1464,54 @@ Set START_PAID_TRAINING = True in this cell when you accept the cost, then run t
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>Logistic regression, tabular</td>
-<td>0.820</td>
+<td>0.820054</td>
 <td>538</td>
-<td>23040.000</td>
-<td>...</td>
+<td>23040.0</td>
+<td>233372.266154</td>
+<td>91362.638202</td>
 <td>237</td>
-<td>7995.000</td>
-<td>255610.035</td>
-<td>69124.869</td>
+<td>7995.0</td>
+<td>255610.035183</td>
+<td>69124.869173</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>Logistic regression, tabular and text</td>
-<td>0.895</td>
+<td>0.894581</td>
 <td>479</td>
-<td>18330.000</td>
-<td>...</td>
+<td>18330.0</td>
+<td>238083.479445</td>
+<td>58867.421539</td>
 <td>236</td>
-<td>7995.000</td>
-<td>249481.647</td>
-<td>47469.254</td>
-</tr>
-</tbody>
-</table>
-
-<p>2 rows × 10 columns</p>
-</div>
-</div>
-</div>
-<div id="ecc2d1a6" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>automl.plot_expected_cost(summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
-<div>
-<figure class="figure">
-<p><img src="02g-cloud-automl_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<div id="32e0230a" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> automl.ranking_versus_cost(state[<span class="st">"probabilities"</span>])</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>comparison</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Comparison</th>
-<th data-quarto-table-cell-role="th">Higher ROC-AUC</th>
-<th data-quarto-table-cell-role="th">Lower expected cost</th>
-<th data-quarto-table-cell-role="th">Lower budgeted expected cost</th>
-<th data-quarto-table-cell-role="th">Different unconstrained decisions</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>The two logistic regressions</td>
-<td>Logistic regression, tabular and text</td>
-<td>Logistic regression, tabular</td>
-<td>Logistic regression, tabular and text</td>
-<td>237</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>Tabular data</td>
-<td>Not saved</td>
-<td>Not saved</td>
-<td>Not saved</td>
-<td></td>
+<td>7995.0</td>
+<td>249481.647192</td>
+<td>47469.253791</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>Tabular data and communications</td>
-<td>Not saved</td>
-<td>Not saved</td>
-<td>Not saved</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<div id="a624394a" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(automl.decision_note(comparison))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>ROC-AUC measures ranking. Expected cost uses the probability values, the loss, the contact cost, and the campaign probability. In the two logistic regressions, Logistic regression, tabular and text has the higher ROC-AUC. Logistic regression, tabular has the lower expected cost. Under the budget, Logistic regression, tabular and text has the lower expected cost. The unconstrained targeting decision differs for 237 validation customers. In tabular data, the AutoML probabilities are not in the saved file. In tabular data and communications, the AutoML probabilities are not in the saved file.</code></pre>
-</div>
-</div>
-<p>Read that sentence against the table. The model with the higher ROC-AUC and the model with the lower expected cost can be different models. Under the budget they can be different again.</p>
-</section>
-<section id="stage-13-delete-the-cloud-resources" class="level2" data-number="7.13">
-<h2 data-number="7.13" class="anchored" data-anchor-id="stage-13-delete-the-cloud-resources"><span class="header-section-number">7.13</span> Stage 13 — Delete the cloud resources</h2>
-<p>When you have the CSV, the campaign calculation does not need the cloud model. Delete what the paid cell recorded. The next cell deletes those recorded names only. It does not look for other models in the project.</p>
-<p>Set <code>DELETE_CLOUD_RESOURCES</code> to <code>True</code> only when you want that deletion, then run the cell.</p>
-<div id="cdaf5b6d" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>DELETE_CLOUD_RESOURCES <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> DELETE_CLOUD_RESOURCES:</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_DELETE"</span>] <span class="op">=</span> <span class="st">"yes"</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    automl.cleanup_cloud(approve_delete<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_DELETE"</span>] <span class="op">=</span> <span class="st">"no"</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Nothing was deleted."</span>)</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Set DELETE_CLOUD_RESOURCES = True and run this cell when the demonstration is finished."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Nothing was deleted.
-Set DELETE_CLOUD_RESOURCES = True and run this cell when the demonstration is finished.</code></pre>
-</div>
-</div>
-<p>The same deletion from the terminal:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AUTOML_APPROVE_DELETE</span><span class="op">=</span>yes</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> python/workshop_automl.py cleanup <span class="at">--approve-delete</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The paid run also writes <code>data/processed/telco/automl/cleanup_commands.sh</code> with the same resource ids, when the output folder is the course folder. Then confirm the project is clear:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints list <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai models list <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai datasets list <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> storage ls <span class="st">"gs://</span><span class="va">$GOOGLE_CLOUD_BUCKET</span><span class="st">/telco-automl/**"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This lesson does not create an endpoint. If one is listed, billing continues until each deployed model is removed. Replace the ids with the ones from <code>gcloud ai endpoints describe</code>.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints describe ENDPOINT_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints undeploy-model ENDPOINT_ID <span class="dt">\</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--deployed-model-id</span><span class="op">=</span>DEPLOYED_MODEL_ID <span class="dt">\</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints delete ENDPOINT_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>To stop a training job or a batch job that is still running:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai training-pipelines cancel TRAINING_PIPELINE_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai batch-prediction-jobs cancel BATCH_JOB_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The last cell checks the local files. A row that says the AutoML probabilities are not saved means the paid cell has not been run. The check does not start a job to fill that gap.</p>
-<div id="2bbcfd80" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>automl.verify_saved_files()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>18 checks passed.</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="16">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Check</th>
-<th data-quarto-table-cell-role="th">Result</th>
-<th data-quarto-table-cell-role="th">Detail</th>
-<th data-quarto-table-cell-role="th">Required</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>One row per validation customer</td>
-<td>Pass</td>
-<td>880 rows, 880 identifiers.</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>Validation customers match the manifest</td>
-<td>Pass</td>
-<td>The saved order is the validation split order.</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>Training, validation, and final test do not overlap</td>
-<td>Pass</td>
-<td>Training 5282, validation 880, final test 881.</td>
-<td>Yes</td>
+<td>AutoML, tabular</td>
+<td>0.821686</td>
+<td>249</td>
+<td>9495.0</td>
+<td>195439.902452</td>
+<td>25215.153356</td>
+<td>217</td>
+<td>7995.0</td>
+<td>195674.725847</td>
+<td>24980.329961</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>Final test is the rest of the previous test set</td>
-<td>Pass</td>
-<td>The previous test partition is unchanged as the union of...</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>tabular: training file is the previous training set</td>
-<td>Pass</td>
-<td>5282 rows.</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>tabular: prediction file is the validation set</td>
-<td>Pass</td>
-<td>The final test customers are not in this file.</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">6</td>
-<td>tabular: split labels exist and the target is not a feature</td>
-<td>Pass</td>
-<td>Features: tenure, MonthlyCharges, TotalCharges, gender...</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>tabular_text: training file is the previous training set</td>
-<td>Pass</td>
-<td>5282 rows.</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">8</td>
-<td>tabular_text: prediction file is the validation set</td>
-<td>Pass</td>
-<td>The final test customers are not in this file.</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">9</td>
-<td>tabular_text: split labels exist and the target is not a...</td>
-<td>Pass</td>
-<td>Features: tenure, MonthlyCharges, TotalCharges, gender...</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">10</td>
-<td>Platform split uses TRAIN, VALIDATE, and TEST inside the...</td>
-<td>Pass</td>
-<td>TRAIN 4224, VALIDATE 529, TEST 529</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">11</td>
-<td>p_logistic_tabular is between 0 and 1</td>
-<td>Pass</td>
-<td>Minimum 0.0058, maximum 0.9242.</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">12</td>
-<td>p_logistic_text is between 0 and 1</td>
-<td>Pass</td>
-<td>Minimum 0.0025, maximum 0.9775.</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">13</td>
-<td>Positive class is the saved positive label, coded as 1</td>
-<td>Pass</td>
-<td>Positive label 'Yes'.</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">14</td>
-<td>Combined logistic probabilities are the previous test sc...</td>
-<td>Pass</td>
-<td>Matched on the customer identifier. The combined model w...</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">15</td>
-<td>AutoML probabilities</td>
-<td>Pass</td>
-<td>Not saved. No cloud job has been run.</td>
-<td>No</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">16</td>
-<td>Campaign cost, loss, and p1 can be read by the targeting...</td>
-<td>Pass</td>
-<td>The targeting call uses these columns and changes only p0.</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">17</td>
-<td>Targeting accepts the validation file</td>
-<td>Pass</td>
-<td>Unconstrained targets 479. Budget spend 7995.00.</td>
-<td>Yes</td>
+<td>AutoML, tabular and text</td>
+<td>0.897208</td>
+<td>162</td>
+<td>6450.0</td>
+<td>188918.511315</td>
+<td>20365.231049</td>
+<td>162</td>
+<td>6450.0</td>
+<td>188918.511315</td>
+<td>20365.231049</td>
 </tr>
 </tbody>
 </table>
@@ -1368,8 +1519,147 @@ Set DELETE_CLOUD_RESOURCES = True and run this cell when the demonstration is fi
 </div>
 </div>
 </div>
+<p><code>Expected cost</code> and <code>Expected net benefit</code> use the score as <span class="math inline">\(p_0\)</span>. Logistic regression and the Gemini search are fitted to the probabilities of the outcome. They are not fitted to this cost. A higher score raises <span class="math inline">\(b_i = L_i(p_{0,i} - p_{1,i}) - c_i\)</span>. The smallest expected cost is then a property of those estimated probabilities. It is not a reason to prefer the model.</p>
+<p><code>realized_cost_table(state["probabilities"])</code> keeps <code>p1</code>, <code>cost</code> and <code>loss</code> fixed and reads <code>OBSERVED_COLUMN</code>. With no campaign, a customer who left costs <code>loss</code> and a customer who stayed costs 0. The contact list is still the Chapter 6 list for that score. For a selected customer who left, <code>loss</code> is replaced by <code>cost + loss * p1</code>. For a selected customer who stayed, the cost is <code>cost</code>. <code>Net benefit</code> is the no-campaign total minus the with-campaign total. The budget columns use the contact list that respects <code>BUDGET</code>. <code>p1</code> is held as given. The table accounts for the historical outcomes under that fixed <code>p1</code>. It does not measure the effect of a campaign.</p>
+<div id="d8604426" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>automl.realized_cost_table(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div>
 
 
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">Cost without campaign</th>
+<th data-quarto-table-cell-role="th">Leavers contacted</th>
+<th data-quarto-table-cell-role="th">Stayers contacted</th>
+<th data-quarto-table-cell-role="th">Cost with campaign</th>
+<th data-quarto-table-cell-role="th">Net benefit</th>
+<th data-quarto-table-cell-role="th">Budget leavers contacted</th>
+<th data-quarto-table-cell-role="th">Budget stayers contacted</th>
+<th data-quarto-table-cell-role="th">Budget cost with campaign</th>
+<th data-quarto-table-cell-role="th">Budget net benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Logistic regression, tabular</td>
+<td>204510.6</td>
+<td>167</td>
+<td>371</td>
+<td>153280.862284</td>
+<td>51229.737716</td>
+<td>81</td>
+<td>156</td>
+<td>169601.943111</td>
+<td>34908.656889</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Logistic regression, tabular and text</td>
+<td>204510.6</td>
+<td>204</td>
+<td>275</td>
+<td>138586.144367</td>
+<td>65924.455633</td>
+<td>137</td>
+<td>99</td>
+<td>153873.672003</td>
+<td>50636.927997</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>AutoML, tabular</td>
+<td>204510.6</td>
+<td>81</td>
+<td>168</td>
+<td>173751.073937</td>
+<td>30759.526063</td>
+<td>75</td>
+<td>142</td>
+<td>176006.901150</td>
+<td>28503.698850</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>AutoML, tabular and text</td>
+<td>204510.6</td>
+<td>120</td>
+<td>42</td>
+<td>164523.474851</td>
+<td>39987.125149</td>
+<td>120</td>
+<td>42</td>
+<td>164523.474851</td>
+<td>39987.125149</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The probability summaries and <code>realized_cost_table</code> answer two questions.</p>
+<p>ROC-AUC, PR-AUC, log-loss, the Brier score and the calibration plot ask whether the score orders the customers and matches the share who left. On these comparison rows, the Gemini model that uses <code>TEXT_FEATURE</code> is ahead on those four summaries. The logistic model with the communications is close behind it. The two tabular models follow both.</p>
+<p><code>realized_cost_table</code> asks the Chapter 6 question. The score only builds the contact list, through <span class="math inline">\(L_i(p_{0,i} - p_{1,i}) &gt; c_i\)</span>. The money is then computed from who left, with <code>p1</code> held fixed. On this file the communications logistic contacts 204 leavers and 275 stayers, and its net benefit is the largest, about 66,000. The Gemini model with text contacts 120 leavers and 42 stayers. That list is more concentrated on leavers. Its net benefit is smaller, about 40,000, because more of the historical leavers are left uncontacted and each of them still costs <code>loss</code>. The same order remains under <code>BUDGET</code>.</p>
+<p>Chapter 6 is the step between the two readings. A gain in ROC-AUC does not name the customers worth a contact. The loss, the contact cost and <code>p1</code> can place two customers with the same score on opposite sides of the rule. The realized table is that rule applied to the people who left in this comparison set.</p>
+<p>Use that table when the customers about to be contacted resemble these comparison rows, and when <code>p1</code>, <code>cost</code> and <code>loss</code> stay the ones used here. The overlap between a contact list and the historical leavers is a fact about this cohort. It is the relevant business comparison for a cohort of the same kind.</p>
+<p>A cohort with a different churn share, different losses, or a different effect of a contact need not repeat that overlap. The Chapter 6 rule is then applied again, to new scores and to the new costs. The model that estimates the probabilities well is the more reliable input to that rule. A list that caught the leavers of this particular sample is tied to this sample.</p>
+<p><code>p1</code> remains an assumption. The realized net benefit accounts for these historical outcomes under that assumption. It compares the contact lists on this cohort. It is not a measured effect of a campaign, and it is not a forecast for a cohort that does not look like this one.</p>
+</section>
+<section id="delete-the-cloud-resources" class="level3" data-number="7.3.12">
+<h3 data-number="7.3.12" class="anchored" data-anchor-id="delete-the-cloud-resources"><span class="header-section-number">7.3.12</span> Delete the cloud resources</h3>
+<p>When <code>validation_probabilities.csv</code> has the Gemini columns, the campaign calculation does not need the cloud model.</p>
+<p><code>cleanup_cloud(approve_delete=True)</code> runs only when <code>DELETE_CLOUD_RESOURCES</code> is <code>True</code>. It also requires <code>AUTOML_APPROVE_DELETE=yes</code>. It reads <code>cloud_resources.json</code> in <code>OUTPUT_DIR</code>, the names <code>run_cloud()</code> recorded. It returns <code>0</code> when nothing remains or the deletion finished, and <code>2</code> when the approval is missing.</p>
+<div id="ada64e59" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>DELETE_CLOUD_RESOURCES <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> DELETE_CLOUD_RESOURCES:</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_DELETE"</span>] <span class="op">=</span> <span class="st">"yes"</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    automl.cleanup_cloud(approve_delete<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    os.environ[<span class="st">"AUTOML_APPROVE_DELETE"</span>] <span class="op">=</span> <span class="st">"no"</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Nothing was deleted."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nothing was deleted.</code></pre>
+</div>
+</div>
+<p>From the terminal:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AUTOML_APPROVE_DELETE</span><span class="op">=</span>yes</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> python/workshop_automl.py cleanup <span class="at">--approve-delete</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The paid run also writes <code>cleanup_commands.sh</code> in <code>OUTPUT_DIR</code>. Then list the project:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints list <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai models list <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai datasets list <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># GCS_PREFIX is the folder set in the lesson. The example is telco-automl.</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GCS_PREFIX</span><span class="op">=</span>telco-automl</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> storage ls <span class="st">"gs://</span><span class="va">$GOOGLE_CLOUD_BUCKET</span><span class="st">/</span><span class="va">$GCS_PREFIX</span><span class="st">/**"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This lesson does not create an endpoint. If one is listed, billing continues until each deployed model is removed.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints describe ENDPOINT_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints undeploy-model ENDPOINT_ID <span class="dt">\</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--deployed-model-id</span><span class="op">=</span>DEPLOYED_MODEL_ID <span class="dt">\</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai endpoints delete ENDPOINT_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To stop a job that is still running:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai training-pipelines cancel TRAINING_PIPELINE_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> ai batch-prediction-jobs cancel BATCH_JOB_ID <span class="at">--region</span><span class="op">=</span><span class="st">"</span><span class="va">$GOOGLE_CLOUD_REGION</span><span class="st">"</span> <span class="at">--quiet</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<!--
+`verify_saved_files()` takes no argument. It reads `manifest.json` and `validation_probabilities.csv`. It returns columns `Check`, `Result`, `Detail` and `Required`. A row that says the Gemini probabilities are not saved means `p_automl_tabular` and `p_automl_text` are not in the comparison file yet. The check does not start a job.
+
+::: {#81eadac3 .cell execution_count=19}
+``` {.python .cell-code}
+# automl.verify_saved_files()
+```
+:::
+
+
+-->
+
+
+</section>
 </section>
 
 </main> <!-- /main -->

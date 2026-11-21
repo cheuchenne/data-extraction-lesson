@@ -422,7 +422,7 @@ b_i = L_i(p_{0,i} - p_{1,i}) - c_i.
 <h2 data-number="6.3" class="anchored" data-anchor-id="stage-3-the-individual-decision"><span class="header-section-number">6.3</span> Stage 3 — The individual decision</h2>
 <p>The calculation is the function <code>allocate</code>. It accepts one number for every customer, or a list with one entry per customer. A table version, <code>allocate_frame</code>, reads columns whose names you choose.</p>
 <p>The inputs must agree in length. A probability outside 0 to 1, a negative cost, or a negative loss stops the calculation. A missing value stops it as well: the function does not fill one in. Every decision it returns is 0 or 1.</p>
-<div id="6e66a67c" class="cell" data-execution_count="1">
+<div id="a9dced5c" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
@@ -435,20 +435,22 @@ b_i = L_i(p_{0,i} - p_{1,i}) - c_i.
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># SCORE_FILE = "data/processed/mydata/scores.csv"</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>SCORE_FILE <span class="op">=</span> <span class="st">"data/processed/telco/test_probabilities_with_text.csv"</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>POPULATION_FILE <span class="op">=</span> <span class="st">"data/processed/telco/campaign_example_population.csv"</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> Path(SCORE_FILE).exists():</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    os.chdir(Path(<span class="st">".."</span>).resolve())</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">str</span>(Path.cwd()) <span class="kw">not</span> <span class="kw">in</span> sys.path:</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(Path.cwd()))</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> python.workshop_targeting <span class="im">as</span> targeting</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Test customers only. Chapter 7 reloads this path as ECONOMICS_FILE.</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Columns used there: p1, example_cost, example_loss. Fit rows are not in this file.</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> Path(SCORE_FILE).exists():</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    os.chdir(Path(<span class="st">".."</span>).resolve())</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">str</span>(Path.cwd()) <span class="kw">not</span> <span class="kw">in</span> sys.path:</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    sys.path.insert(<span class="dv">0</span>, <span class="bu">str</span>(Path.cwd()))</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="dv">12</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.width"</span>, <span class="dv">120</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.float_format"</span>, <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> python.workshop_targeting <span class="im">as</span> targeting</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.max_columns"</span>, <span class="dv">12</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.width"</span>, <span class="dv">120</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">"display.float_format"</span>, <span class="kw">lambda</span> value: <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>read_scores</code> loads the file written by <code>save_scores</code>. It requires <code>customer_id</code>, <code>p0</code> and <code>observed_outcome</code>. <code>p0</code> is the score. <code>observed_outcome</code> is 1 when the customer churned and 0 otherwise.</p>
-<div id="2ac465cf" class="cell" data-execution_count="2">
+<div id="a30df0b0" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> targeting.read_scores(SCORE_FILE)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(scores)<span class="sc">}</span><span class="ss"> customers in </span><span class="sc">{</span>SCORE_FILE<span class="sc">}</span><span class="ss">."</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>scores.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -506,7 +508,7 @@ b_i = L_i(p_{0,i} - p_{1,i}) - c_i.
 </div>
 </div>
 <p>The same three customers, passed as lists. <code>cost</code> is one number, so every customer has the same contact cost. <code>loss</code> is one number per customer.</p>
-<div id="532053d7" class="cell" data-execution_count="3">
+<div id="b24156a3" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vector_plan <span class="op">=</span> targeting.allocate(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">0.10</span>, <span class="fl">0.55</span>, <span class="fl">0.80</span>],</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.08</span>, <span class="fl">0.20</span>, <span class="fl">0.75</span>],</span>
@@ -582,7 +584,7 @@ b_i = L_i(p_{0,i} - p_{1,i}) - c_i.
 </div>
 </div>
 <p>The same inputs can sit in a table. The column names are yours. They do not have to be <code>p0</code> or <code>loss</code>.</p>
-<div id="17ac2382" class="cell" data-execution_count="4">
+<div id="68bdfdda" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>records <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"customer"</span>: [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>],</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chance_without"</span>: [<span class="fl">0.10</span>, <span class="fl">0.55</span>, <span class="fl">0.80</span>],</span>
@@ -604,7 +606,7 @@ b_i = L_i(p_{0,i} - p_{1,i}) - c_i.
 </div>
 </div>
 <p><code>allocate</code> also returns the totals: the expected cost of the plan, the contact spending, the number and share of customers targeted, and the expected benefit relative to doing nothing. The benefit equals the expected cost of doing nothing minus the expected cost of the plan.</p>
-<div id="d6573e7d" class="cell" data-execution_count="5">
+<div id="3f757ebe" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"Three customers"</span>: vector_plan})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
@@ -640,6 +642,7 @@ b_i = L_i(p_{0,i} - p_{1,i}) - c_i.
 </div>
 <section id="the-telco-test-customers" class="level3" data-number="6.3.1">
 <h3 data-number="6.3.1" class="anchored" data-anchor-id="the-telco-test-customers"><span class="header-section-number">6.3.1</span> The telco test customers</h3>
+<p><code>POPULATION_FILE</code> is the campaign table of these test customers. <code>p1</code> is the probability of staying if contacted. <code>example_cost</code> is the contact cost. <code>example_loss</code> is the loss if the customer leaves. Fit rows are not in the file. Chapter 7 reads the same path as <code>ECONOMICS_FILE</code>.</p>
 <p>The scores were loaded above. This example attaches a campaign probability, a contact cost and a loss. With your own score file, replace those three inputs. The column names in the example are not required by the functions.</p>
 <p>The example loss is twelve times the customer’s current monthly charge. The example contact cost is 30, 45, or 180. Both are assumptions.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -655,7 +658,7 @@ Note
 <p>For this exercise, campaign probabilities are simulated. In a real application, they would need to be estimated using suitable campaign data, ideally from a randomized experiment.</p>
 </div>
 </div>
-<div id="621e225d" class="cell" data-execution_count="6">
+<div id="4a2740e4" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>example <span class="op">=</span> targeting.read_population(POPULATION_FILE)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>same_customers <span class="op">=</span> scores[<span class="st">"customer_id"</span>].tolist() <span class="op">==</span> example[<span class="st">"customer_id"</span>].tolist()</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>same_scores <span class="op">=</span> np.allclose(scores[<span class="st">"p0"</span>], example[<span class="st">"p0"</span>])</span>
@@ -672,7 +675,7 @@ Note
 <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>observed <span class="op">=</span> scores[<span class="st">"observed_outcome"</span>].to_numpy()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>There is no shared probability cutoff in this calculation. Each customer is compared with that customer’s own cost, loss, and campaign probability. Two customers with the same <code>p0</code> can receive different decisions.</p>
-<div id="f0b8653b" class="cell" data-execution_count="7">
+<div id="7ac90406" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plan <span class="op">=</span> targeting.allocate(p0, p1, cost, loss, ids<span class="op">=</span>customer_ids)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"No shared budget"</span>: plan})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
@@ -707,7 +710,7 @@ Note
 </div>
 </div>
 </div>
-<div id="14fcbba2" class="cell" data-execution_count="8">
+<div id="38d81a05" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>targeting.selected_customers(plan, limit<span class="op">=</span><span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
@@ -840,23 +843,45 @@ Note
 </div>
 </div>
 </div>
-<div id="19482bd7" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pair <span class="op">=</span> targeting.threshold_counterexample(plan)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pair.empty:</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"With these inputs, the targeted customers are those above a cutoff on p0."</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"The targeted customer has the lower churn probability."</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>pair</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>The targeted customer has the lower churn probability.</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<!--
+
+::: {#cc5d4e3a .cell execution_count=9}
+``` {.python .cell-code}
+pair = targeting.threshold_counterexample(plan)
+if pair.empty:
+    print("With these inputs, the targeted customers are those above a cutoff on p0.")
+else:
+    print("The targeted customer has the lower churn probability.")
+pair
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+The targeted customer has the lower churn probability.
+```
+:::
+
+::: {.cell-output .cell-output-display execution_count=9}
+
+```{=html}
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+<table class="dataframe caption-top" data-quarto-postprocess="true" data-border="1">
 <thead>
-<tr class="header">
+<tr class="header" style="text-align: right;">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">row</th>
 <th data-quarto-table-cell-role="th">id</th>
@@ -901,16 +926,21 @@ Note
 </table>
 
 </div>
-</div>
-</div>
-<p>The historical churn label is still on the file. It describes the customers. It is not used to compute the expected cost.</p>
-<div id="85ba7979" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>chosen <span class="op">=</span> plan[<span class="st">"target"</span>] <span class="op">==</span> <span class="dv">1</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group"</span>: [<span class="st">"Targeted"</span>, <span class="st">"Not targeted"</span>],</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Customers"</span>: [<span class="bu">int</span>(chosen.<span class="bu">sum</span>()), <span class="bu">int</span>((<span class="op">~</span>chosen).<span class="bu">sum</span>())],</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Observed churn rate"</span>: [observed[chosen].mean(), observed[<span class="op">~</span>chosen].mean()],</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+```
+
+:::
+:::
+
+
+-->
+<p>The historical churn label is still on the file (just for information, for current customers, that obviously would not be known). It is not used to compute the expected cost.</p>
+<div id="591b4ad6" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chosen <span class="op">=</span> plan[<span class="st">"target"</span>] <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Group"</span>: [<span class="st">"Targeted"</span>, <span class="st">"Not targeted"</span>],</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Customers"</span>: [<span class="bu">int</span>(chosen.<span class="bu">sum</span>()), <span class="bu">int</span>((<span class="op">~</span>chosen).<span class="bu">sum</span>())],</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Observed churn rate"</span>: [observed[chosen].mean(), observed[<span class="op">~</span>chosen].mean()],</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
@@ -943,8 +973,8 @@ Note
 </div>
 </div>
 </div>
-<div id="681d7c89" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_expected_costs(plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="03063fce" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_expected_costs(plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 <figure class="figure">
@@ -953,8 +983,8 @@ Note
 </div>
 </div>
 </div>
-<div id="42ab38b6" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_net_benefits(plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="c1adc44c" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_net_benefits(plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 <figure class="figure">
@@ -987,18 +1017,18 @@ p_{0,i} &gt; \frac{c}{r L}.
 t^\star = \frac{c}{r L}.
 \]</span></p>
 <p><span class="math inline">\(t^\star\)</span> is a consequence of the cost calculation. It appears only when the contact cost, the loss, and the campaign effectiveness are each the same for every customer. Outside those three restrictions, the rule remains the customer-level comparison in Stage 3.</p>
-<div id="8e510fb0" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>EFFECTIVENESS <span class="op">=</span> <span class="fl">0.25</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>COMMON_COST <span class="op">=</span> <span class="dv">40</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>COMMON_LOSS <span class="op">=</span> <span class="dv">600</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>p1_common <span class="op">=</span> targeting.campaign_probabilities(p0, EFFECTIVENESS)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>common_plan <span class="op">=</span> targeting.allocate(p0, p1_common, COMMON_COST, COMMON_LOSS, ids<span class="op">=</span>customer_ids)</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>cutoff <span class="op">=</span> targeting.probability_threshold(COMMON_COST, COMMON_LOSS, EFFECTIVENESS)</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>by_cutoff <span class="op">=</span> (p0 <span class="op">&gt;</span> cutoff).astype(<span class="bu">int</span>)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cutoff t* = </span><span class="sc">{</span>cutoff<span class="sc">:.3f}</span><span class="ss">."</span>)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Decisions on which the cost rule and the cutoff disagree: </span><span class="sc">{</span><span class="bu">int</span>(np.<span class="bu">sum</span>(common_plan[<span class="st">'target'</span>] <span class="op">!=</span> by_cutoff))<span class="sc">}</span><span class="ss">."</span>)</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"Common cost, loss and effectiveness"</span>: common_plan})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="d896f912" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>EFFECTIVENESS <span class="op">=</span> <span class="fl">0.25</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>COMMON_COST <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>COMMON_LOSS <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>p1_common <span class="op">=</span> targeting.campaign_probabilities(p0, EFFECTIVENESS)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>common_plan <span class="op">=</span> targeting.allocate(p0, p1_common, COMMON_COST, COMMON_LOSS, ids<span class="op">=</span>customer_ids)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>cutoff <span class="op">=</span> targeting.probability_threshold(COMMON_COST, COMMON_LOSS, EFFECTIVENESS)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>by_cutoff <span class="op">=</span> (p0 <span class="op">&gt;</span> cutoff).astype(<span class="bu">int</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cutoff t* = </span><span class="sc">{</span>cutoff<span class="sc">:.3f}</span><span class="ss">."</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Decisions on which the cost rule and the cutoff disagree: </span><span class="sc">{</span><span class="bu">int</span>(np.<span class="bu">sum</span>(common_plan[<span class="st">'target'</span>] <span class="op">!=</span> by_cutoff))<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"Common cost, loss and effectiveness"</span>: common_plan})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cutoff t* = 0.267.
 Decisions on which the cost rule and the cutoff disagree: 0.</code></pre>
@@ -1069,20 +1099,20 @@ K = \lfloor B / c \rfloor
 \]</span></p>
 <p>customers. The solution is then the <span class="math inline">\(K\)</span> customers with the largest positive expected net benefits. If fewer than <span class="math inline">\(K\)</span> customers have a positive benefit, target only those.</p>
 <p>The cell below keeps the simulated campaign probabilities, so effectiveness still differs across customers. The contact cost is 40 and the loss is 600 for every customer. The budget pays for at most 200 contacts.</p>
-<div id="fd8ffbe3" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>COMMON_COST <span class="op">=</span> <span class="dv">40</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>COMMON_LOSS <span class="op">=</span> <span class="dv">600</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>MAX_CUSTOMERS <span class="op">=</span> <span class="dv">200</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>equal_budget <span class="op">=</span> COMMON_COST <span class="op">*</span> MAX_CUSTOMERS</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>open_equal <span class="op">=</span> targeting.allocate(p0, p1, COMMON_COST, COMMON_LOSS, ids<span class="op">=</span>customer_ids)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>equal_plan <span class="op">=</span> targeting.allocate_under_equal_cost(</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    p0, p1, COMMON_COST, COMMON_LOSS, equal_budget, ids<span class="op">=</span>customer_ids</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No customer limit"</span>: open_equal,</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"At most </span><span class="sc">{</span>MAX_CUSTOMERS<span class="sc">}</span><span class="ss"> customers"</span>: equal_plan,</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="bc4381be" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>COMMON_COST <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>COMMON_LOSS <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>MAX_CUSTOMERS <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>equal_budget <span class="op">=</span> COMMON_COST <span class="op">*</span> MAX_CUSTOMERS</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>open_equal <span class="op">=</span> targeting.allocate(p0, p1, COMMON_COST, COMMON_LOSS, ids<span class="op">=</span>customer_ids)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>equal_plan <span class="op">=</span> targeting.allocate_under_equal_cost(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    p0, p1, COMMON_COST, COMMON_LOSS, equal_budget, ids<span class="op">=</span>customer_ids</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No customer limit"</span>: open_equal,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"At most </span><span class="sc">{</span>MAX_CUSTOMERS<span class="sc">}</span><span class="ss"> customers"</span>: equal_plan,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 
@@ -1131,14 +1161,14 @@ K = \lfloor B / c \rfloor
 </div>
 </div>
 <p>Because effectiveness differs, the largest churn probabilities are not the largest expected net benefits.</p>
-<div id="db7fc918" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>highest_probability <span class="op">=</span> np.zeros(<span class="bu">len</span>(p0), dtype<span class="op">=</span><span class="bu">int</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>highest_probability[np.argsort(<span class="op">-</span>p0)[:MAX_CUSTOMERS]] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>differ <span class="op">=</span> <span class="bu">int</span>(np.<span class="bu">sum</span>(highest_probability <span class="op">!=</span> equal_plan[<span class="st">"target"</span>]))</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"The </span><span class="sc">{</span>MAX_CUSTOMERS<span class="sc">}</span><span class="ss"> highest churn probabilities and this budget rule "</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"differ for </span><span class="sc">{</span>differ<span class="sc">}</span><span class="ss"> customers."</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="3522762e" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>highest_probability <span class="op">=</span> np.zeros(<span class="bu">len</span>(p0), dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>highest_probability[np.argsort(<span class="op">-</span>p0)[:MAX_CUSTOMERS]] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>differ <span class="op">=</span> <span class="bu">int</span>(np.<span class="bu">sum</span>(highest_probability <span class="op">!=</span> equal_plan[<span class="st">"target"</span>]))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"The </span><span class="sc">{</span>MAX_CUSTOMERS<span class="sc">}</span><span class="ss"> highest churn probabilities and this budget rule "</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"differ for </span><span class="sc">{</span>differ<span class="sc">}</span><span class="ss"> customers."</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>The 200 highest churn probabilities and this budget rule differ for 190 customers.</code></pre>
 </div>
@@ -1149,28 +1179,28 @@ K = \lfloor B / c \rfloor
 <p>When contact costs differ, filling the budget with the largest net benefits can be the wrong set. One expensive customer can crowd out several cheaper customers whose benefits add up to more.</p>
 <p>Three customers and a budget of 6 show the arithmetic. The losses and probabilities below produce expected net benefits of 6, 5, and 5. The contact costs are 4, 3, and 3.</p>
 <p>Taking the benefit of 6 spends 4 and leaves 2, which pays for nobody else. The total benefit is 6. Taking the two benefits of 5 spends 6. The total benefit is 10.</p>
-<div id="62b7b496" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>small_exact <span class="op">=</span> targeting.allocate_under_budget(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">1.00</span>, <span class="fl">0.80</span>, <span class="fl">0.80</span>],</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>],</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span>[<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>],</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">10</span>,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">6</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="st">"High benefit"</span>, <span class="st">"Lower benefit 1"</span>, <span class="st">"Lower benefit 2"</span>],</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"RUN"</span>,</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>small_ranked <span class="op">=</span> targeting.allocate_by_benefit_rank(</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">1.00</span>, <span class="fl">0.80</span>, <span class="fl">0.80</span>],</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>],</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span>[<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>],</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">10</span>,</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">6</span>,</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="st">"High benefit"</span>, <span class="st">"Lower benefit 1"</span>, <span class="st">"Lower benefit 2"</span>],</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Exact budget solution"</span>: small_exact,</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Largest benefits first"</span>: small_ranked,</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="a71977c6" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>small_exact <span class="op">=</span> targeting.allocate_under_budget(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">1.00</span>, <span class="fl">0.80</span>, <span class="fl">0.80</span>],</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>],</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span>[<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>],</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="st">"High benefit"</span>, <span class="st">"Lower benefit 1"</span>, <span class="st">"Lower benefit 2"</span>],</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"RUN"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>small_ranked <span class="op">=</span> targeting.allocate_by_benefit_rank(</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">1.00</span>, <span class="fl">0.80</span>, <span class="fl">0.80</span>],</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    p1<span class="op">=</span>[<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>],</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span>[<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>],</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="st">"High benefit"</span>, <span class="st">"Lower benefit 1"</span>, <span class="st">"Lower benefit 2"</span>],</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Exact budget solution"</span>: small_exact,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Largest benefits first"</span>: small_ranked,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <div>
 
@@ -1220,24 +1250,24 @@ K = \lfloor B / c \rfloor
 </div>
 <p>The telco example uses the customer-specific costs and losses from Stage 3. The budget is 8000. <code>allocate_under_budget</code> solves the binary problem exactly. <code>allocate_by_benefit_rank</code> is the ranking rule, shown only for comparison.</p>
 <p>On this file the exact solve takes about half a second, so the default mode is <code>"RUN"</code>. <code>"SAVE"</code> stores the solution. <code>"LOAD"</code> reads a stored solution and stops if the inputs or the budget differ from the saved run. It does not invent a result.</p>
-<div id="a07af8ac" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>targeting.OPTIMIZATION_MODE <span class="op">=</span> <span class="st">"RUN"</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># targeting.OPTIMIZATION_MODE = "SAVE"</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># targeting.OPTIMIZATION_MODE = "LOAD"</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>budget_plan <span class="op">=</span> targeting.allocate_under_budget(</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    p0, p1, cost, loss, BUDGET, ids<span class="op">=</span>customer_ids</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>ranked_plan <span class="op">=</span> targeting.allocate_by_benefit_rank(</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    p0, p1, cost, loss, BUDGET, ids<span class="op">=</span>customer_ids</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No budget"</span>: plan,</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Exact budget solution"</span>: budget_plan,</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Largest benefits first"</span>: ranked_plan,</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="dd58b46c" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>targeting.OPTIMIZATION_MODE <span class="op">=</span> <span class="st">"RUN"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># targeting.OPTIMIZATION_MODE = "SAVE"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># targeting.OPTIMIZATION_MODE = "LOAD"</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>budget_plan <span class="op">=</span> targeting.allocate_under_budget(</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    p0, p1, cost, loss, BUDGET, ids<span class="op">=</span>customer_ids</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>ranked_plan <span class="op">=</span> targeting.allocate_by_benefit_rank(</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    p0, p1, cost, loss, BUDGET, ids<span class="op">=</span>customer_ids</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>targeting.compare({</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No budget"</span>: plan,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Exact budget solution"</span>: budget_plan,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Largest benefits first"</span>: ranked_plan,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
@@ -1296,20 +1326,20 @@ K = \lfloor B / c \rfloor
 </div>
 </div>
 </div>
-<div id="06e54e47" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>gap <span class="op">=</span> budget_plan[<span class="st">"benefit"</span>] <span class="op">-</span> ranked_plan[<span class="st">"benefit"</span>]</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> gap <span class="op">&gt;</span> <span class="dv">1</span>:</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Ranking by expected net benefit leaves </span><span class="sc">{</span>gap<span class="sc">:,.0f}</span><span class="ss"> of expected benefit unused."</span>)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"For this budget, the ranking rule and the exact solution select the same customers."</span>)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exact spend </span><span class="sc">{</span>budget_plan[<span class="st">'campaign_spend'</span>]<span class="sc">:,.0f}</span><span class="ss"> is within the budget of </span><span class="sc">{</span>BUDGET<span class="sc">:,.0f}</span><span class="ss">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="d9ca4beb" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>gap <span class="op">=</span> budget_plan[<span class="st">"benefit"</span>] <span class="op">-</span> ranked_plan[<span class="st">"benefit"</span>]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> gap <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Ranking by expected net benefit leaves </span><span class="sc">{</span>gap<span class="sc">:,.0f}</span><span class="ss"> of expected benefit unused."</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"For this budget, the ranking rule and the exact solution select the same customers."</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exact spend </span><span class="sc">{</span>budget_plan[<span class="st">'campaign_spend'</span>]<span class="sc">:,.0f}</span><span class="ss"> is within the budget of </span><span class="sc">{</span>BUDGET<span class="sc">:,.0f}</span><span class="ss">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Ranking by expected net benefit leaves 4,460 of expected benefit unused.
 Exact spend 7,995 is within the budget of 8,000.</code></pre>
 </div>
 </div>
-<div id="031d687d" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_allocations(plan, budget_plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="03e8aa20" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_allocations(plan, budget_plan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <div>
 <figure class="figure">
@@ -1325,20 +1355,20 @@ Exact spend 7,995 is within the budget of 8,000.</code></pre>
 <h2 data-number="6.6" class="anchored" data-anchor-id="stage-6-change-the-economic-assumptions"><span class="header-section-number">6.6</span> Stage 6 — Change the economic assumptions</h2>
 <p>A decision can change when a cost, a loss, a campaign probability, or the budget changes. Edit the four assignments and run the cell again. The defaults reproduce the plan from Stage 3 and the budget from Stage 5.</p>
 <p><code>REDUCTION_SCALE</code> multiplies the gap between <code>p0</code> and the simulated <code>p1</code>. A scale of 1 keeps the example. A scale of 0 means the campaign changes no probability. Keep the scale between 0 and 1 so that every campaign probability stays between 0 and 1.</p>
-<div id="a4b3c93c" class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>COST_MULTIPLIER <span class="op">=</span> <span class="fl">1.0</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>LOSS_MULTIPLIER <span class="op">=</span> <span class="fl">1.0</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>REDUCTION_SCALE <span class="op">=</span> <span class="fl">1.0</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>cost_now <span class="op">=</span> cost <span class="op">*</span> COST_MULTIPLIER</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>loss_now <span class="op">=</span> loss <span class="op">*</span> LOSS_MULTIPLIER</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>p1_now <span class="op">=</span> p0 <span class="op">-</span> REDUCTION_SCALE <span class="op">*</span> (p0 <span class="op">-</span> p1)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>revised <span class="op">=</span> targeting.allocate(p0, p1_now, cost_now, loss_now, ids<span class="op">=</span>customer_ids)</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>revised_budget <span class="op">=</span> targeting.allocate_under_budget(</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    p0, p1_now, cost_now, loss_now, BUDGET, ids<span class="op">=</span>customer_ids, mode<span class="op">=</span><span class="st">"RUN"</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"No budget"</span>: revised, <span class="st">"With budget"</span>: revised_budget})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="d2c6964a" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>COST_MULTIPLIER <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>LOSS_MULTIPLIER <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>REDUCTION_SCALE <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>BUDGET <span class="op">=</span> <span class="dv">8000</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>cost_now <span class="op">=</span> cost <span class="op">*</span> COST_MULTIPLIER</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>loss_now <span class="op">=</span> loss <span class="op">*</span> LOSS_MULTIPLIER</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>p1_now <span class="op">=</span> p0 <span class="op">-</span> REDUCTION_SCALE <span class="op">*</span> (p0 <span class="op">-</span> p1)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>revised <span class="op">=</span> targeting.allocate(p0, p1_now, cost_now, loss_now, ids<span class="op">=</span>customer_ids)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>revised_budget <span class="op">=</span> targeting.allocate_under_budget(</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    p0, p1_now, cost_now, loss_now, BUDGET, ids<span class="op">=</span>customer_ids, mode<span class="op">=</span><span class="st">"RUN"</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>targeting.compare({<span class="st">"No budget"</span>: revised, <span class="st">"With budget"</span>: revised_budget})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 
@@ -1387,15 +1417,15 @@ Exact spend 7,995 is within the budget of 8,000.</code></pre>
 </div>
 </div>
 <p>The next table changes one thing only: the common campaign effectiveness <span class="math inline">\(r\)</span>, with <span class="math inline">\(p_{1,i} = (1-r)p_{0,i}\)</span>. Like in Section 6.5.1, the contact cost is 40, the loss is 600 and the budget pays for at most 200 contacts.</p>
-<div id="b16e3938" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sensitivity <span class="op">=</span> targeting.effectiveness_sensitivity(</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    p0,</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span><span class="dv">40</span>,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">600</span>,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    effectiveness<span class="op">=</span>[<span class="fl">0.10</span>, <span class="fl">0.20</span>, <span class="fl">0.30</span>, <span class="fl">0.50</span>, <span class="fl">0.70</span>],</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">40</span> <span class="op">*</span> <span class="dv">200</span>,</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>sensitivity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="eeb07ac3" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>sensitivity <span class="op">=</span> targeting.effectiveness_sensitivity(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    p0,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    cost<span class="op">=</span><span class="dv">40</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="dv">600</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    effectiveness<span class="op">=</span>[<span class="fl">0.10</span>, <span class="fl">0.20</span>, <span class="fl">0.30</span>, <span class="fl">0.50</span>, <span class="fl">0.70</span>],</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    budget<span class="op">=</span><span class="dv">40</span> <span class="op">*</span> <span class="dv">200</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>sensitivity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <div>
 
@@ -1500,8 +1530,8 @@ Exact spend 7,995 is within the budget of 8,000.</code></pre>
 </div>
 </div>
 </div>
-<div id="90f72e98" class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_effectiveness(sensitivity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="972e7157" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>targeting.plot_effectiveness(sensitivity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
 <div>
 <figure class="figure">
@@ -1546,7 +1576,7 @@ b_i = L_i u_i - c_i.
 <section id="run-the-workshop" class="level2" data-number="6.9">
 <h2 data-number="6.9" class="anchored" data-anchor-id="run-the-workshop"><span class="header-section-number">6.9</span> Run the workshop</h2>
 <p>Run the cells from top to bottom. From the project folder:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render lessons/02f-campaign-targeting.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render lessons/02f-campaign-targeting.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The render reads the file named in <code>SCORE_FILE</code>. It does not fit the logistic regression again. For another dataset, set <code>SCORE_FILE</code> to the path used when those scores were saved, for example <code>data/processed/mydata/scores.csv</code>.</p>
 
 

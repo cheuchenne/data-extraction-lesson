@@ -262,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="4536581d" class="cell" data-execution_count="1">
+<div id="fb3ce21b" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -329,7 +329,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>This lesson concentrates on the first half of the pipeline: from business information to a reliable table. Exploratory analysis and visualisation are developed in <strong>Section 2.c</strong>, after the invoice-level table has been assembled.</p>
+<p>This lesson concentrates on the first half of the pipeline: from business information to a reliable table. Exploratory analysis and visualisation are developed in <strong>Chapter 3</strong>, after the invoice-level table has been assembled.</p>
 </section>
 <section id="part-1-from-real-world-business-information-to-structured-data" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="part-1-from-real-world-business-information-to-structured-data"><span class="header-section-number">2.4</span> Part 1 — From real-world business information to structured data</h2>
@@ -443,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="997ad528" class="cell" data-execution_count="2">
+<div id="12558b92" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>email_record <span class="op">=</span> pd.DataFrame(</span>
@@ -754,7 +754,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="2.5.1" class="anchored" data-anchor-id="what-pandas-is-and-why-we-use-it"><span class="header-section-number">2.5.1</span> What pandas is, and why we use it</h3>
 <p>A <strong>Python package</strong> is a reusable collection of functions and objects that we install once and then import into a program. <code>pandas</code> is the package most often used in Python to store and manipulate tables.</p>
 <p>An <strong>import</strong> makes that package available in the current session.</p>
-<div id="d0ea1410" class="cell" data-execution_count="3">
+<div id="50a45ce3" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
@@ -773,7 +773,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="2.5.2" class="anchored" data-anchor-id="csv-a-tabular-export"><span class="header-section-number">2.5.2</span> CSV: a tabular export</h3>
 <p>A CSV file (<em>comma-separated values</em>) is a plain-text representation of a table. Businesses use it constantly: finance exports, CRM extracts, reports sent by email.</p>
 <p>HarborLink’s customer export is <code>data/raw/customers.csv</code>. It is a <em>denormalised</em> snapshot: each row already combines customer, subscription and current payment status. That is typical of the files analysts receive. It is not a full ERP model.</p>
-<div id="a81e8ea1" class="cell" data-execution_count="4">
+<div id="f9f73dc9" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> pd.read_csv(<span class="st">"data/raw/customers.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>customers = ...</code> stores that DataFrame in a variable called <code>customers</code>.</li>
 <li>After this line, <code>customers</code> represents the HarborLink customer export in memory.</li>
 </ul>
-<div id="bbdda86c" class="cell" data-execution_count="5">
+<div id="84c4abce" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>customers.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
@@ -873,14 +873,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p><code>head()</code> returns the first five rows. It is an inspection command: we use it to see whether the file looks like the table we expected.</p>
-<div id="a66743a3" class="cell" data-execution_count="6">
+<div id="4dafaeea" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>customers.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>(8, 9)</code></pre>
 </div>
 </div>
 <p><code>shape</code> is a pair <code>(n_rows, n_columns)</code>. Here we have eight customers and nine variables. Small on purpose: the file should be easy to read in class.</p>
-<div id="a33bf9df" class="cell" data-execution_count="7">
+<div id="df41a673" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>customers.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>Index(['customer_id', 'customer_name', 'company_name', 'customer_segment',
@@ -890,7 +890,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p><code>columns</code> lists the variable names. They should match the export we were promised.</p>
-<div id="093107fa" class="cell" data-execution_count="8">
+<div id="b341a075" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>customers.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.DataFrame'&gt;
@@ -915,7 +915,7 @@ memory usage: 708.0 bytes</code></pre>
 <p>The conceptual transition is:</p>
 <p><strong>CSV file → pandas DataFrame → observations and variables</strong></p>
 <p>A few operations are useful as soon as a file is loaded. They are still extraction and preparation, not a full exploratory analysis.</p>
-<div id="6b36e611" class="cell" data-execution_count="9">
+<div id="55f0239c" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> pd.read_csv(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/raw/customers.csv"</span>,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    parse_dates<span class="op">=</span>[<span class="st">"signup_date"</span>],</span>
@@ -972,7 +972,7 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 </div>
 <p><code>parse_dates=["signup_date"]</code> tells <code>read_csv</code> that this column contains dates. The square brackets after <code>customers</code> <strong>select columns</strong>. We keep only three variables for display.</p>
-<div id="886014cf" class="cell" data-execution_count="10">
+<div id="5b38d4af" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>unpaid_customers <span class="op">=</span> customers[</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    customers[<span class="st">"payment_status"</span>].isin([<span class="st">"unpaid"</span>, <span class="st">"overdue"</span>])</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>]</span>
@@ -1020,14 +1020,14 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 </div>
 <p>The expression inside the square brackets <strong>filters rows</strong>. <code>isin(...)</code> keeps the statuses we care about. Elena Vargas is unpaid; Thomas Berg is overdue. Those two words are not interchangeable: an unpaid invoice may still be before its due date.</p>
-<div id="7025a50f" class="cell" data-execution_count="11">
+<div id="d859af1e" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>customers[<span class="st">"monthly_amount"</span>].isna().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>np.int64(0)</code></pre>
 </div>
 </div>
 <p><code>isna()</code> marks missing values. <code>sum()</code> counts them. This export has none, which is convenient — and not guaranteed in a real company file.</p>
-<div id="7918ad4c" class="cell" data-execution_count="12">
+<div id="84a72462" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>unpaid_customers.to_csv(<span class="st">"data/processed/unpaid_customers.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>to_csv</code> writes a DataFrame back to disk. <code>index=False</code> avoids saving the pandas row numbers as an extra column. The processed file is a new analytical artefact, not a replacement for the source export.</p>
@@ -1035,7 +1035,7 @@ memory usage: 708.0 bytes</code></pre>
 <section id="excel-the-everyday-business-workbook" class="level3" data-number="2.5.3">
 <h3 data-number="2.5.3" class="anchored" data-anchor-id="excel-the-everyday-business-workbook"><span class="header-section-number">2.5.3</span> Excel: the everyday business workbook</h3>
 <p>Excel is common because people can open it, sort it, add a comment and email it. That convenience is also the problem: a workbook is not automatically a DataFrame.</p>
-<div id="dace92cb" class="cell" data-execution_count="13">
+<div id="76627190" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>customers_xlsx <span class="op">=</span> pd.read_excel(<span class="st">"data/raw/customers.xlsx"</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>customers_xlsx.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
@@ -1130,14 +1130,14 @@ memory usage: 708.0 bytes</code></pre>
 <li>The result is again a DataFrame. The colours, column widths and merged titles of Excel do not travel with it.</li>
 </ul>
 <p>A workbook can contain several sheets. HarborLink’s file has a clean customer sheet, a clean invoice sheet, and a notes sheet that was never designed as a table.</p>
-<div id="8867f27b" class="cell" data-execution_count="14">
+<div id="69af5355" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>excel_file <span class="op">=</span> pd.ExcelFile(<span class="st">"data/raw/customers.xlsx"</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>excel_file.sheet_names</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>['customers', 'invoices', 'Monthly_notes']</code></pre>
 </div>
 </div>
-<div id="49e8e5eb" class="cell" data-execution_count="15">
+<div id="0c4a9f2c" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>invoices_xlsx <span class="op">=</span> pd.read_excel(<span class="st">"data/raw/customers.xlsx"</span>, sheet_name<span class="op">=</span><span class="st">"invoices"</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>invoices_xlsx.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
@@ -1227,7 +1227,7 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 </div>
 <p><code>sheet_name="invoices"</code> selects a worksheet by name. Programmatic loading is useful because the same command can be re-run next month. A colleague’s manual copy-paste cannot.</p>
-<div id="bcd53ed0" class="cell" data-execution_count="16">
+<div id="abf650fa" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>notes <span class="op">=</span> pd.read_excel(<span class="st">"data/raw/customers.xlsx"</span>, sheet_name<span class="op">=</span><span class="st">"Monthly_notes"</span>, header<span class="op">=</span><span class="va">None</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>notes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
@@ -1327,7 +1327,7 @@ memory usage: 708.0 bytes</code></pre>
 <span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
 <span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Python’s standard library can read this file. No extra package is required.</p>
-<div id="48b1ae84" class="cell" data-execution_count="17">
+<div id="a50a8b6f" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"data/raw/interactions.json"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
@@ -1346,19 +1346,19 @@ memory usage: 708.0 bytes</code></pre>
 <li>A JSON <strong>list</strong> becomes a Python <strong>list</strong>.</li>
 <li>Nested objects become dictionaries inside dictionaries or lists.</li>
 </ul>
-<div id="da5093e1" class="cell" data-execution_count="18">
+<div id="555d4232" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>interactions[<span class="dv">0</span>][<span class="st">"customer_id"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>1827</code></pre>
 </div>
 </div>
-<div id="750e010d" class="cell" data-execution_count="19">
+<div id="251b88ce" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>interactions[<span class="dv">0</span>][<span class="st">"subscription"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>{'type': 'premium', 'monthly_amount': 49.9, 'status': 'unpaid'}</code></pre>
 </div>
 </div>
-<div id="677f336c" class="cell" data-execution_count="20">
+<div id="d115a02b" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>interactions[<span class="dv">0</span>][<span class="st">"contacts"</span>][<span class="dv">0</span>][<span class="st">"text"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>'Hello, I am contacting you because my September subscription has still not been paid. Could you please check?'</code></pre>
@@ -1372,7 +1372,7 @@ memory usage: 708.0 bytes</code></pre>
 <li>one row per invoice;</li>
 <li>one row per payment.</li>
 </ul>
-<div id="55c98fd3" class="cell" data-execution_count="21">
+<div id="2e84de60" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>customers_from_json <span class="op">=</span> pd.json_normalize(interactions)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>customers_from_json[</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"customer_id"</span>, <span class="st">"company_name"</span>, <span class="st">"subscription.status"</span>, <span class="st">"subscription.type"</span>]</span>
@@ -1455,7 +1455,7 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 </div>
 <p><code>pd.json_normalize</code> turns nested dictionaries into columns. <code>subscription.status</code> is the status that lived inside the nested object. Each row is still <strong>one customer</strong>. The contacts remain grouped inside each document; they are not separate rows.</p>
-<div id="3e96e292" class="cell" data-execution_count="22">
+<div id="fcf5fa7c" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>contacts <span class="op">=</span> pd.json_normalize(</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    interactions,</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    record_path<span class="op">=</span><span class="st">"contacts"</span>,</span>
@@ -1612,7 +1612,7 @@ memory usage: 708.0 bytes</code></pre>
 <li>a <strong>join</strong> combines tables through their keys.</li>
 </ul>
 <p>We use <strong>SQLite</strong> because it is a real relational database stored in one file. It does not require an external server. HarborLink’s file is <code>data/raw/company.sqlite</code>.</p>
-<div id="cf0debf0" class="cell" data-execution_count="23">
+<div id="6af2c44c" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">"data/raw/company.sqlite"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1622,7 +1622,7 @@ memory usage: 708.0 bytes</code></pre>
 <li><code>connect</code> opens a <strong>connection</strong>: a live link to the database file.</li>
 <li>The database stays on disk. Python does not load every table into memory just by connecting.</li>
 </ul>
-<div id="9e004223" class="cell" data-execution_count="24">
+<div id="fa66c471" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT customer_id, amount, status</span></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="st">FROM payments</span></span>
@@ -1672,7 +1672,7 @@ memory usage: 708.0 bytes</code></pre>
 </ul>
 <p>A database is not a DataFrame. The database stores and manages data, potentially at large scale, for many processes. The DataFrame is an in-memory structure used for analysis. Python should ask for the relevant subset.</p>
 <p>A join brings customer names next to payment problems:</p>
-<div id="bfc8e782" class="cell" data-execution_count="25">
+<div id="d61e66ca" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>join_query <span class="op">=</span> <span class="st">"""</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="st">    c.customer_id,</span></span>
@@ -1746,7 +1746,7 @@ memory usage: 708.0 bytes</code></pre>
 <li><code>IN ('unpaid', 'overdue')</code> keeps both problem statuses.</li>
 <li>The result is again a DataFrame, ready for analysis.</li>
 </ul>
-<div id="990741eb" class="cell" data-execution_count="26">
+<div id="b2a1d4ae" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>connection.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Close the connection when the queries are finished.</p>
@@ -1786,7 +1786,7 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 </div>
 <p>A reliable classroom demonstration should not depend on a personal key, a paid service or a website that may change tomorrow. This lesson therefore uses a <strong>local mock API</strong> that serves HarborLink invoices from <code>data/raw/api_invoices.json</code>. It reproduces the interaction pattern of a real HTTP API. If the server cannot start, the same JSON file is the offline fallback.</p>
-<div id="61e5f5a4" class="cell" data-execution_count="27">
+<div id="95786210" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.mock_api <span class="im">import</span> start_background_server</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1801,7 +1801,7 @@ memory usage: 708.0 bytes</code></pre>
 <li>An <strong>endpoint</strong> is a URL that names a resource. Here the resource is <code>/invoices</code>.</li>
 <li><code>requests</code> is the Python package that sends HTTP requests.</li>
 </ul>
-<div id="aa44b06f" class="cell" data-execution_count="28">
+<div id="d78758d7" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(API_URL)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>response.raise_for_status()</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>response.status_code</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1815,7 +1815,7 @@ memory usage: 708.0 bytes</code></pre>
 <li><code>200</code> means success. Codes in the 400 and 500 ranges indicate a client or server problem.</li>
 <li><code>raise_for_status()</code> stops the program if the request failed. It is safer than ignoring the code.</li>
 </ul>
-<div id="b36e5da7" class="cell" data-execution_count="29">
+<div id="2e491144" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> response.json()</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>data.keys()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
@@ -1823,7 +1823,7 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 </div>
 <p><code>response.json()</code> parses the JSON body into a Python object. Here the object is a dictionary with a company name, a date and a list of invoices.</p>
-<div id="c81dd012" class="cell" data-execution_count="30">
+<div id="8b325c02" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>api_invoices <span class="op">=</span> pd.DataFrame(data[<span class="st">"invoices"</span>])</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>api_invoices</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="30">
@@ -1941,7 +1941,7 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 <p><code>data["invoices"]</code> is already a list of flat records, so <code>pd.DataFrame(...)</code> is enough. If the payload were nested, we would use <code>json_normalize</code> as in the previous section.</p>
 <p>If the local server were unavailable, the lesson would still run:</p>
-<div id="08265f2a" class="cell" data-execution_count="31">
+<div id="eb23e3bf" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"data/raw/api_invoices.json"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    fallback <span class="op">=</span> json.load(<span class="bu">file</span>)</span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2133,7 +2133,7 @@ memory usage: 708.0 bytes</code></pre>
 <h3 data-number="2.6.2" class="anchored" data-anchor-id="text-based-pdfs"><span class="header-section-number">2.6.2</span> Text-based PDFs</h3>
 <p>A text-based PDF contains machine-readable characters. We can open it and ask a library for the text and, sometimes, for tables.</p>
 <p>We use <strong>PyMuPDF</strong>, imported as <code>pymupdf</code>. It can open a file, count pages, extract text, list images and try to detect tables.</p>
-<div id="bb76ec64" class="cell" data-execution_count="32">
+<div id="6851d5bb" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymupdf</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>text_pdf <span class="op">=</span> pymupdf.<span class="bu">open</span>(<span class="st">"data/raw/invoice_text.pdf"</span>)</span>
@@ -2143,7 +2143,7 @@ memory usage: 708.0 bytes</code></pre>
 </div>
 </div>
 <p><code>pymupdf.open</code> opens the document. <code>page_count</code> is the number of pages. A page is a visual unit, not a database record.</p>
-<div id="a3f94eab" class="cell" data-execution_count="33">
+<div id="3d1f3afd" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>page <span class="op">=</span> text_pdf[<span class="dv">0</span>]</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> page.get_text()</span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2178,7 +2178,7 @@ Payment for the September billing cycle has not been received as of 2026-09-12.
 </div>
 <p><code>text_pdf[0]</code> is the first page (Python starts counting at zero). <code>get_text()</code> returns the characters the library can read, in the order it reconstructs.</p>
 <p>Look at the first lines. The <strong>footer</strong> of the invoice often appears before the title. That is not a HarborLink joke. It is evidence that reading order follows internal fragments, not necessarily the visual path of a human reader.</p>
-<div id="4001bde7" class="cell" data-execution_count="34">
+<div id="886a54bb" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> page.find_tables()</span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>invoice_tables <span class="op">=</span> [table.to_pandas() <span class="cf">for</span> table <span class="kw">in</span> tables]</span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>invoice_tables[<span class="dv">0</span>] <span class="cf">if</span> invoice_tables <span class="cf">else</span> <span class="st">"No table detected"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2215,14 +2215,14 @@ Payment for the September billing cycle has not been received as of 2026-09-12.
 </div>
 </div>
 <p><code>find_tables()</code> looks for geometric arrangements that resemble tables. <code>to_pandas()</code> turns a detected table into a DataFrame. On this synthetic invoice the line items are recovered. That success is not a general guarantee. A slightly different layout, a wrapped description or a second page can break the reconstruction.</p>
-<div id="11d59e4e" class="cell" data-execution_count="35">
+<div id="0806fef6" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>text_pdf.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="scanned-pdfs" class="level3" data-number="2.6.3">
 <h3 data-number="2.6.3" class="anchored" data-anchor-id="scanned-pdfs"><span class="header-section-number">2.6.3</span> Scanned PDFs</h3>
 <p>A scanned PDF may contain a photograph of a page rather than machine-readable text. Ordinary text extraction then returns little or nothing useful.</p>
-<div id="c5d3bb98" class="cell" data-execution_count="36">
+<div id="864313ff" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>scanned_pdf <span class="op">=</span> pymupdf.<span class="bu">open</span>(<span class="st">"data/raw/invoice_scanned.pdf"</span>)</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>scanned_page <span class="op">=</span> scanned_pdf[<span class="dv">0</span>]</span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2265,7 +2265,7 @@ Detected tables: 0</code></pre>
 </ol>
 <p>A library that succeeds at step 1 may still fail at step 4. A model that succeeds at step 5 may still be wrong at step 6.</p>
 <p>Compare the PDF amount with the database. If they disagree, the document extraction is not finished.</p>
-<div id="b6bb26a3" class="cell" data-execution_count="37">
+<div id="6c03a866" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">"data/raw/company.sqlite"</span>)</span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>check <span class="op">=</span> pd.read_sql_query(</span>
 <span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"""</span></span>
@@ -2366,7 +2366,7 @@ Detected tables: 0</code></pre>
 <h2 data-number="2.7" class="anchored" data-anchor-id="synthesis"><span class="header-section-number">2.7</span> Synthesis</h2>
 <p>Business information is produced and stored in many heterogeneous forms: ERP systems, CRM systems, databases, spreadsheets, APIs, emails, tickets and documents. Data science begins by identifying these sources, retrieving the relevant information, extracting and validating its structure, and transforming it into reliable data that Python can analyse.</p>
 <p>We can now close the loop with the HarborLink late-payment question. The useful analytical table did not come from a single magic command. It came from choosing a source, choosing an analytical unit, extracting a subset, and checking that identifiers and amounts still match the business story.</p>
-<div id="bd76f203" class="cell" data-execution_count="38">
+<div id="092e70c6" class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>late</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="38">
 <div>

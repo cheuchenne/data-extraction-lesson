@@ -1,27 +1,56 @@
-.venv/
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.env.*
+**/*service-account*.json
+**/*-credentials.json
+
+# Jupyter
 .ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Editors
+.idea/
+
+# Quarto cache. The rendered pages in _book/ stay in the repository.
 .quarto/
 _freeze/
 *.quarto_ipynb
-.DS_Store
 .mplconfig/
 
-# Excel lock files created while a workbook is open
+# Excel lock files, created while a workbook is open
 ~$*
 
-# Local secrets. The rendered book and its HTML pages stay in the repository.
+# Local cloud records. They name a project, a bucket and a job.
 data/processed/unpaid_customers.csv
 data/processed/telco/automl/cloud_resources.json
 data/processed/telco/automl/cleanup_commands.sh
 data/processed/telco/automl/cloud_download/
-**/*service-account*.json
-**/*-credentials.json
 
-# Plots generated beside the sources. The copies used by the HTML pages live in _book/ and are kept.
-figures/*.png
+# Plots written by a lesson cell. The copies inside _book/ stay.
+figures/
 
-# Quarto figure folders next to the sources. The same folders inside _book/ are kept.
+# Quarto folders next to a source file. The same folders inside _book/ stay.
 *_files/
 !_book/
 !_book/**/

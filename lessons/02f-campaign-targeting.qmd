@@ -127,6 +127,8 @@ import pandas as pd
 # SCORE_FILE = "data/processed/mydata/scores.csv"
 SCORE_FILE = "data/processed/telco/test_probabilities_with_text.csv"
 POPULATION_FILE = "data/processed/telco/campaign_example_population.csv"
+# Test customers only. Chapter 7 reloads this path as ECONOMICS_FILE.
+# Columns used there: p1, example_cost, example_loss. Fit rows are not in this file.
 
 if not Path(SCORE_FILE).exists():
     os.chdir(Path("..").resolve())
@@ -189,6 +191,8 @@ targeting.compare({"Three customers": vector_plan})
 ```
 
 ### The telco test customers
+
+`POPULATION_FILE` is the campaign table of these test customers. `p1` is the probability of staying if contacted. `example_cost` is the contact cost. `example_loss` is the loss if the customer leaves. Fit rows are not in the file. Chapter 7 reads the same path as `ECONOMICS_FILE`.
 
 The scores were loaded above. This example attaches a campaign probability, a contact cost and a loss. With your own score file, replace those three inputs. The column names in the example are not required by the functions.
 

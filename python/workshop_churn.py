@@ -785,6 +785,56 @@ def save_scores(result: dict, path) -> pd.DataFrame:
     return frame
 
 
+def save_model_rows(tabular: dict, combined: dict, path) -> pd.DataFrame:
+    """Write both logistic scores for every fit row and every test row.
+
+    ``save_scores`` writes one model's test rows. This file writes both models
+    and both roles, so a later method can reload the same customers.
+
+    ``customer_id`` is the identifier. ``role`` is ``fit`` or ``test``.
+    ``p_logistic_tabular`` is the structured-fields score.
+    ``p_logistic_text`` is the score that also uses the communications.
+    On the test rows, ``p_logistic_text`` is the same number ``save_scores``
+    stores as ``p0``. ``observed_outcome`` is 1 or 0.
+    """
+    def half(result: dict, role: str, id_key: str, y_key: str, prob_key: str, column: str) -> pd.DataFrame:
+        return pd.DataFrame({
+            "customer_id": [str(value) for value in result[id_key]],
+            "role": role,
+            "observed_outcome": np.asarray(result[y_key], dtype=int),
+            column: np.asarray(result[prob_key], dtype=float),
+        })
+
+    tabular_rows = pd.concat([
+        half(tabular, "fit", "train_customer_ids", "y_train", "prob_train", "p_logistic_tabular"),
+        half(tabular, "test", "test_customer_ids", "y_test", "prob_test", "p_logistic_tabular"),
+    ], ignore_index=True)
+    text_rows = pd.concat([
+        half(combined, "fit", "train_customer_ids", "y_train", "prob_train", "p_logistic_text"),
+        half(combined, "test", "test_customer_ids", "y_test", "prob_test", "p_logistic_text"),
+    ], ignore_index=True)
+    text_rows = text_rows.drop(columns=["role", "observed_outcome"])
+    frame = tabular_rows.merge(text_rows, on="customer_id", how="left", validate="one_to_one")
+    if frame["p_logistic_text"].isna().any():
+        raise WorkshopError("A customer has a tabular score and no communications-model score.")
+    if set(frame["role"]) != {"fit", "test"}:
+        raise WorkshopError("The score file must contain fit rows and test rows.")
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    frame = frame[[
+        "customer_id",
+        "role",
+        "p_logistic_tabular",
+        "p_logistic_text",
+        "observed_outcome",
+    ]]
+    frame.to_csv(destination, index=False)
+    n_fit = int((frame["role"] == "fit").sum())
+    n_test = int((frame["role"] == "test").sum())
+    print(f"Saved {n_fit} fit rows and {n_test} test rows to {destination}.")
+    return frame
+
+
 def compare_models(results: list[dict]) -> pd.DataFrame:
     """Place test measures for several models side by side."""
     rows = []

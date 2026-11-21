@@ -1,0 +1,18 @@
+{
+  "positive_label": "Yes",
+  "positive_coded_as": 1,
+  "target_column": "Churn",
+  "score_column": "Churn_Yes_scores",
+  "rows": 880,
+  "columns": [
+    "customerID",
+    "observed_outcome",
+    "p_logistic_tabular",
+    "p_logistic_text",
+    "p1",
+    "cost",
+    "loss",
+    "p_automl_tabular",
+    "p_automl_text"
+  ]
+}

@@ -1,4 +1,4 @@
-"""Compare local churn probabilities with tabular AutoML, without spending by accident.
+"""Compare saved local probabilities with tabular AutoML, without spending by accident.
 
 The Quarto document only reads files this module has already written.
 ``prepare`` builds those files on your machine. ``run`` is the only command
@@ -73,14 +73,16 @@ INCLUDE_TEXT_ONLY = False
 BUDGET = 8000.0
 OPTIMIZATION_OBJECTIVE = "minimize-log-loss"
 
-ID_COLUMN = "customerID"
-TARGET_COLUMN = "Churn"
-POSITIVE_LABEL = "Yes"
+ID_COLUMN = "id"
+TARGET_COLUMN = "target"
+POSITIVE_LABEL = "1"
 TEXT_COLUMN = "text"
 TEXT_ORDER_COLUMN = "text_index"
-TEXT_TYPE_COLUMN = "communication_type"
-TEXT_FEATURE = "customer_text"
+TEXT_TYPE_COLUMN = ""
+TEXT_FEATURE = "text_feature"
 SPLIT_COLUMN = "ml_split"
+OBSERVED_COLUMN = "observed_outcome"
+MODEL_ROWS_ID_COLUMN = "id"
 # The tabular data-splits page requires these three words.
 # The Python SDK docstring still says training/validation/test.
 # Invalid values are ignored, so the wrong word drops the row instead of
@@ -89,20 +91,21 @@ SPLIT_LABELS = ("TRAIN", "VALIDATE", "TEST")
 
 NUMERIC_FEATURES: list[str] = []
 CATEGORICAL_FEATURES: list[str] = []
-TABULAR_FILE = "data/raw/telco/telco_customers.csv"
-TEXT_FILE = "data/raw/telco/customer_communications.csv"
-ECONOMICS_FILE = "data/processed/telco/campaign_example_population.csv"
-ECONOMICS_ID_COLUMN = "customer_id"
+TABULAR_FILE = ""
+TEXT_FILE = ""
+ECONOMICS_FILE = ""
+ECONOMICS_ID_COLUMN = "id"
 ECONOMICS_P1_COLUMN = "p1"
-ECONOMICS_COST_COLUMN = "example_cost"
-ECONOMICS_LOSS_COLUMN = "example_loss"
-SAVED_PROBABILITY_FILE = "data/processed/telco/test_probabilities_with_text.csv"
-SAVED_PROBABILITY_ID = "customer_id"
+ECONOMICS_COST_COLUMN = "cost"
+ECONOMICS_LOSS_COLUMN = "loss"
+SAVED_PROBABILITY_FILE = ""
+SAVED_PROBABILITY_ID = "id"
 SAVED_PROBABILITY_COLUMN = "p0"
 SAVED_OUTCOME_COLUMN = "observed_outcome"
+MODEL_ROWS_FILE = ""
 
-OUTPUT_DIR = ROOT / "data" / "processed" / "telco" / "automl"
-GCS_PREFIX = "telco-automl"
+OUTPUT_DIR = ROOT / "data" / "processed" / "automl"
+GCS_PREFIX = "automl"
 REGION = "us-central1"
 MINIMUM_ROWS = 1000
 
@@ -139,15 +142,21 @@ def _ensure_output_dir() -> None:
 
 
 def use_course_example() -> None:
-    """Point the module at the telco files used in the previous workshops."""
+    """Fill the capital-letter settings with the course example.
+
+    The lesson assigns the same names again after this call. Change the
+    outcome by editing ``TARGET_COLUMN`` there.
+    """
     global ID_COLUMN, TARGET_COLUMN, POSITIVE_LABEL
-    global TEXT_COLUMN, TEXT_ORDER_COLUMN, TEXT_TYPE_COLUMN
+    global TEXT_COLUMN, TEXT_ORDER_COLUMN, TEXT_TYPE_COLUMN, TEXT_FEATURE
     global NUMERIC_FEATURES, CATEGORICAL_FEATURES
     global TABULAR_FILE, TEXT_FILE
     global ECONOMICS_FILE, ECONOMICS_ID_COLUMN, ECONOMICS_P1_COLUMN
     global ECONOMICS_COST_COLUMN, ECONOMICS_LOSS_COLUMN
     global SAVED_PROBABILITY_FILE, SAVED_PROBABILITY_ID
     global SAVED_PROBABILITY_COLUMN, SAVED_OUTCOME_COLUMN
+    global MODEL_ROWS_FILE, MODEL_ROWS_ID_COLUMN, OBSERVED_COLUMN
+    global OUTPUT_DIR, GCS_PREFIX, SPLIT_COLUMN
     global RANDOM_STATE, TEST_SIZE, DECISION_THRESHOLD, N_TEXT_COMPONENTS
     global HOLDOUT_VALIDATION_FRACTION, BUDGET_MILLI_NODE_HOURS
     global INCLUDE_TEXT_ONLY, BUDGET, OPTIMIZATION_OBJECTIVE
@@ -158,6 +167,9 @@ def use_course_example() -> None:
     TEXT_COLUMN = "text"
     TEXT_ORDER_COLUMN = "text_index"
     TEXT_TYPE_COLUMN = "communication_type"
+    TEXT_FEATURE = "customer_text"
+    SPLIT_COLUMN = "ml_split"
+    OBSERVED_COLUMN = "observed_outcome"
     NUMERIC_FEATURES = ["tenure", "MonthlyCharges", "TotalCharges"]
     CATEGORICAL_FEATURES = [
         "gender",
@@ -188,6 +200,10 @@ def use_course_example() -> None:
     SAVED_PROBABILITY_ID = "customer_id"
     SAVED_PROBABILITY_COLUMN = "p0"
     SAVED_OUTCOME_COLUMN = "observed_outcome"
+    MODEL_ROWS_FILE = "data/processed/telco/model_rows.csv"
+    MODEL_ROWS_ID_COLUMN = "customer_id"
+    OUTPUT_DIR = ROOT / "data" / "processed" / "telco" / "automl"
+    GCS_PREFIX = "telco-automl"
     RANDOM_STATE = 42
     TEST_SIZE = 0.25
     DECISION_THRESHOLD = 0.5
@@ -211,6 +227,10 @@ def active_settings() -> pd.DataFrame:
         ("NUMERIC_FEATURES", ", ".join(NUMERIC_FEATURES)),
         ("CATEGORICAL_FEATURES", ", ".join(CATEGORICAL_FEATURES)),
         ("TEXT_FEATURE", TEXT_FEATURE),
+        ("SPLIT_COLUMN", SPLIT_COLUMN),
+        ("OBSERVED_COLUMN", OBSERVED_COLUMN),
+        ("MODEL_ROWS_ID_COLUMN", MODEL_ROWS_ID_COLUMN),
+        ("GCS_PREFIX", GCS_PREFIX),
         ("RANDOM_STATE", RANDOM_STATE),
         ("TEST_SIZE", TEST_SIZE),
         ("HOLDOUT_VALIDATION_FRACTION", HOLDOUT_VALIDATION_FRACTION),
@@ -223,6 +243,7 @@ def active_settings() -> pd.DataFrame:
         ("BUDGET", BUDGET),
         ("ECONOMICS_FILE", ECONOMICS_FILE),
         ("SAVED_PROBABILITY_FILE", SAVED_PROBABILITY_FILE),
+        ("MODEL_ROWS_FILE", MODEL_ROWS_FILE),
         ("OUTPUT_DIR", _display_output_dir()),
     ]
     return pd.DataFrame(rows, columns=["Setting", "Value"])
@@ -276,7 +297,10 @@ def cost_table(plan: list[dict] | None = None) -> pd.DataFrame:
         {
             "Component": "Cloud Storage",
             "What is billed": "Storage of the uploaded CSV files and the prediction output.",
-            "This run": f"Prefix {GCS_PREFIX}/ in the bucket you name.",
+            "This run": (
+                f"The files of one run are stored at "
+                f"gs://<bucket>/{GCS_PREFIX}/<run id>/."
+            ),
         },
         {
             "Component": "Model registry",
@@ -285,6 +309,23 @@ def cost_table(plan: list[dict] | None = None) -> pd.DataFrame:
         },
     ])
     return pd.DataFrame(rows)
+
+
+def explain_costs(plan: list[dict] | None = None) -> str:
+    """Full sentences for the same facts as ``cost_table``.
+
+    Input: the optional plan ``cost_table`` accepts. With no argument, the
+    experiment list comes from ``manifest.json`` when that file exists.
+    Returns one paragraph per component. Does not start a job and does not
+    compute a dollar amount.
+    """
+    lines = []
+    for row in cost_table(plan).to_dict(orient="records"):
+        lines.append(
+            f"{row['Component']}. What is billed: {row['What is billed']} "
+            f"This run: {row['This run']}"
+        )
+    return "\n\n".join(lines)
 
 
 def _display_output_dir() -> str:
@@ -297,28 +338,288 @@ def _display_output_dir() -> str:
         return str(path)
 
 
+def gather_sources() -> pd.DataFrame:
+    """One row per customer: the tabular columns plus the joined messages.
+
+    Inputs are the capital-letter settings ``TABULAR_FILE``, ``TEXT_FILE``,
+    ``ID_COLUMN``, ``TARGET_COLUMN``, ``TEXT_COLUMN``, ``TEXT_ORDER_COLUMN``
+    and ``TEXT_TYPE_COLUMN``. No argument. No split. No Google call.
+
+    Returns that table. The joined messages are the column ``TEXT_FEATURE``.
+    """
+    _ensure_output_dir()
+    _apply_workshop_settings()
+    table, messages = workshop.load_datasets(_path(TABULAR_FILE), _path(TEXT_FILE))
+    documents = workshop._documents_for_ids(messages, table[ID_COLUMN])
+    gathered = _attach_text(table, documents)
+    print(f"Gathered {len(gathered)} customers. Joined messages are in {TEXT_FEATURE}.")
+    return gathered
+
+
+def separate_fit_test(gathered: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Split the gathered table the way Chapter 5 split it.
+
+    Inputs: the table from ``gather_sources``, plus ``RANDOM_STATE``,
+    ``TEST_SIZE``, ``ID_COLUMN``, ``TARGET_COLUMN`` and ``POSITIVE_LABEL``.
+    Returns ``(fit, test)``. A test row was not used to fit the logistic models.
+    """
+    _apply_workshop_settings()
+    split = workshop.prepare_train_test(gathered)
+    fit = split["train"].reset_index(drop=True)
+    test = split["test"].reset_index(drop=True)
+    return fit, test
+
+
+def _holdout_test(test: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Same cut ``_assign_groups`` uses on the Chapter 5 test rows."""
+    y_test = workshop._positive_array(test[TARGET_COLUMN])
+    comparison, final_test = train_test_split(
+        test,
+        test_size=1.0 - float(HOLDOUT_VALIDATION_FRACTION),
+        random_state=int(RANDOM_STATE),
+        stratify=y_test,
+    )
+    return comparison.reset_index(drop=True), final_test.reset_index(drop=True)
+
+
+def _read_model_rows() -> pd.DataFrame | None:
+    if not str(MODEL_ROWS_FILE).strip():
+        return None
+    path = _path(MODEL_ROWS_FILE)
+    if not path.exists():
+        return None
+    frame = pd.read_csv(path, dtype={MODEL_ROWS_ID_COLUMN: str})
+    required = [MODEL_ROWS_ID_COLUMN, "role", LOCAL_TABULAR, LOCAL_TEXT, SAVED_OUTCOME_COLUMN]
+    missing = [column for column in required if column not in frame.columns]
+    if missing:
+        raise AutoMLWorkshopError(f"{MODEL_ROWS_FILE} is missing {missing}.")
+    return frame
+
+
+def retrieve_results(
+    fit: pd.DataFrame,
+    test: pd.DataFrame,
+    write: bool = False,
+) -> dict:
+    """Attach the saved scores and the campaign costs, then keep the test rows.
+
+    Inputs: the fit table and the test table from ``separate_fit_test``.
+    Also reads ``MODEL_ROWS_FILE`` when that file exists, otherwise
+    ``SAVED_PROBABILITY_FILE`` and a new tabular fit on this split.
+    ``ECONOMICS_FILE`` supplies ``p1``, ``cost`` and ``loss`` for the test rows.
+    ``HOLDOUT_VALIDATION_FRACTION`` chooses which test rows go into the
+    comparison file.
+
+    Returns a dictionary.
+
+    - ``fit``: fit rows. Scores are filled when ``MODEL_ROWS_FILE`` exists.
+    - ``test``: every test row, with scores and costs.
+    - ``comparison``: the test rows written for Gemini to complete.
+    - ``final_test``: the other test rows. They are not scored.
+
+    ``write=True`` stores ``comparison`` as ``validation_probabilities.csv``.
+    A cloud column already in that file is kept. ``write=False`` reads the
+    file when it exists and does not fit a model.
+    """
+    _ensure_output_dir()
+    _apply_workshop_settings()
+    fit = fit.reset_index(drop=True).copy()
+    test = test.reset_index(drop=True).copy()
+    fit[ID_COLUMN] = fit[ID_COLUMN].astype(str)
+    test[ID_COLUMN] = test[ID_COLUMN].astype(str)
+    saved_rows = _read_model_rows()
+    probability_path = OUTPUT_DIR / PROBABILITY_FILE_NAME
+
+    if not write and not probability_path.exists():
+        raise AutoMLWorkshopError(
+            f"{PROBABILITY_FILE_NAME} is not in {OUTPUT_DIR.relative_to(ROOT)}. "
+            'Set CLOUD_MODE to "SAVE" to build it on this computer. That does not call Google.'
+        )
+    if not write:
+        comparison = pd.read_csv(probability_path, dtype={ID_COLUMN: str})
+        fit_out = fit[[ID_COLUMN]].copy()
+        fit_out["role"] = "fit"
+        test_out = _test_rows_from_saved(test, saved_rows, comparison)
+        if saved_rows is not None:
+            fit_scores = saved_rows.loc[saved_rows["role"] == "fit"].rename(columns={MODEL_ROWS_ID_COLUMN: ID_COLUMN})
+            fit_out = fit_out.merge(
+                fit_scores[[ID_COLUMN, "p_logistic_tabular", "p_logistic_text", "observed_outcome"]],
+                on=ID_COLUMN,
+                how="left",
+                validate="one_to_one",
+            )
+        print(f"Loaded {PROBABILITY_FILE_NAME}. No model was fitted.")
+        return {
+            "fit": fit_out,
+            "test": test_out,
+            "comparison": comparison,
+            "final_test": pd.DataFrame(),
+            "groups": None,
+        }
+
+    comparison_rows, final_test = _holdout_test(test)
+    annotated = pd.concat([fit, test], ignore_index=True)
+    split = {"train": fit, "test": test}
+    _require_saved_test_alignment(split)
+    groups = _assign_groups(split, annotated)
+    if set(groups["validation"][ID_COLUMN].astype(str)) != set(comparison_rows[ID_COLUMN].astype(str)):
+        raise AutoMLWorkshopError("The comparison rows and the holdout split disagree.")
+    probabilities = _local_probability_frame(split, groups)
+    if saved_rows is not None:
+        saved_test = saved_rows.loc[saved_rows["role"] == "test"].rename(columns={MODEL_ROWS_ID_COLUMN: ID_COLUMN})
+        check = probabilities.merge(
+            saved_test[[ID_COLUMN, LOCAL_TEXT]],
+            on=ID_COLUMN,
+            how="left",
+            suffixes=("", "_saved"),
+        )
+        if check[LOCAL_TEXT + "_saved"].isna().any():
+            raise AutoMLWorkshopError(f"A comparison row is missing from {MODEL_ROWS_FILE}.")
+        gap = np.max(np.abs(check[LOCAL_TEXT].to_numpy(dtype=float) - check[LOCAL_TEXT + "_saved"].to_numpy(dtype=float)))
+        if gap > 1e-8:
+            raise AutoMLWorkshopError(
+                f"{MODEL_ROWS_FILE} does not match the saved communications score. Largest gap: {gap:.3g}."
+            )
+        print(f"Communications scores match {MODEL_ROWS_FILE}.")
+    if write:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        _write_probability_file(probabilities)
+        print(f"Wrote {len(probabilities)} comparison rows to {PROBABILITY_FILE_NAME}.")
+    fit_out = fit[[ID_COLUMN]].copy()
+    fit_out["role"] = "fit"
+    if saved_rows is not None:
+        fit_scores = saved_rows.loc[saved_rows["role"] == "fit"].rename(columns={MODEL_ROWS_ID_COLUMN: ID_COLUMN})
+        fit_out = fit_out.merge(
+            fit_scores[[ID_COLUMN, LOCAL_TABULAR, LOCAL_TEXT, "observed_outcome"]],
+            on=ID_COLUMN,
+            how="left",
+            validate="one_to_one",
+        )
+    else:
+        print(
+            f"{MODEL_ROWS_FILE} is not on disk. "
+            "Chapter 5 writes it with save_model_rows. Fit-row scores are not in the comparison file."
+        )
+    test_out = _test_rows_from_saved(test, saved_rows, probabilities)
+    return {
+        "fit": fit_out,
+        "test": test_out,
+        "comparison": probabilities if not write else pd.read_csv(probability_path, dtype={ID_COLUMN: str}),
+        "final_test": final_test,
+        "groups": groups,
+    }
+
+
+def _test_rows_from_saved(
+    test: pd.DataFrame,
+    saved_rows: pd.DataFrame | None,
+    comparison: pd.DataFrame,
+) -> pd.DataFrame:
+    """Every test row, with the scores and costs that are already on disk."""
+    base = test[[ID_COLUMN]].copy()
+    base["role"] = "test"
+    if saved_rows is not None:
+        text = saved_rows.loc[saved_rows["role"] == "test"].rename(columns={MODEL_ROWS_ID_COLUMN: ID_COLUMN})
+        base = base.merge(
+            text[[ID_COLUMN, LOCAL_TABULAR, LOCAL_TEXT, "observed_outcome"]],
+            on=ID_COLUMN,
+            how="left",
+            validate="one_to_one",
+        )
+    else:
+        saved = _saved_test_probabilities().rename(columns={
+            SAVED_PROBABILITY_ID: ID_COLUMN,
+            SAVED_PROBABILITY_COLUMN: LOCAL_TEXT,
+            SAVED_OUTCOME_COLUMN: "observed_outcome",
+        })
+        base = base.merge(
+            saved[[ID_COLUMN, LOCAL_TEXT, "observed_outcome"]],
+            on=ID_COLUMN,
+            how="left",
+            validate="one_to_one",
+        )
+        known = comparison[[ID_COLUMN, LOCAL_TABULAR]].copy()
+        base = base.merge(known, on=ID_COLUMN, how="left", validate="one_to_one")
+    economics = _economics_for_ids(base[ID_COLUMN])
+    base = base.merge(economics, on=ID_COLUMN, how="left", validate="one_to_one")
+    return base
+
+
+def _write_probability_file(probabilities: pd.DataFrame) -> None:
+    """Write the comparison rows and keep a cloud column that is already saved."""
+    path = OUTPUT_DIR / PROBABILITY_FILE_NAME
+    frame = probabilities.copy()
+    if path.exists():
+        old = pd.read_csv(path, dtype={ID_COLUMN: str})
+        extra = [
+            column for column in (AUTOML_TABULAR, AUTOML_TEXT, AUTOML_TEXT_ONLY)
+            if column in old.columns and column not in frame.columns
+        ]
+        if extra and set(old[ID_COLUMN].astype(str)) == set(frame[ID_COLUMN].astype(str)):
+            frame = frame.merge(old[[ID_COLUMN, *extra]], on=ID_COLUMN, how="left", validate="one_to_one")
+    frame.to_csv(path, index=False)
+
+
+def build_gemini_files(retrieved: dict, write: bool = False) -> pd.DataFrame:
+    """Write the training upload and the scoring upload.
+
+    Inputs: the dictionary from ``retrieve_results`` with ``write=True``
+    (it holds ``groups``). Also reads ``PLATFORM_VALIDATE_FRACTION``,
+    ``PLATFORM_TEST_FRACTION``, ``BUDGET_MILLI_NODE_HOURS``,
+    ``INCLUDE_TEXT_ONLY`` and ``OPTIMIZATION_OBJECTIVE``.
+
+    The fit rows become ``training_*.csv``, with ``ml_split`` added.
+    The comparison rows become ``predict_validation_*.csv``, with no target.
+    ``manifest.json`` stores the training cap and those paths.
+
+    ``write=False`` does not change files. It returns the first saved training
+    rows. ``write=True`` returns those rows after writing. Neither call reads
+    ``CLOUD_MODE``, so a later ``load_workshop`` is a separate step.
+    """
+    if not write:
+        return _preview_training("tabular_text", rows=2)
+    groups = retrieved.get("groups")
+    if groups is None:
+        raise AutoMLWorkshopError(
+            'build_gemini_files(write=True) needs retrieve_results(..., write=True) first.'
+        )
+    _validate_local_settings()
+    experiments = _experiment_specs()
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    written = _write_experiment_files(groups, experiments)
+    probabilities = pd.read_csv(OUTPUT_DIR / PROBABILITY_FILE_NAME, dtype={ID_COLUMN: str})
+    manifest = _manifest(groups, experiments, written, probabilities)
+    _write_json(OUTPUT_DIR / MANIFEST_NAME, manifest)
+    print(f"Saved the Gemini files in {OUTPUT_DIR.relative_to(ROOT)}. No Google call was made.")
+    return _preview_training("tabular_text", rows=2)
+
+
+def _preview_training(experiment: str = "tabular_text", rows: int = 2) -> pd.DataFrame:
+    """Read the first rows of a training file. Does not load the probability file."""
+    path = OUTPUT_DIR / f"training_{experiment}.csv"
+    if not path.exists():
+        raise AutoMLWorkshopError(
+            f"{path.name} is not in {OUTPUT_DIR.relative_to(ROOT)}. "
+            'Set CLOUD_MODE to "SAVE" and run build_gemini_files again. That does not call Google.'
+        )
+    frame = pd.read_csv(path, nrows=int(rows), dtype={ID_COLUMN: str})
+    if TEXT_FEATURE in frame.columns:
+        frame[TEXT_FEATURE] = (
+            frame[TEXT_FEATURE].fillna("").astype(str).str.replace("\n", " ", regex=False).str.slice(0, 140)
+        )
+    return frame
+
+
 def prepare() -> pd.DataFrame:
     """Build local exports and local probabilities. Does not call Google Cloud."""
     global _LOADED
     _ensure_output_dir()
     _LOADED = None
     _validate_local_settings()
-    _apply_workshop_settings()
-    table, messages = workshop.load_datasets(_path(TABULAR_FILE), _path(TEXT_FILE))
-    split = workshop.prepare_train_test(table)
-    _require_saved_test_alignment(split)
-    documents = workshop._documents_for_ids(messages, table[ID_COLUMN])
-    annotated = _attach_text(table, documents)
-    groups = _assign_groups(split, annotated)
-    experiments = _experiment_specs()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    written = _write_experiment_files(groups, experiments)
-    probabilities = _local_probability_frame(split, groups)
-    probability_path = OUTPUT_DIR / PROBABILITY_FILE_NAME
-    probabilities.to_csv(probability_path, index=False)
-    manifest = _manifest(groups, experiments, written, probabilities)
-    _write_json(OUTPUT_DIR / MANIFEST_NAME, manifest)
-    print(f"Saved local files in {OUTPUT_DIR.relative_to(ROOT)}.")
+    gathered = gather_sources()
+    fit, test = separate_fit_test(gathered)
+    retrieved = retrieve_results(fit, test, write=True)
+    build_gemini_files(retrieved, write=True)
     print("No Google Cloud resource was created.")
     audit = verify_saved_files()
     return audit
@@ -379,6 +680,52 @@ def load_workshop() -> dict:
     return _LOADED
 
 
+def import_saved_scores(experiment: str = "tabular") -> pd.DataFrame:
+    """Copy one finished batch prediction into the comparison file.
+
+    Input: ``"tabular"``, ``"tabular_text"``, or ``"text"`` when that
+    experiment is enabled. Reads ``manifest.json`` for the column name and
+    ``cloud_resources.json`` for ``gcs_predictions``. Downloads the files
+    named ``prediction.results-``. Writes ``p_automl_tabular`` or
+    ``p_automl_text`` into ``validation_probabilities.csv``.
+
+    Does not train a model and does not start a batch prediction.
+    Run it again after a later job. The column already in the file is replaced.
+
+    Returns the comparison file.
+    """
+    _ensure_output_dir()
+    manifest_path = OUTPUT_DIR / MANIFEST_NAME
+    probability_path = OUTPUT_DIR / PROBABILITY_FILE_NAME
+    if not manifest_path.exists() or not probability_path.exists():
+        raise AutoMLWorkshopError(
+            f"{MANIFEST_NAME} and {PROBABILITY_FILE_NAME} must already be in "
+            f"{OUTPUT_DIR.relative_to(ROOT)}."
+        )
+    manifest = _read_json(manifest_path)
+    match = [item for item in manifest["experiments"] if item["key"] == experiment]
+    if not match:
+        known = ", ".join(item["key"] for item in manifest["experiments"])
+        raise AutoMLWorkshopError(
+            f"manifest.json has no experiment {experiment!r}. Known keys: {known}."
+        )
+    run_record, prefix = _recorded_prediction_prefix(experiment)
+    _, storage, credentials = _import_cloud()
+    output = _download_result_csvs(storage, credentials, run_record, prefix, experiment)
+    scores, score_column = _extract_positive_score(
+        output, manifest["target_column"], manifest["positive_label"]
+    )
+    output = output.copy()
+    output[match[0]["probability_column"]] = scores
+    frame = pd.read_csv(probability_path, dtype={ID_COLUMN: str})
+    _merge_automl_column(frame, output, match[0], manifest, score_column)
+    print(
+        f"Wrote {match[0]['probability_column']} for {len(frame)} comparison customers "
+        f"from {prefix}."
+    )
+    return pd.read_csv(probability_path, dtype={ID_COLUMN: str})
+
+
 def training_preview(experiment: str = "tabular_text", rows: int = 3) -> pd.DataFrame:
     """Show a few training rows. Long text is truncated for display."""
     manifest = load_workshop()["manifest"]
@@ -388,14 +735,16 @@ def training_preview(experiment: str = "tabular_text", rows: int = 3) -> pd.Data
     path = ROOT / match[0]["training_file"]
     frame = pd.read_csv(path, nrows=int(rows), dtype={ID_COLUMN: str})
     if TEXT_FEATURE in frame.columns:
-        frame[TEXT_FEATURE] = frame[TEXT_FEATURE].fillna("").astype(str).str.slice(0, 140)
+        frame[TEXT_FEATURE] = (
+            frame[TEXT_FEATURE].fillna("").astype(str).str.replace("\n", " ", regex=False).str.slice(0, 140)
+        )
     return frame
 
 
 def metrics_table(frame: pd.DataFrame | None = None) -> pd.DataFrame:
     """Score every saved probability column on the validation customers."""
     frame = _frame(frame)
-    y = frame["observed_churn"].to_numpy(dtype=int)
+    y = frame[OBSERVED_COLUMN].to_numpy(dtype=int)
     rows = []
     for column, label, _color, _style in _model_series(frame):
         scores = frame[column].to_numpy(dtype=float)
@@ -417,7 +766,7 @@ def metrics_table(frame: pd.DataFrame | None = None) -> pd.DataFrame:
 def plot_roc(frame: pd.DataFrame | None = None):
     """Validation ROC curves. The legend shows ROC-AUC."""
     frame = _frame(frame)
-    y = frame["observed_churn"].to_numpy(dtype=int)
+    y = frame[OBSERVED_COLUMN].to_numpy(dtype=int)
     fig, ax = plt.subplots(figsize=(6.6, 5.0))
     for column, label, color, style in _model_series(frame):
         scores = frame[column].to_numpy(dtype=float)
@@ -425,8 +774,8 @@ def plot_roc(frame: pd.DataFrame | None = None):
         auc = roc_auc_score(y, scores)
         ax.plot(fpr, tpr, color=color, linestyle=style, linewidth=2, label=f"{label} ({auc:.3f})")
     ax.plot([0, 1], [0, 1], color=GREY, linestyle=":", linewidth=1)
-    ax.set_xlabel("Share of stayers flagged")
-    ax.set_ylabel("Share of churners flagged")
+    ax.set_xlabel("Share of negative outcomes flagged")
+    ax.set_ylabel("Share of positive outcomes flagged")
     ax.set_title("Validation customers")
     ax.legend(frameon=False, fontsize=8)
     fig.tight_layout()
@@ -435,9 +784,9 @@ def plot_roc(frame: pd.DataFrame | None = None):
 
 
 def plot_calibration(frame: pd.DataFrame | None = None):
-    """Mean predicted probability against the observed churn rate."""
+    """Mean predicted probability against the observed positive rate."""
     frame = _frame(frame)
-    y = frame["observed_churn"].to_numpy(dtype=int)
+    y = frame[OBSERVED_COLUMN].to_numpy(dtype=int)
     fig, ax = plt.subplots(figsize=(6.6, 5.0))
     for column, label, color, style in _model_series(frame):
         scores = frame[column].to_numpy(dtype=float)
@@ -455,7 +804,7 @@ def plot_calibration(frame: pd.DataFrame | None = None):
         )
     ax.plot([0, 1], [0, 1], color=GREY, linestyle=":", linewidth=1)
     ax.set_xlabel("Mean predicted probability")
-    ax.set_ylabel("Observed churn rate")
+    ax.set_ylabel("Observed positive rate")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.set_title("Calibration on the validation customers")
@@ -466,7 +815,7 @@ def plot_calibration(frame: pd.DataFrame | None = None):
 
 
 def economic_table(frame: pd.DataFrame | None = None, budget: float | None = None) -> pd.DataFrame:
-    """Targeting results when only the churn probability changes."""
+    """Targeting results when only the probability of the positive label changes."""
     frame = _frame(frame)
     budget = float(BUDGET if budget is None else budget)
     metrics = metrics_table(frame).set_index("Model")["ROC-AUC"]
@@ -486,6 +835,67 @@ def economic_table(frame: pd.DataFrame | None = None, budget: float | None = Non
             "Budget expected net benefit": capped["benefit"],
         })
     return pd.DataFrame(rows)
+
+
+def realized_cost_table(frame: pd.DataFrame | None = None, budget: float | None = None) -> pd.DataFrame:
+    """Historical cost of each contact list, with ``p1`` held fixed.
+
+    The contact list is the Chapter 6 rule applied to the score. With no
+    campaign, a customer who left costs ``loss`` and a customer who stayed
+    costs 0. For a selected customer who left, that loss is replaced by
+    ``cost + loss * p1``. For a selected customer who stayed, the cost is
+    ``cost``. The net benefit is the no-campaign total minus the
+    with-campaign total. The same quantities are reported under ``BUDGET``.
+
+    ``p1`` is an input. The table does not estimate the effect of a campaign.
+    """
+    frame = _frame(frame)
+    budget = float(BUDGET if budget is None else budget)
+    outcome = frame[OBSERVED_COLUMN].to_numpy(dtype=int)
+    p1 = frame["p1"].to_numpy(dtype=float)
+    contact = frame["cost"].to_numpy(dtype=float)
+    churn_loss = frame["loss"].to_numpy(dtype=float)
+    without = float(np.sum(churn_loss * outcome))
+    rows = []
+    for column, label, _color, _style in _model_series(frame):
+        open_plan, capped = _plans(frame, column, budget)
+        open_cost = _realized_campaign_cost(open_plan["target"], outcome, p1, contact, churn_loss)
+        capped_cost = _realized_campaign_cost(capped["target"], outcome, p1, contact, churn_loss)
+        rows.append({
+            "Model": label,
+            "Cost without campaign": without,
+            "Leavers contacted": open_cost["leavers"],
+            "Stayers contacted": open_cost["stayers"],
+            "Cost with campaign": open_cost["cost"],
+            "Net benefit": without - open_cost["cost"],
+            "Budget leavers contacted": capped_cost["leavers"],
+            "Budget stayers contacted": capped_cost["stayers"],
+            "Budget cost with campaign": capped_cost["cost"],
+            "Budget net benefit": without - capped_cost["cost"],
+        })
+    return pd.DataFrame(rows)
+
+
+def _realized_campaign_cost(
+    target: np.ndarray,
+    outcome: np.ndarray,
+    p1: np.ndarray,
+    contact: np.ndarray,
+    churn_loss: np.ndarray,
+) -> dict:
+    """Replace the loss of a contacted leaver by ``cost + loss * p1``."""
+    chosen = np.asarray(target, dtype=int) == 1
+    left = np.asarray(outcome, dtype=int) == 1
+    stayed = ~left
+    cost = np.zeros(len(chosen), dtype=float)
+    cost[left & ~chosen] = churn_loss[left & ~chosen]
+    cost[left & chosen] = contact[left & chosen] + churn_loss[left & chosen] * p1[left & chosen]
+    cost[stayed & chosen] = contact[stayed & chosen]
+    return {
+        "leavers": int((left & chosen).sum()),
+        "stayers": int((stayed & chosen).sum()),
+        "cost": float(np.sum(cost)),
+    }
 
 
 def plot_expected_cost(summary: pd.DataFrame):
@@ -673,8 +1083,8 @@ def verify_saved_files() -> pd.DataFrame:
         )
     add(
         "Positive class is the saved positive label, coded as 1",
-        set(frame["observed_churn"].astype(int)) <= {0, 1}
-        and int(frame["observed_churn"].sum()) == int(manifest["n_validation_positive"]),
+        set(frame[OBSERVED_COLUMN].astype(int)) <= {0, 1}
+        and int(frame[OBSERVED_COLUMN].sum()) == int(manifest["n_validation_positive"]),
         f"Positive label {manifest['positive_label']!r}.",
     )
     saved = _saved_test_probabilities()
@@ -690,7 +1100,7 @@ def verify_saved_files() -> pd.DataFrame:
         aligned[SAVED_PROBABILITY_COLUMN].to_numpy(dtype=float),
     )
     same_outcome = np.array_equal(
-        aligned["observed_churn"].to_numpy(dtype=int),
+        aligned[OBSERVED_COLUMN].to_numpy(dtype=int),
         aligned[SAVED_OUTCOME_COLUMN].to_numpy(dtype=int),
     )
     add(
@@ -861,6 +1271,7 @@ def cleanup_cloud(approve_delete: bool = False) -> int:
 
 
 def _cost_rows_from_manifest() -> list[dict]:
+    _ensure_output_dir()
     manifest_path = OUTPUT_DIR / MANIFEST_NAME
     if manifest_path.exists():
         manifest = _read_json(manifest_path)
@@ -928,7 +1339,7 @@ def _require_saved_test_alignment(split: dict) -> None:
         )
     observed = workshop._positive_array(split["test"][TARGET_COLUMN])
     if not np.array_equal(observed, saved[SAVED_OUTCOME_COLUMN].to_numpy(dtype=int)):
-        raise AutoMLWorkshopError("The saved test file and the customer table disagree on the churn label.")
+        raise AutoMLWorkshopError("The saved test file and the source table disagree on the positive label.")
 
 
 def _attach_text(table: pd.DataFrame, documents: pd.DataFrame) -> pd.DataFrame:
@@ -1115,13 +1526,13 @@ def _local_probability_frame(split: dict, groups: dict) -> pd.DataFrame:
     )
     if frame[LOCAL_TABULAR].isna().any() or frame[SAVED_PROBABILITY_COLUMN].isna().any():
         raise AutoMLWorkshopError("A validation customer has no local probability.")
-    frame["observed_churn"] = workshop._positive_array(frame[TARGET_COLUMN])
-    if not np.array_equal(frame["observed_churn"].to_numpy(dtype=int), frame[SAVED_OUTCOME_COLUMN].to_numpy(dtype=int)):
+    frame[OBSERVED_COLUMN] = workshop._positive_array(frame[TARGET_COLUMN])
+    if not np.array_equal(frame[OBSERVED_COLUMN].to_numpy(dtype=int), frame[SAVED_OUTCOME_COLUMN].to_numpy(dtype=int)):
         raise AutoMLWorkshopError("The saved outcome does not match the validation labels.")
     frame = frame.rename(columns={SAVED_PROBABILITY_COLUMN: LOCAL_TEXT})
     economics = _economics_for_ids(frame[ID_COLUMN])
     frame = frame.merge(economics, on=ID_COLUMN, how="left", validate="one_to_one")
-    keep = [ID_COLUMN, "observed_churn", LOCAL_TABULAR, LOCAL_TEXT, "p1", "cost", "loss"]
+    keep = [ID_COLUMN, OBSERVED_COLUMN, LOCAL_TABULAR, LOCAL_TEXT, "p1", "cost", "loss"]
     result = frame[keep].copy()
     _require_unit_interval(result[LOCAL_TABULAR].to_numpy(dtype=float), LOCAL_TABULAR)
     _require_unit_interval(result[LOCAL_TEXT].to_numpy(dtype=float), LOCAL_TEXT)
@@ -1135,7 +1546,7 @@ def _economics_for_ids(identifiers: pd.Series) -> pd.DataFrame:
     if missing:
         raise AutoMLWorkshopError(
             f"{ECONOMICS_FILE} is missing {missing}. "
-            "The targeting comparison needs a campaign probability, a contact cost, and a churn loss."
+            "The targeting comparison needs a campaign probability, a contact cost, and a loss."
         )
     if economics[ECONOMICS_ID_COLUMN].duplicated().any():
         raise AutoMLWorkshopError(f"{ECONOMICS_FILE} repeats a customer identifier.")
@@ -1213,7 +1624,7 @@ def _manifest(groups: dict, experiments: list[dict], written: dict, probabilitie
         "n_training": int(len(groups["train"])),
         "n_validation": int(len(groups["validation"])),
         "n_final_test": int(len(groups["final_test"])),
-        "n_validation_positive": int(probabilities["observed_churn"].sum()),
+        "n_validation_positive": int(probabilities[OBSERVED_COLUMN].sum()),
         "n_empty_text_training": int((groups["train"][TEXT_FEATURE].astype(str).str.strip() == "").sum()),
         "training_ids": groups["train"][ID_COLUMN].astype(str).tolist(),
         "validation_ids": groups["validation"][ID_COLUMN].astype(str).tolist(),
@@ -1249,7 +1660,7 @@ def _saved_test_probabilities() -> pd.DataFrame:
 
 
 def _require_probability_frame(frame: pd.DataFrame, manifest: dict) -> None:
-    required = [ID_COLUMN, "observed_churn", LOCAL_TABULAR, LOCAL_TEXT, "p1", "cost", "loss"]
+    required = [ID_COLUMN, OBSERVED_COLUMN, LOCAL_TABULAR, LOCAL_TEXT, "p1", "cost", "loss"]
     missing = [column for column in required if column not in frame.columns]
     if missing:
         raise AutoMLWorkshopError(f"{PROBABILITY_FILE_NAME} is missing {missing}.")
@@ -1321,26 +1732,35 @@ def _self_check_score_parser() -> None:
     scores, column = _extract_positive_score(sample, TARGET_COLUMN, POSITIVE_LABEL)
     if column != f"{TARGET_COLUMN}_{POSITIVE_LABEL}_score" or not np.allclose(scores, [0.25, 0.75]):
         raise AutoMLWorkshopError("The positive-class score parser failed its local check.")
+    plural = pd.DataFrame({
+        ID_COLUMN: ["a", "b"],
+        f"{TARGET_COLUMN}_{POSITIVE_LABEL}_scores": [0.2, 0.8],
+        f"{TARGET_COLUMN}_No_scores": [0.8, 0.2],
+    })
+    scores, column = _extract_positive_score(plural, TARGET_COLUMN, POSITIVE_LABEL)
+    if column != f"{TARGET_COLUMN}_{POSITIVE_LABEL}_scores" or not np.allclose(scores, [0.2, 0.8]):
+        raise AutoMLWorkshopError("The positive-class score parser failed its local check.")
 
 
 def _extract_positive_score(frame: pd.DataFrame, target: str, positive: str) -> tuple[pd.Series, str]:
-    expected = f"{target}_{positive}_score"
+    singular = f"{target}_{positive}_score"
+    plural = f"{target}_{positive}_scores"
     lookup = {str(column).lower(): column for column in frame.columns}
-    if expected.lower() not in lookup:
+    column = lookup.get(singular.lower()) or lookup.get(plural.lower())
+    if column is None:
         raise AutoMLWorkshopError(
-            f"The prediction file has no column {expected}. "
+            f"The prediction file has no column {singular} or {plural}. "
             f"Found columns: {list(frame.columns)}. "
             f"The positive class is {positive!r}, coded as 1 in the local files."
         )
-    column = lookup[expected.lower()]
     scores = pd.to_numeric(frame[column], errors="coerce")
     if scores.isna().any():
         raise AutoMLWorkshopError(f"{column} contains a value that is not a probability.")
     companions = [
         name for name in frame.columns
         if str(name).lower().startswith(f"{target}_".lower())
-        and str(name).lower().endswith("_score")
-        and str(name).lower() != expected.lower()
+        and (str(name).lower().endswith("_scores") or str(name).lower().endswith("_score"))
+        and str(name).lower() != str(column).lower()
     ]
     if companions:
         other = pd.to_numeric(frame[companions[0]], errors="coerce")
@@ -1380,7 +1800,7 @@ def _print_approval_block(manifest: dict, plan: list[dict]) -> None:
     print("Batch prediction is billed for node time. Replica count is capped at 1.")
     print("No endpoint is created. An endpoint would be billed until you undeploy it.")
     print("Rates are on https://cloud.google.com/vertex-ai/pricing for the region you select.")
-    print(cost_table(plan).to_string(index=False))
+    print(explain_costs(plan))
 
 
 def _spend_approved(flag: bool) -> bool:
@@ -1509,7 +1929,7 @@ def _run_one_experiment(item, manifest, run_record, resources, frame, aiplatform
     run_record["experiments"][key] = recorded
     _write_resources(resources)
     print(f"{item['label']}: batch prediction {batch.resource_name}")
-    output = _download_prediction_csvs(storage, credentials, run_record, batch)
+    output = _download_prediction_csvs(storage, credentials, run_record, batch, key)
     scores, score_column = _extract_positive_score(
         output, manifest["target_column"], manifest["positive_label"]
     )
@@ -1538,21 +1958,53 @@ def _upload_file(storage, credentials, run_record, path: Path, name: str) -> str
     return f"gs://{run_record['bucket']}/{blob_name}"
 
 
-def _download_prediction_csvs(storage, credentials, run_record, batch) -> pd.DataFrame:
-    output_prefix = _batch_output_prefix(batch)
+def _is_prediction_result_csv(name: str) -> bool:
+    """Keep the scored shards. Leave error tables and temporary files unread."""
+    if "beam-temp" in name:
+        return False
+    base = Path(name).name
+    return base == "prediction.results.csv" or (
+        base.startswith("prediction.results-") and base.endswith(".csv")
+    )
+
+
+def _download_result_csvs(storage, credentials, run_record, prefix: str, experiment: str) -> pd.DataFrame:
     client = storage.Client(project=run_record["project"], credentials=credentials)
-    bucket_name, prefix = _split_gcs_uri(output_prefix)
+    bucket_name, blob_prefix = _split_gcs_uri(prefix)
     frames = []
-    for blob in client.list_blobs(bucket_name, prefix=prefix):
-        if not blob.name.endswith(".csv"):
+    for blob in client.list_blobs(bucket_name, prefix=blob_prefix):
+        if not _is_prediction_result_csv(blob.name):
             continue
-        local = OUTPUT_DIR / "cloud_download" / run_record["run_id"] / Path(blob.name).name
+        local = OUTPUT_DIR / "cloud_download" / run_record["run_id"] / experiment / Path(blob.name).name
         local.parent.mkdir(parents=True, exist_ok=True)
         blob.download_to_filename(local)
         frames.append(pd.read_csv(local, dtype={ID_COLUMN: str}))
     if not frames:
-        raise AutoMLWorkshopError(f"The batch prediction at {output_prefix} did not return a CSV.")
+        raise AutoMLWorkshopError(
+            f"No prediction.results file was found at {prefix}. "
+            "The batch prediction has not written its scores yet."
+        )
     return pd.concat(frames, ignore_index=True)
+
+
+def _recorded_prediction_prefix(experiment: str) -> tuple[dict, str]:
+    resources = _read_resources()
+    for run in reversed(resources.get("runs", [])):
+        if run.get("deleted"):
+            continue
+        recorded = (run.get("experiments") or {}).get(experiment) or {}
+        prefix = recorded.get("gcs_predictions")
+        if prefix:
+            return run, prefix
+    raise AutoMLWorkshopError(
+        f"cloud_resources.json has no finished batch prediction for {experiment!r}. "
+        "That column can be copied after the batch job writes its files."
+    )
+
+
+def _download_prediction_csvs(storage, credentials, run_record, batch, experiment: str) -> pd.DataFrame:
+    output_prefix = _batch_output_prefix(batch)
+    return _download_result_csvs(storage, credentials, run_record, output_prefix, experiment)
 
 
 def _batch_output_prefix(batch) -> str:

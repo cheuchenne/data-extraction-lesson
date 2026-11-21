@@ -226,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>This book has seven chapters. This page is chapter 1. It says what each chapter does, which file to open, and which Python packages that chapter needs.</p>
-<p>Open the <code>.qmd</code> file to run the cells. Open the <code>.html</code> file to read the same lesson. Install every package once, from the project folder:</p>
+<p>Open the <code>.html</code> file to read the lesson. Open the <code>.ipynb</code> file to run the cells. Install every package once, from the project folder:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="chapter-1-loading-integrating-and-exploring-data" class="level2">
 <h2 class="anchored" data-anchor-id="chapter-1-loading-integrating-and-exploring-data">Chapter 1 — Loading, integrating and exploring data</h2>
@@ -262,8 +262,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>lessons/02b-data-loading.html</code></td>
 </tr>
 <tr class="odd">
-<td>Practice notebook</td>
-<td><code>notebooks/02b-data-loading.ipynb</code></td>
+<td>Notebook</td>
+<td><code>lessons/02b-data-loading.ipynb</code></td>
 </tr>
 <tr class="even">
 <td>Packages</td>
@@ -286,8 +286,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>lessons/02c-exploratory-analysis.html</code></td>
 </tr>
 <tr class="odd">
-<td>Practice notebook</td>
-<td><code>notebooks/02c-exploratory-analysis.ipynb</code></td>
+<td>Notebook</td>
+<td><code>lessons/02c-exploratory-analysis.ipynb</code></td>
 </tr>
 <tr class="even">
 <td>Packages</td>
@@ -310,8 +310,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>lessons/02d-eda-visualisation.html</code></td>
 </tr>
 <tr class="odd">
-<td>Practice notebook</td>
-<td><code>notebooks/02d-eda-visualisation.ipynb</code></td>
+<td>Notebook</td>
+<td><code>lessons/02d-eda-visualisation.ipynb</code></td>
 </tr>
 <tr class="even">
 <td>Packages</td>
@@ -334,6 +334,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>lessons/02e-churn-text-ml.html</code></td>
 </tr>
 <tr class="odd">
+<td>Notebook</td>
+<td><code>lessons/02e-churn-text-ml.ipynb</code></td>
+</tr>
+<tr class="even">
 <td>Packages</td>
 <td><code>pandas</code>, <code>numpy</code>, <code>scikit-learn</code>, <code>matplotlib</code></td>
 </tr>
@@ -354,6 +358,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>lessons/02f-campaign-targeting.html</code></td>
 </tr>
 <tr class="odd">
+<td>Notebook</td>
+<td><code>lessons/02f-campaign-targeting.ipynb</code></td>
+</tr>
+<tr class="even">
 <td>Packages</td>
 <td><code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>scipy</code></td>
 </tr>
@@ -374,10 +382,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>lessons/02g-cloud-automl.html</code></td>
 </tr>
 <tr class="odd">
+<td>Notebook</td>
+<td><code>lessons/02g-cloud-automl.ipynb</code></td>
+</tr>
+<tr class="even">
 <td>Packages</td>
 <td><code>pandas</code>, <code>numpy</code>, <code>scikit-learn</code>, <code>matplotlib</code>, <code>scipy</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Paid run only</td>
 <td><code>google-cloud-aiplatform</code>, <code>google-cloud-storage</code></td>
 </tr>
@@ -386,7 +398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="how-to-follow-a-chapter" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-follow-a-chapter">How to follow a chapter</h2>
-<p>Open the chapter and run the cells from top to bottom. Chapters 2, 3, and 4 use the HarborLink company. The data are synthetic. They do not need an external account. Chapters 5, 6, and 7 read the telco files already stored in <code>data/raw/telco/</code> and <code>data/processed/telco/</code>.</p>
+<p>Open the notebook and run the cells from top to bottom. Chapters 2, 3, and 4 use the HarborLink company. The data are synthetic. They do not need an external account. Chapters 5, 6, and 7 read the telco files already stored in <code>data/raw/telco/</code> and <code>data/processed/telco/</code>.</p>
 <p>Every chapter with code uses the kernel named <code>data-extraction-lesson</code>. <code>jupyter</code> and <code>ipykernel</code> install that kernel. They are listed in <code>requirements.txt</code>.</p>
 
 

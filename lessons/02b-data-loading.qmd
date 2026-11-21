@@ -56,7 +56,7 @@ flowchart LR
     G --> H[Statistical or ML algorithms]
 ```
 
-This lesson concentrates on the first half of the pipeline: from business information to a reliable table. Exploratory analysis and visualisation are developed in **Section 2.c**, after the invoice-level table has been assembled.
+This lesson concentrates on the first half of the pipeline: from business information to a reliable table. Exploratory analysis and visualisation are developed in **Chapter 3**, after the invoice-level table has been assembled.
 
 ## Part 1 — From real-world business information to structured data
 
