@@ -72,5 +72,9 @@ figures/
 /First-course.tex
 /reading-the-python.tex
 
+# Kept on this computer. Not published.
+/before-the-course.tex
+/before-the-course.pdf
+
 # A later rule re-includes rendered folders, so repeat this.
 **/.DS_Store
