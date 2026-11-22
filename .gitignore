@@ -56,3 +56,21 @@ figures/
 !_book/**/
 !_book/**/*_files/
 !_book/**/*_files/**
+
+/.quarto/
+
+# LaTeX build products. Handout PDFs stay in the repository.
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# These two handouts are published as PDF only.
+/First-course.tex
+/reading-the-python.tex
+
+# A later rule re-includes rendered folders, so repeat this.
+**/.DS_Store

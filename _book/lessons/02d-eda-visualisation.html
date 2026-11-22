@@ -250,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="2406c9e3" class="cell" data-execution_count="1">
+<div id="3854cf26" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -318,7 +318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="4.3" class="anchored" data-anchor-id="part-1-what-we-are-looking-at-and-what-a-graph-is-for"><span class="header-section-number">4.3</span> Part 1 — What we are looking at, and what a graph is for</h2>
 <section id="load-the-analysis-table" class="level3" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="load-the-analysis-table"><span class="header-section-number">4.3.1</span> Load the analysis table</h3>
-<div id="cd71dca3" class="cell" data-execution_count="2">
+<div id="fee3b0bd" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -343,7 +343,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>sns.set_theme(...)</code> chooses a readable default: a white background with a light grid. It does not change the data.</li>
 </ul>
 <p><code>read_csv</code> returns a DataFrame. <code>parse_dates</code> turns the date columns into dates, so that time plots and delays can be computed. <code>shape</code> is the pair <code>(n_rows, n_columns)</code>: a little over three thousand invoices, and about thirty variables.</p>
-<div id="ac6c3220" class="cell" data-execution_count="3">
+<div id="b9ba5f31" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>invoices.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div>
@@ -505,7 +505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Each row is one billing cycle. <code>customer_id</code> 1827 is Elena; her September invoice is still <code>INV-2026-0901</code>. Columns such as <code>n_payment_issues</code>, <code>is_outstanding</code> and <code>tenure_months</code> already sit on that row. The task now is to <strong>look</strong> at the table, not to join further sources.</p>
-<div id="6ace2cbd" class="cell" data-execution_count="4">
+<div id="0c507b9d" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>invoices[[<span class="st">"invoice_id"</span>, <span class="st">"customer_name"</span>, <span class="st">"period"</span>, <span class="st">"amount"</span>, <span class="st">"payment_status"</span>, <span class="st">"is_outstanding"</span>]].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
@@ -616,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><code>is_outstanding</code> is a Boolean: <code>True</code> when the payment is unpaid or overdue. The <strong>mean</strong> of a Boolean is the proportion of <code>True</code>. That is the outstanding rate.</p>
-<div id="c5db4dc6" class="cell" data-execution_count="5">
+<div id="c24e0ef9" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>invoices[<span class="st">"payment_status"</span>].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>payment_status
@@ -626,7 +626,7 @@ unpaid       45
 Name: count, dtype: int64</code></pre>
 </div>
 </div>
-<div id="81cc4797" class="cell" data-execution_count="6">
+<div id="fd75a82c" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>invoices[<span class="st">"is_outstanding"</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>np.float64(0.06526315789473684)</code></pre>
@@ -664,7 +664,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="missing-values-are-already-an-interpretation" class="level3" data-number="4.3.3">
 <h3 data-number="4.3.3" class="anchored" data-anchor-id="missing-values-are-already-an-interpretation"><span class="header-section-number">4.3.3</span> Missing values are already an interpretation</h3>
-<div id="9e2ee5e7" class="cell" data-execution_count="7">
+<div id="5519702f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>invoices.isna().<span class="bu">sum</span>()[invoices.isna().<span class="bu">sum</span>() <span class="op">&gt;</span> <span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>customer_segment     116
@@ -680,7 +680,7 @@ dtype: int64</code></pre>
 <li><code>status_api</code> is missing for every invoice that is not in the September snapshot. The API does not cover history.</li>
 <li><code>customer_segment</code> is missing for 10 customers in the customer CSV (the same empty cells appear in the Excel customer sheet). Those 10 customers produce 116 invoice rows without a segment. The gap is in the customer file, not in the invoice file. Keep it as a category called <code>unknown</code>, rather than silently dropping the rows.</li>
 </ul>
-<div id="be9d15c2" class="cell" data-execution_count="8">
+<div id="553ab3bb" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>invoices[<span class="st">"segment"</span>] <span class="op">=</span> invoices[<span class="st">"customer_segment"</span>].fillna(<span class="st">"unknown"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>invoices[<span class="st">"segment"</span>].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
@@ -712,7 +712,7 @@ Name: count, dtype: int64</code></pre>
 <section id="first-graph-how-many-invoices-in-each-payment-status" class="level3" data-number="4.3.5">
 <h3 data-number="4.3.5" class="anchored" data-anchor-id="first-graph-how-many-invoices-in-each-payment-status"><span class="header-section-number">4.3.5</span> First graph: how many invoices in each payment status?</h3>
 <p>The first business question is simply: what is the current mix of statuses?</p>
-<div id="1cf4cdb1" class="cell" data-execution_count="9">
+<div id="fbbf4cfa" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>sns.countplot(</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -748,7 +748,7 @@ Name: count, dtype: int64</code></pre>
 <section id="do-not-plot-a-number-before-asking-what-it-can-be" class="level3" data-number="4.4.1">
 <h3 data-number="4.4.1" class="anchored" data-anchor-id="do-not-plot-a-number-before-asking-what-it-can-be"><span class="header-section-number">4.4.1</span> Do not plot a number before asking what it can be</h3>
 <p><code>amount</code> looks numerical. A histogram is the reflex.</p>
-<div id="dfb8545b" class="cell" data-execution_count="10">
+<div id="4ee14922" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>invoices, x<span class="op">=</span><span class="st">"amount"</span>, bins<span class="op">=</span><span class="dv">20</span>, ax<span class="op">=</span>ax)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Invoice amount (EUR)"</span>)</span>
@@ -769,7 +769,7 @@ Name: count, dtype: int64</code></pre>
 <li><code>bins=20</code> asks for twenty intervals. The exact number is less important than the shape.</li>
 </ul>
 <p><strong>Interpretation.</strong> There are no amounts between the spikes. HarborLink does not bill “around 30 euros”. It bills <strong>starter 19.90</strong>, <strong>standard 29.90</strong> and <strong>premium 49.90</strong>. A histogram was the wrong default. The honest graph is a bar of plans.</p>
-<div id="d78d401f" class="cell" data-execution_count="11">
+<div id="66df593e" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>sns.countplot(</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -795,7 +795,7 @@ Name: count, dtype: int64</code></pre>
 <section id="counts-answer-volume-rates-answer-risk" class="level3" data-number="4.4.2">
 <h3 data-number="4.4.2" class="anchored" data-anchor-id="counts-answer-volume-rates-answer-risk"><span class="header-section-number">4.4.2</span> Counts answer volume; rates answer risk</h3>
 <p>How many outstanding invoices come from SMB customers?</p>
-<div id="fffcae10" class="cell" data-execution_count="12">
+<div id="d585815c" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>outstanding <span class="op">=</span> invoices[invoices[<span class="st">"is_outstanding"</span>]]</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>outstanding[<span class="st">"segment"</span>].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
@@ -809,7 +809,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 <p>Most outstanding invoices are SMB. That does <strong>not</strong> yet mean SMB customers pay worse. SMB is also the largest group, so they contribute more of everything.</p>
 <p>The right comparison is the <strong>rate</strong>: the share of invoices that are outstanding inside each segment.</p>
-<div id="d4fd24a4" class="cell" data-execution_count="13">
+<div id="211e789f" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>rate_by_segment <span class="op">=</span> (</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    invoices.groupby(<span class="st">"segment"</span>)[<span class="st">"is_outstanding"</span>]</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .agg(n_invoices<span class="op">=</span><span class="st">"size"</span>, n_outstanding<span class="op">=</span><span class="st">"sum"</span>, rate<span class="op">=</span><span class="st">"mean"</span>)</span>
@@ -874,7 +874,7 @@ Name: count, dtype: int64</code></pre>
 <li><code>mean</code> is the outstanding rate.</li>
 <li><code>reindex</code> puts the rows in a readable order.</li>
 </ul>
-<div id="c5a0e5bc" class="cell" data-execution_count="14">
+<div id="ab08b3f3" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -905,7 +905,7 @@ Name: count, dtype: int64</code></pre>
 </ul>
 <p><strong>Interpretation.</strong> Enterprise invoices are outstanding a little less often (around 5%) than SMB or mid-market (around 6.5–7%). The unknown-segment group is small and slightly higher. The gaps are modest. A slide that said “SMB is the problem segment” would overstate what the table supports. What <em>is</em> true is that SMB generates most of the <strong>workload</strong>, because it is the largest volume.</p>
 <p>The same logic for the plan:</p>
-<div id="d62067ce" class="cell" data-execution_count="15">
+<div id="87471b0f" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -934,7 +934,7 @@ Name: count, dtype: int64</code></pre>
 <section id="how-fast-do-customers-pay-when-they-pay" class="level3" data-number="4.4.3">
 <h3 data-number="4.4.3" class="anchored" data-anchor-id="how-fast-do-customers-pay-when-they-pay"><span class="header-section-number">4.4.3</span> How fast do customers pay when they pay?</h3>
 <p><code>days_to_pay</code> is defined only for paid invoices. Plotting it on the full table would mix real delays with missing values.</p>
-<div id="50fd6fbc" class="cell" data-execution_count="16">
+<div id="c19b81d7" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>paid <span class="op">=</span> invoices.loc[invoices[<span class="st">"payment_status"</span>] <span class="op">==</span> <span class="st">"paid"</span>].copy()</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>paid[<span class="st">"days_to_pay"</span>].describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
@@ -950,7 +950,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 <p><code>describe()</code> summarises a numerical column: count, mean, quartiles, minimum, maximum. Among paid invoices, the typical delay is about 9–10 days after the invoice date. The slowest recorded payments take 24 days.</p>
-<div id="0c070f23" class="cell" data-execution_count="17">
+<div id="eddaf9cb" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>paid, x<span class="op">=</span><span class="st">"days_to_pay"</span>, bins<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">27</span>), ax<span class="op">=</span>ax)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Days from invoice date to payment"</span>)</span>
@@ -968,7 +968,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 <p><code>bins=range(0, 27)</code> puts a bar on each integer day. That is appropriate because delays are stored as whole days.</p>
 <p><strong>Interpretation.</strong> Collection is generally fast. The right-hand tail is the group that pays after the due date even though the invoice eventually becomes <code>paid</code>. That group is not “outstanding” in the snapshot, but it is operationally late.</p>
-<div id="8cdd8a3e" class="cell" data-execution_count="18">
+<div id="71b53f5b" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>paid[<span class="st">"paid_after_due"</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>np.float64(0.1714929214929215)</code></pre>
@@ -976,7 +976,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 <p>About 17% of <em>paid</em> invoices were settled after the due date. A dashboard that only shows <code>overdue</code> would miss this milder form of lateness.</p>
 <p>A boxplot compares the same delay across plans:</p>
-<div id="784dcbba" class="cell" data-execution_count="19">
+<div id="40bd7daa" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>paid,</span>
@@ -1007,7 +1007,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </section>
 <section id="country-look-at-the-sample-size-before-the-ranking" class="level3" data-number="4.4.4">
 <h3 data-number="4.4.4" class="anchored" data-anchor-id="country-look-at-the-sample-size-before-the-ranking"><span class="header-section-number">4.4.4</span> Country: look at the sample size before the ranking</h3>
-<div id="ca59e7c6" class="cell" data-execution_count="20">
+<div id="3decc6b5" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rate_by_country <span class="op">=</span> (</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    invoices.groupby(<span class="st">"country"</span>)[<span class="st">"is_outstanding"</span>]</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    .agg(n_invoices<span class="op">=</span><span class="st">"size"</span>, rate<span class="op">=</span><span class="st">"mean"</span>)</span>
@@ -1078,7 +1078,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="7e616b54" class="cell" data-execution_count="21">
+<div id="8dab6ca3" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -1110,7 +1110,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 <section id="volume-over-time-is-not-the-same-as-risk-over-time" class="level3" data-number="4.5.1">
 <h3 data-number="4.5.1" class="anchored" data-anchor-id="volume-over-time-is-not-the-same-as-risk-over-time"><span class="header-section-number">4.5.1</span> Volume over time is not the same as risk over time</h3>
 <p>As HarborLink acquired customers, the number of invoices per month grew. A rise in the <em>number</em> of outstanding invoices can be a growing book, not a growing problem.</p>
-<div id="df0e2701" class="cell" data-execution_count="22">
+<div id="ec6a69c6" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>monthly <span class="op">=</span> (</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    invoices.groupby(<span class="st">"period"</span>, as_index<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
@@ -1190,7 +1190,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="4b54ee84" class="cell" data-execution_count="23">
+<div id="49bdc8f3" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>monthly, x<span class="op">=</span><span class="st">"period"</span>, y<span class="op">=</span><span class="st">"n_invoices"</span>, marker<span class="op">=</span><span class="st">"o"</span>, ax<span class="op">=</span>ax)</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Billing month"</span>)</span>
@@ -1215,7 +1215,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 <li><code>tight_layout()</code> reduces clipped labels.</li>
 </ul>
 <p><strong>Interpretation.</strong> Early months have very few invoices. A 25% outstanding rate in November 2024 would be one invoice. We should not start a trend story in the left-hand side of this plot.</p>
-<div id="3d032b25" class="cell" data-execution_count="24">
+<div id="973ba53e" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>monthly, x<span class="op">=</span><span class="st">"period"</span>, y<span class="op">=</span><span class="st">"outstanding_rate"</span>, marker<span class="op">=</span><span class="st">"o"</span>, ax<span class="op">=</span>ax)</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Billing month"</span>)</span>
@@ -1233,7 +1233,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="6598908c" class="cell" data-execution_count="25">
+<div id="6d3d0c6e" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>monthly.loc[monthly[<span class="st">"period"</span>] <span class="op">&gt;=</span> <span class="st">"2026-06"</span>, [<span class="st">"period"</span>, <span class="st">"n_invoices"</span>, <span class="st">"n_unpaid"</span>, <span class="st">"n_overdue"</span>, <span class="st">"outstanding_rate"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <div>
@@ -1295,7 +1295,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 <section id="crm-activity-looks-decisive-until-we-ask-how-it-is-produced" class="level3" data-number="4.5.2">
 <h3 data-number="4.5.2" class="anchored" data-anchor-id="crm-activity-looks-decisive-until-we-ask-how-it-is-produced"><span class="header-section-number">4.5.2</span> CRM activity looks decisive — until we ask how it is produced</h3>
 <p>Outstanding invoices have many more CRM contacts than paid ones.</p>
-<div id="e64cd1d7" class="cell" data-execution_count="26">
+<div id="ed051df6" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>invoices.groupby(<span class="st">"is_outstanding"</span>)[</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"n_interactions"</span>, <span class="st">"n_payment_issues"</span>, <span class="st">"n_reminders"</span>, <span class="st">"n_complaints"</span>, <span class="st">"n_emails"</span>]</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1345,7 +1345,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="f25d19d0" class="cell" data-execution_count="27">
+<div id="decd73f0" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -1367,7 +1367,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="7ea0f4c5" class="cell" data-execution_count="28">
+<div id="fb3fc475" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -1391,7 +1391,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 <p><strong>Interpretation.</strong> The association is extremely strong. In this table, payment-issue contacts appear almost only when the invoice is outstanding. That is what we should expect from HarborLink’s <strong>process</strong>: reminders and “please check my payment” emails are triggered by an open invoice. They are not independent evidence that “emails cause non-payment”. Among other readings of the same numbers, contacts tagged as complaints are also a weak extra signal of risk.</p>
 <p>A scatterplot of the same idea, with a little jitter so that overlapping points separate:</p>
-<div id="3e2e405e" class="cell" data-execution_count="29">
+<div id="c3ba0c99" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>sns.stripplot(</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>invoices,</span>
@@ -1424,7 +1424,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 <section id="put-elena-back-in-the-picture" class="level3" data-number="4.5.3">
 <h3 data-number="4.5.3" class="anchored" data-anchor-id="put-elena-back-in-the-picture"><span class="header-section-number">4.5.3</span> Put Elena back in the picture</h3>
 <p>A good EDA does not lose the original case in the averages.</p>
-<div id="93b5fca8" class="cell" data-execution_count="30">
+<div id="dfd26fc8" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>elena <span class="op">=</span> invoices.loc[invoices[<span class="st">"customer_id"</span>] <span class="op">==</span> <span class="dv">1827</span>].sort_values(<span class="st">"invoice_date"</span>)</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>elena[[<span class="st">"period"</span>, <span class="st">"amount"</span>, <span class="st">"payment_status"</span>, <span class="st">"days_to_pay"</span>, <span class="st">"paid_after_due"</span>, <span class="st">"is_outstanding"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="30">
@@ -1621,7 +1621,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<div id="20d88d97" class="cell" data-execution_count="31">
+<div id="c0a9c9ff" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>sns.barplot(data<span class="op">=</span>elena, x<span class="op">=</span><span class="st">"period"</span>, y<span class="op">=</span><span class="st">"is_outstanding"</span>, ax<span class="op">=</span>ax)</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Billing month"</span>)</span>
@@ -1659,7 +1659,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 <li>A claim that one country “does not pay”.</li>
 <li>A forecast, a causal model, or a machine-learning score.</li>
 </ul>
-<div id="2bce3f97" class="cell" data-execution_count="32">
+<div id="8144ba28" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"figures"</span>).mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
@@ -1694,7 +1694,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 <li><strong>Below:</strong> one small plot per variable that still makes sense at customer level. Invoice identifiers and dates (<code>invoice_id</code>, <code>period</code>, <code>payment_status</code>, …) are dropped. Attributes such as country or plan are kept. Amounts and delays become <strong>means</strong> for that customer; CRM counts become <strong>sums</strong>; <code>days_to_pay</code> is the mean over invoices that have a payment date. Each small plot is the distribution of that summary <strong>across all customers</strong>, with this customer marked (red point or highlighted bar) and the value written under the panel.</li>
 </ol>
 <p>Change the argument and re-run the cell.</p>
-<div id="2aa7e029" class="cell" data-fig-height="11" data-fig-width="16" data-execution_count="33">
+<div id="077d7258" class="cell" data-fig-height="11" data-fig-width="16" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> python.customer_profile <span class="im">import</span> plot_customer_profile</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>plot_customer_profile(<span class="st">"Elena Vargas"</span>, invoices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1714,7 +1714,7 @@ Name: days_to_pay, dtype: float64</code></pre>
 </div>
 </div>
 <p>The same figure with the identifier:</p>
-<div id="13f6216f" class="cell" data-fig-height="11" data-fig-width="16" data-execution_count="34">
+<div id="175d4c71" class="cell" data-fig-height="11" data-fig-width="16" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>plot_customer_profile(<span class="dv">1827</span>, invoices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>

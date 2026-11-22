@@ -23,6 +23,8 @@ The only `CLOUD_MODE` line to edit is in **Paths of the saved results**. Leave i
 Rendering this file does not create a Google resource and does not start a training job.
 :::
 
+The telco comparison file already holds four scores: `p_logistic_tabular`, `p_logistic_text`, `p_automl_tabular` and `p_automl_text`. The two Gemini columns were saved from an earlier job. With `CLOUD_MODE` left at `"LOAD"` and `START_PAID_TRAINING` left at `False`, the cells read that file. A Google account is not required, and a render does not open a bucket.
+
 Run the cells from top to bottom.
 
 ## Retrieval of the data
@@ -180,7 +182,7 @@ print("Comparison rows:", len(retrieved["comparison"]))
 retrieved["comparison"].head(2)
 ```
 
-`validation_probabilities.csv` holds the comparison rows and the local columns: `ID_COLUMN`, `OBSERVED_COLUMN`, `p_logistic_tabular`, `p_logistic_text`, `p1`, `cost` and `loss`. In the example those first two names are `customerID` and `observed_outcome`. A Gemini score is added later, by `import_saved_scores` or by the paid cell.
+`validation_probabilities.csv` holds the comparison rows. In the telco example the columns are `customerID`, `observed_outcome`, `p_logistic_tabular`, `p_logistic_text`, `p1`, `cost`, `loss`, `p_automl_tabular` and `p_automl_text`. A later Gemini score, from your own account, is written by the paid cell or by `import_saved_scores` after that cell.
 
 ## Gemini
 
@@ -390,7 +392,12 @@ Leave `START_PAID_TRAINING` as `False` until billing is linked, both APIs are en
 
 Another dataset uses the same cell after its own files exist. The cells through `build_gemini_files` must already have been run for that dataset, with its paths and column names. Then set `PROJECT_ID`, `REGION`, `BUCKET` and `GCS_PREFIX`. `REGION` and the bucket must match. Also give that dataset its own `OUTPUT_DIR`, or delete `cloud_resources.json` in the current folder. Otherwise the paid cell scores with the model already recorded there.
 
-The text model of the example has not been trained, and it has no score file in the bucket. The tabular column `p_automl_tabular` is already in the comparison file, so the next paid run skips that search. It trains the text model, which is a new charge of up to one node hour, then scores the comparison rows. When that cell finishes, `p_automl_text` is in `validation_probabilities.csv`. If the score files are in the bucket and the column is still missing, run `import_saved_scores("tabular_text")`.
+Four uses of the same cells are possible. The lines below are the first of them.
+
+- Telco, saved Gemini scores. Leave `CLOUD_MODE` as `"LOAD"` and `START_PAID_TRAINING` as `False`. `p_automl_tabular` and `p_automl_text` are already in `validation_probabilities.csv`. The copy cell reads them. No bucket is opened. This is the default, and it is what `quarto render` does.
+- Telco, your own Gemini account. Keep the telco paths. Set `START_PAID_TRAINING` to `True` after the account, the project, the bucket and the sign-in exist. The paid cell starts a new job on these customers. The copy cell then reads your bucket.
+- Another dataset, logistic scores only. Change the paths and the column names, and give that dataset its own `OUTPUT_DIR`. Leave `START_PAID_TRAINING` as `False`. The comparison file then has the logistic columns. The later tables use those columns.
+- Another dataset, your own Gemini account. The same path changes, then `START_PAID_TRAINING = True`. The paid cell trains on that dataset. A new `OUTPUT_DIR`, or a deleted `cloud_resources.json`, keeps that job away from the telco record.
 
 Select the project in the console and set the region to the value of `REGION`. A pipeline list for another region is empty.
 
@@ -436,17 +443,28 @@ $env:AUTOML_APPROVE_SPEND = "yes"
 python python/workshop_automl.py run --approve-spend
 ```
 
-### Copy a finished batch prediction into the comparison file
+### Read the Gemini scores
 
-`import_saved_scores(experiment)` reads one finished batch prediction and writes its positive-class score into `validation_probabilities.csv`.
+The cell below follows `START_PAID_TRAINING`.
 
-`experiment` is `"tabular"` or `"tabular_text"`. `"tabular"` writes `p_automl_tabular`. `"tabular_text"` writes `p_automl_text`. The bucket path is `gcs_predictions` in `cloud_resources.json`. The files read are those named `prediction.results-`. Error tables and temporary files in the same folder are left unread.
+`False` reads `validation_probabilities.csv` from `OUTPUT_DIR`. For the telco example that file already has `p_automl_tabular` and `p_automl_text`. The read does not call Google. A file with no Gemini column is still read. The later tables then use the logistic scores.
 
-The call does not train a model and does not start a batch prediction. Run the same cell again after a later job. The column already in the file is replaced. `"tabular_text"` waits until that second batch prediction has written its files.
+`True` calls `import_saved_scores("tabular_text")`. That call reads one finished batch prediction from the bucket of the signed-in account and writes `p_automl_text` into the comparison file. `"tabular"` writes `p_automl_tabular`. The bucket path is `gcs_predictions` in `cloud_resources.json`, which `run_cloud` records on that account. The files read are those named `prediction.results-`. Error tables and temporary files in the same folder are left unread. The call does not train a model and does not start a batch prediction. Run it again after a later job. The column already in the file is replaced.
+
+One call copies one experiment. The cell below, while `START_PAID_TRAINING` is `True`, uses `"tabular_text"` and writes `p_automl_text`. To copy `p_automl_tabular` as well, change that argument to `"tabular"` and run the cell a second time, with the switch still `True`. Two runs that both keep `"tabular_text"` copy the text scores twice. A `run_cloud` that has finished both experiments has already written both columns. These two calls then copy the same scores again.
 
 ```{python}
-copied = automl.import_saved_scores("tabular_text")
-copied[[automl.ID_COLUMN, "p_automl_text"]].head(2)
+score_path = Path(automl.OUTPUT_DIR) / "validation_probabilities.csv"
+if START_PAID_TRAINING:
+    copied = automl.import_saved_scores("tabular_text")
+else:
+    copied = pd.read_csv(score_path, dtype={automl.ID_COLUMN: str})
+    print(f"Read {score_path.name}. No Google call was made.")
+shown = [
+    name for name in (automl.ID_COLUMN, "p_automl_tabular", "p_automl_text")
+    if name in copied.columns
+]
+copied[shown].head(2)
 ```
 
 ### Add the Gemini scores to the comparison file
@@ -455,7 +473,7 @@ copied[[automl.ID_COLUMN, "p_automl_text"]].head(2)
 
 This cell is not a third switch. Keep the assignment below as `"LOAD"`. The line you edit is still the one in **Paths of the saved results**. If that line is `"SAVE"` when this cell runs, `load_workshop()` rebuilds the files again.
 
-It returns a dictionary. `state["probabilities"]` is the comparison file, one row per comparison customer. A column written by `import_saved_scores` is on those rows. `state["split_summary"]` counts the fit rows, the test rows, the comparison rows, the unused test rows, and the three `ml_split` labels. `state["automl_columns"]` lists the Gemini columns present in the file.
+It returns a dictionary. `state["probabilities"]` is the comparison file, one row per comparison customer. On the telco file the two Gemini columns are already on those rows. `state["split_summary"]` counts the fit rows, the test rows, the comparison rows, the unused test rows, and the three `ml_split` labels. `state["automl_columns"]` lists the Gemini columns present in the file.
 
 ```{python}
 # Keep "LOAD". Do not use this line to rebuild.
@@ -474,8 +492,8 @@ state["probabilities"].head(2)
 | `p1` | Probability of staying if contacted | `ECONOMICS_FILE` |
 | `cost` | Contact cost | `example_cost` |
 | `loss` | Loss if the customer leaves | `example_loss` |
-| `p_automl_tabular` | Gemini score, structured fields | `import_saved_scores("tabular")`. The bucket column is `TARGET_COLUMN`, `_`, `POSITIVE_LABEL`, `_scores`. In the example, `Churn_Yes_scores`. |
-| `p_automl_text` | Gemini score, fields plus `TEXT_FEATURE` | `import_saved_scores("tabular_text")`, after that batch prediction exists |
+| `p_automl_tabular` | Gemini score, structured fields | Already in the telco `validation_probabilities.csv`. A new batch is copied by `import_saved_scores("tabular")`. The bucket column is `TARGET_COLUMN`, `_`, `POSITIVE_LABEL`, `_scores`. In the example, `Churn_Yes_scores`. |
+| `p_automl_text` | Gemini score, fields plus `TEXT_FEATURE` | Already in the same telco file. A new batch is copied by `import_saved_scores("tabular_text")`. |
 
 `p1`, `cost` and `loss` do not change when the score changes.
 
@@ -505,7 +523,7 @@ automl.plot_roc(state["probabilities"])
 automl.plot_calibration(state["probabilities"])
 ```
 
-Until the paid cell has run, the displays contain the two logistic models. After it has run, run the three cells again. Compare tabular logistic regression with tabular Gemini. Separately, compare the communications logistic regression with Gemini plus `TEXT_FEATURE`. The table is the result.
+On the telco file the four scores are already present, so the displays compare all four. A comparison file with no Gemini column shows the two logistic models. After a paid run, run the three cells again. Compare tabular logistic regression with tabular Gemini. Separately, compare the communications logistic regression with Gemini plus `TEXT_FEATURE`. The table is the result.
 
 ### Does the campaign decision change?
 

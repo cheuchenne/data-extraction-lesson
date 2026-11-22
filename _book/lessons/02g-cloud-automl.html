@@ -243,7 +243,7 @@ window.Quarto = {
   <li><a href="#what-is-billed" id="toc-what-is-billed" class="nav-link" data-scroll-target="#what-is-billed"><span class="header-section-number">7.3.5</span> What is billed</a></li>
   <li><a href="#sign-in-and-create-the-bucket" id="toc-sign-in-and-create-the-bucket" class="nav-link" data-scroll-target="#sign-in-and-create-the-bucket"><span class="header-section-number">7.3.6</span> Sign in and create the bucket</a></li>
   <li><a href="#train-and-score" id="toc-train-and-score" class="nav-link" data-scroll-target="#train-and-score"><span class="header-section-number">7.3.7</span> Train and score</a></li>
-  <li><a href="#copy-a-finished-batch-prediction-into-the-comparison-file" id="toc-copy-a-finished-batch-prediction-into-the-comparison-file" class="nav-link" data-scroll-target="#copy-a-finished-batch-prediction-into-the-comparison-file"><span class="header-section-number">7.3.8</span> Copy a finished batch prediction into the comparison file</a></li>
+  <li><a href="#read-the-gemini-scores" id="toc-read-the-gemini-scores" class="nav-link" data-scroll-target="#read-the-gemini-scores"><span class="header-section-number">7.3.8</span> Read the Gemini scores</a></li>
   <li><a href="#add-the-gemini-scores-to-the-comparison-file" id="toc-add-the-gemini-scores-to-the-comparison-file" class="nav-link" data-scroll-target="#add-the-gemini-scores-to-the-comparison-file"><span class="header-section-number">7.3.9</span> Add the Gemini scores to the comparison file</a></li>
   <li><a href="#compare-the-scores" id="toc-compare-the-scores" class="nav-link" data-scroll-target="#compare-the-scores"><span class="header-section-number">7.3.10</span> Compare the scores</a></li>
   <li><a href="#does-the-campaign-decision-change" id="toc-does-the-campaign-decision-change" class="nav-link" data-scroll-target="#does-the-campaign-decision-change"><span class="header-section-number">7.3.11</span> Does the campaign decision change?</a></li>
@@ -296,6 +296,7 @@ Money is spent only if you change that line
 <p>Rendering this file does not create a Google resource and does not start a training job.</p>
 </div>
 </div>
+<p>The telco comparison file already holds four scores: <code>p_logistic_tabular</code>, <code>p_logistic_text</code>, <code>p_automl_tabular</code> and <code>p_automl_text</code>. The two Gemini columns were saved from an earlier job. With <code>CLOUD_MODE</code> left at <code>"LOAD"</code> and <code>START_PAID_TRAINING</code> left at <code>False</code>, the cells read that file. A Google account is not required, and a render does not open a bucket.</p>
 <p>Run the cells from top to bottom.</p>
 <section id="retrieval-of-the-data" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="retrieval-of-the-data"><span class="header-section-number">7.1</span> Retrieval of the data</h2>
@@ -306,7 +307,7 @@ Money is spent only if you change that line
 <p><code>TEXT_COLUMN</code> is the message. <code>TEXT_ORDER_COLUMN</code> numbers one customer’s messages. <code>TEXT_TYPE_COLUMN</code> names the kind of message. Set it to <code>""</code> when the file has no such column. <code>TEXT_FEATURE</code> is the name of the joined-text column this lesson will add. It is not a column of the source files.</p>
 <p><code>NUMERIC_FEATURES</code> and <code>CATEGORICAL_FEATURES</code> are the predictors. Do not put <code>ID_COLUMN</code> or <code>TARGET_COLUMN</code> in those lists.</p>
 <p><code>RANDOM_STATE</code> is the seed. <code>TEST_SIZE</code> is the share of customers held out of the fit. Chapter 5 used <code>42</code> and <code>0.25</code>. The same two numbers rebuild that split.</p>
-<div id="51860bc7" class="cell" data-execution_count="1">
+<div id="7e5cd310" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
@@ -515,7 +516,7 @@ Money is spent only if you change that line
 <section id="gather-the-two-files" class="level3" data-number="7.1.2">
 <h3 data-number="7.1.2" class="anchored" data-anchor-id="gather-the-two-files"><span class="header-section-number">7.1.2</span> Gather the two files</h3>
 <p><code>gather_sources()</code> takes no argument. It reads the paths and column names above. It sorts each customer’s messages by <code>TEXT_ORDER_COLUMN</code>, joins them with a blank line, and stores the text in <code>customer_text</code> (<code>TEXT_FEATURE</code>). It returns one row per customer. It does not split. It does not call Google.</p>
-<div id="319acff8" class="cell" data-execution_count="2">
+<div id="a11ad84b" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> automl.gather_sources()</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>shown <span class="op">=</span> customers[[automl.ID_COLUMN, automl.TARGET_COLUMN, automl.TEXT_FEATURE]].head(<span class="dv">2</span>).copy()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>shown[automl.TEXT_FEATURE] <span class="op">=</span> (</span>
@@ -565,7 +566,7 @@ Gathered 7043 customers. Joined messages are in customer_text.</code></pre>
 <h3 data-number="7.1.3" class="anchored" data-anchor-id="separate-fit-rows-and-test-rows"><span class="header-section-number">7.1.3</span> Separate fit rows and test rows</h3>
 <p><code>separate_fit_test(customers)</code> takes the table just returned. It also reads <code>RANDOM_STATE</code>, <code>TEST_SIZE</code>, <code>ID_COLUMN</code>, <code>TARGET_COLUMN</code> and <code>POSITIVE_LABEL</code>. It returns two tables, <code>fit_table</code> and <code>test_table</code>. The split is stratified on the target. A row in <code>test_table</code> was not used to fit the Chapter 5 models. The row counts are the Chapter 5 counts when the seed and <code>TEST_SIZE</code> are unchanged.</p>
 <p><code>fit_table</code> is the table Gemini will train on. <code>test_table</code> is the table from which the scored customers are taken.</p>
-<div id="664e1f40" class="cell" data-execution_count="3">
+<div id="fbfcf012" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_table, test_table <span class="op">=</span> automl.separate_fit_test(customers)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Fit rows:"</span>, <span class="bu">len</span>(fit_table))</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test rows:"</span>, <span class="bu">len</span>(test_table))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -589,7 +590,7 @@ Test rows: 1761</code></pre>
 <p><code>OBSERVED_COLUMN</code> is the 0/1 column of the comparison file. <code>1</code> means <code>TARGET_COLUMN</code> equals <code>POSITIVE_LABEL</code>. In the example, <code>1</code> means <code>Churn</code> is <code>Yes</code>: the customer left. The functions read <code>OBSERVED_COLUMN</code>. Change <code>TARGET_COLUMN</code> in <strong>Paths, columns, and the split</strong> to use another outcome.</p>
 <p><code>CLOUD_MODE</code> has two values. <code>"LOAD"</code> reads <code>validation_probabilities.csv</code> and the Gemini files in <code>OUTPUT_DIR</code>. <code>"SAVE"</code> rebuilds those files. The assignment below is the only line to edit. The later cells read it. After a rebuild, set this line back to <code>"LOAD"</code> before <strong>Add the Gemini scores to the comparison file</strong>.</p>
 <p><code>DECISION_THRESHOLD = 0.5</code> means a score of at least <code>0.5</code> is counted as a predicted leave. The comparison section uses it. The probabilities themselves are not changed by it.</p>
-<div id="bcb745a7" class="cell" data-execution_count="4">
+<div id="ce76c2c8" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>automl.MODEL_ROWS_FILE <span class="op">=</span> <span class="st">"data/processed/telco/model_rows.csv"</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>automl.MODEL_ROWS_ID_COLUMN <span class="op">=</span> <span class="st">"customer_id"</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>automl.OBSERVED_COLUMN <span class="op">=</span> <span class="st">"observed_outcome"</span></span>
@@ -622,7 +623,7 @@ Test rows: 1761</code></pre>
 <p><code>retrieve_results</code> does not read <code>CLOUD_MODE</code>. The argument <code>write</code> does. <code>write_files</code> is that argument. It is <code>True</code> only when the line above is exactly <code>"SAVE"</code>.</p>
 <!--
 `strip()` deletes spaces at the two ends of a string. `upper()` turns each letter into a capital. `" save ".strip().upper()` is `"SAVE"`. That extra spelling is not used. `"save"` and `" SAVE "` do not count. The line above must be `"LOAD"` or `"SAVE"`.-->
-<div id="335208f8" class="cell" data-execution_count="5">
+<div id="1cb8d27b" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do not assign CLOUD_MODE here. This reads the line in the cell above.</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>write_files <span class="op">=</span> automl.CLOUD_MODE <span class="op">==</span> <span class="st">"SAVE"</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>retrieved <span class="op">=</span> automl.retrieve_results(fit_table, test_table, write<span class="op">=</span>write_files)</span>
@@ -686,7 +687,7 @@ Comparison rows: 880</code></pre>
 </div>
 </div>
 </div>
-<p><code>validation_probabilities.csv</code> holds the comparison rows and the local columns: <code>ID_COLUMN</code>, <code>OBSERVED_COLUMN</code>, <code>p_logistic_tabular</code>, <code>p_logistic_text</code>, <code>p1</code>, <code>cost</code> and <code>loss</code>. In the example those first two names are <code>customerID</code> and <code>observed_outcome</code>. A Gemini score is added later, by <code>import_saved_scores</code> or by the paid cell.</p>
+<p><code>validation_probabilities.csv</code> holds the comparison rows. In the telco example the columns are <code>customerID</code>, <code>observed_outcome</code>, <code>p_logistic_tabular</code>, <code>p_logistic_text</code>, <code>p1</code>, <code>cost</code>, <code>loss</code>, <code>p_automl_tabular</code> and <code>p_automl_text</code>. A later Gemini score, from your own account, is written by the paid cell or by <code>import_saved_scores</code> after that cell.</p>
 </section>
 </section>
 <section id="gemini" class="level2" data-number="7.3">
@@ -746,7 +747,7 @@ Comparison rows: 880</code></pre>
 <li><code>n_training</code>, <code>n_validation</code>, <code>n_final_test</code>, and <code>split_summary</code>.</li>
 </ul>
 <p>Changing <code>BUDGET_MILLI_NODE_HOURS</code> in the cell below changes the Python name only. To put the new number into <code>manifest.json</code>, set the one <code>CLOUD_MODE</code> line, in <strong>Paths of the saved results</strong>, to <code>"SAVE"</code>. Then run the cells from that line through <strong>The two uploads</strong>. Then set that same line back to <code>"LOAD"</code>. Do not add a second <code>CLOUD_MODE</code> assignment in this cell. <code>"SAVE"</code> rebuilds the local files. It does not call Google, and it is not a new dataset.</p>
-<div id="0ffd5037" class="cell" data-execution_count="6">
+<div id="ce9846b0" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>automl.BUDGET_MILLI_NODE_HOURS <span class="op">=</span> <span class="dv">1000</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>automl.PLATFORM_VALIDATE_FRACTION <span class="op">=</span> <span class="fl">0.10</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>automl.PLATFORM_TEST_FRACTION <span class="op">=</span> <span class="fl">0.10</span></span>
@@ -956,7 +957,7 @@ Comparison rows: 880</code></pre>
 <p>The comparison rows are not in the training file. The model Gemini keeps can be fit again on every uploaded row, so a customer who is in both files would not be a clean test. The other half of <code>test_table</code> is <code>final_test_ids.csv</code>. It is not uploaded.</p>
 <p><code>build_gemini_files</code> returns the first rows of <code>training_tabular_text.csv</code>. <code>TEXT_FEATURE</code> is cut to 140 characters on screen. In the example that column is <code>customer_text</code>. With <code>write=False</code> it only reads the files already saved.</p>
 <p>The service accepts at least 1,000 training rows. With <code>TEST_SIZE = 0.25</code>, <code>TABULAR_FILE</code> needs more than about 1,400 customers.</p>
-<div id="ba041574" class="cell" data-execution_count="7">
+<div id="13a1c1e4" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do not assign CLOUD_MODE here. Same line as in "Paths of the saved results".</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "SAVE" rewrites manifest.json, including budget_milli_node_hours.</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># "LOAD" reads the training file already on disk.</span></span>
@@ -1073,7 +1074,7 @@ Comparison rows: 880</code></pre>
 <p>A Spot machine is useful when the lower hourly price still wins after some jobs are started again, and when you can wait. Custom training that writes a checkpoint can continue from that checkpoint on the next machine. A short scoring job can be cheaper on Spot even if a preempted job has to start again, because the preempted time is not billed.</p>
 <p>That is not this lesson. The AutoML search does not give you a checkpoint to pass to a replacement machine. If it is stopped, the next search starts over. A preempted scoring job also starts over: the replacement machine does not receive the unfinished score file as a place to continue. The saved model stays, so scoring starts again and the search does not. For these two tasks, a partial result is not reused. Spot would only change the price of a job that may have to be launched again.</p>
 <p><code>explain_costs()</code> takes no argument. It reads <code>BUDGET_MILLI_NODE_HOURS</code>, <code>GCS_PREFIX</code>, and the experiment list in <code>manifest.json</code> when that file exists. It returns one complete paragraph per component: the name, what is billed, and what this run does. It does not start a job and it does not compute a dollar amount. The dollar amount is the price on the pricing page in <strong>Account, project, and bill</strong> (above) times the node hours actually used. <code>cost_table()</code> returns the same facts as a table.</p>
-<div id="39919395" class="cell" data-execution_count="8">
+<div id="f5a6f160" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(automl.explain_costs())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Experiment A, tabular AutoML. What is billed: Training node hours, up to the cap, and batch-prediction node hours. This run: Training cap 1 node hour, then one batch prediction.
@@ -1094,7 +1095,7 @@ Model registry. What is billed: A model that is not deployed is not charged for 
 <div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> google-cloud-sdk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Close the terminal and open it again in the project folder.</p>
 <p><code>PROJECT_ID</code>, <code>REGION</code> and <code>BUCKET</code> are names in the next cell, not columns. <code>PROJECT_ID</code> is the project id from <strong>Account, project, and bill</strong> above. <code>REGION</code> is the region. <code>BUCKET</code> is the bucket name you choose. It must be new, and it may contain only lowercase letters, numbers and hyphens. The cell prints commands. It does not run them.</p>
-<div id="c75d88cd" class="cell" data-execution_count="9">
+<div id="7ff4c8f7" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>PROJECT_ID <span class="op">=</span> <span class="st">"my-aidata-course"</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>REGION <span class="op">=</span> <span class="st">"us-central1"</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>BUCKET <span class="op">=</span> <span class="st">"my-aidata-course-bucket"</span></span>
@@ -1125,7 +1126,13 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 </ul>
 <p>Leave <code>START_PAID_TRAINING</code> as <code>False</code> until billing is linked, both APIs are enabled, sign-in has finished, and the bucket exists. Waiting for a job to start can take longer than the one-hour cap. The cap limits the training machine, not that wait. The cell runs the tabular search first. After that pipeline succeeds, the same cell starts the search that includes <code>TEXT_FEATURE</code>. The second search does not start by itself if this cell has stopped. Run the cell again with the switch still <code>True</code>. An experiment whose score column is already complete is skipped. A recorded model is not trained again. The text search starts when that model is not recorded yet.</p>
 <p>Another dataset uses the same cell after its own files exist. The cells through <code>build_gemini_files</code> must already have been run for that dataset, with its paths and column names. Then set <code>PROJECT_ID</code>, <code>REGION</code>, <code>BUCKET</code> and <code>GCS_PREFIX</code>. <code>REGION</code> and the bucket must match. Also give that dataset its own <code>OUTPUT_DIR</code>, or delete <code>cloud_resources.json</code> in the current folder. Otherwise the paid cell scores with the model already recorded there.</p>
-<p>The text model of the example has not been trained, and it has no score file in the bucket. The tabular column <code>p_automl_tabular</code> is already in the comparison file, so the next paid run skips that search. It trains the text model, which is a new charge of up to one node hour, then scores the comparison rows. When that cell finishes, <code>p_automl_text</code> is in <code>validation_probabilities.csv</code>. If the score files are in the bucket and the column is still missing, run <code>import_saved_scores("tabular_text")</code>.</p>
+<p>Four uses of the same cells are possible. The lines below are the first of them.</p>
+<ul>
+<li>Telco, saved Gemini scores. Leave <code>CLOUD_MODE</code> as <code>"LOAD"</code> and <code>START_PAID_TRAINING</code> as <code>False</code>. <code>p_automl_tabular</code> and <code>p_automl_text</code> are already in <code>validation_probabilities.csv</code>. The copy cell reads them. No bucket is opened. This is the default, and it is what <code>quarto render</code> does.</li>
+<li>Telco, your own Gemini account. Keep the telco paths. Set <code>START_PAID_TRAINING</code> to <code>True</code> after the account, the project, the bucket and the sign-in exist. The paid cell starts a new job on these customers. The copy cell then reads your bucket.</li>
+<li>Another dataset, logistic scores only. Change the paths and the column names, and give that dataset its own <code>OUTPUT_DIR</code>. Leave <code>START_PAID_TRAINING</code> as <code>False</code>. The comparison file then has the logistic columns. The later tables use those columns.</li>
+<li>Another dataset, your own Gemini account. The same path changes, then <code>START_PAID_TRAINING = True</code>. The paid cell trains on that dataset. A new <code>OUTPUT_DIR</code>, or a deleted <code>cloud_resources.json</code>, keeps that job away from the telco record.</li>
+</ul>
 <p>Select the project in the console and set the region to the value of <code>REGION</code>. A pipeline list for another region is empty.</p>
 <ul>
 <li>Training, state <code>PIPELINE_STATE_PENDING</code>, <code>PIPELINE_STATE_RUNNING</code>, or <code>PIPELINE_STATE_SUCCEEDED</code>: <a href="https://console.cloud.google.com/vertex-ai/training/training-pipelines" class="uri">https://console.cloud.google.com/vertex-ai/training/training-pipelines</a></li>
@@ -1135,7 +1142,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <li>Batch prediction, after the model exists. Scores land in the bucket under <code>GCS_PREFIX</code>, then the run id, then <code>tabular/predictions/</code> or <code>tabular_text/predictions/</code>: <a href="https://console.cloud.google.com/vertex-ai/batch-predictions" class="uri">https://console.cloud.google.com/vertex-ai/batch-predictions</a></li>
 </ul>
 <p><code>run_cloud(approve_spend=True)</code> runs only when the switch is <code>True</code>. The argument and the environment name <code>AUTOML_APPROVE_SPEND=yes</code> are both required. The function also reads <code>GOOGLE_CLOUD_PROJECT</code>, <code>GOOGLE_CLOUD_REGION</code> and <code>GOOGLE_CLOUD_BUCKET</code>, which the cell sets from <code>PROJECT_ID</code>, <code>REGION</code> and <code>BUCKET</code>. It reads <code>manifest.json</code> for the file paths and for the training cap. It returns <code>0</code> when the scores are saved, <code>1</code> when the local files are missing or the training file has fewer than 1,000 rows, and <code>2</code> when the approval is missing.</p>
-<div id="cb5b73c1" class="cell" data-execution_count="10">
+<div id="f7cb1c8b" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>START_PAID_TRAINING <span class="op">=</span> <span class="va">False</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_PROJECT"</span>] <span class="op">=</span> PROJECT_ID</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GOOGLE_CLOUD_REGION"</span>] <span class="op">=</span> REGION</span>
@@ -1163,16 +1170,26 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">AUTOML_APPROVE_SPEND</span> <span class="op">=</span> <span class="st">"yes"</span></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>python python<span class="op">/</span>workshop_automl<span class="op">.</span><span class="fu">py</span> run <span class="op">--</span>approve-spend</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="copy-a-finished-batch-prediction-into-the-comparison-file" class="level3" data-number="7.3.8">
-<h3 data-number="7.3.8" class="anchored" data-anchor-id="copy-a-finished-batch-prediction-into-the-comparison-file"><span class="header-section-number">7.3.8</span> Copy a finished batch prediction into the comparison file</h3>
-<p><code>import_saved_scores(experiment)</code> reads one finished batch prediction and writes its positive-class score into <code>validation_probabilities.csv</code>.</p>
-<p><code>experiment</code> is <code>"tabular"</code> or <code>"tabular_text"</code>. <code>"tabular"</code> writes <code>p_automl_tabular</code>. <code>"tabular_text"</code> writes <code>p_automl_text</code>. The bucket path is <code>gcs_predictions</code> in <code>cloud_resources.json</code>. The files read are those named <code>prediction.results-</code>. Error tables and temporary files in the same folder are left unread.</p>
-<p>The call does not train a model and does not start a batch prediction. Run the same cell again after a later job. The column already in the file is replaced. <code>"tabular_text"</code> waits until that second batch prediction has written its files.</p>
-<div id="58b97196" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>copied <span class="op">=</span> automl.import_saved_scores(<span class="st">"tabular_text"</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>copied[[automl.ID_COLUMN, <span class="st">"p_automl_text"</span>]].head(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="read-the-gemini-scores" class="level3" data-number="7.3.8">
+<h3 data-number="7.3.8" class="anchored" data-anchor-id="read-the-gemini-scores"><span class="header-section-number">7.3.8</span> Read the Gemini scores</h3>
+<p>The cell below follows <code>START_PAID_TRAINING</code>.</p>
+<p><code>False</code> reads <code>validation_probabilities.csv</code> from <code>OUTPUT_DIR</code>. For the telco example that file already has <code>p_automl_tabular</code> and <code>p_automl_text</code>. The read does not call Google. A file with no Gemini column is still read. The later tables then use the logistic scores.</p>
+<p><code>True</code> calls <code>import_saved_scores("tabular_text")</code>. That call reads one finished batch prediction from the bucket of the signed-in account and writes <code>p_automl_text</code> into the comparison file. <code>"tabular"</code> writes <code>p_automl_tabular</code>. The bucket path is <code>gcs_predictions</code> in <code>cloud_resources.json</code>, which <code>run_cloud</code> records on that account. The files read are those named <code>prediction.results-</code>. Error tables and temporary files in the same folder are left unread. The call does not train a model and does not start a batch prediction. Run it again after a later job. The column already in the file is replaced.</p>
+<p>One call copies one experiment. The cell below, while <code>START_PAID_TRAINING</code> is <code>True</code>, uses <code>"tabular_text"</code> and writes <code>p_automl_text</code>. To copy <code>p_automl_tabular</code> as well, change that argument to <code>"tabular"</code> and run the cell a second time, with the switch still <code>True</code>. Two runs that both keep <code>"tabular_text"</code> copy the text scores twice. A <code>run_cloud</code> that has finished both experiments has already written both columns. These two calls then copy the same scores again.</p>
+<div id="e00bf596" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>score_path <span class="op">=</span> Path(automl.OUTPUT_DIR) <span class="op">/</span> <span class="st">"validation_probabilities.csv"</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> START_PAID_TRAINING:</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    copied <span class="op">=</span> automl.import_saved_scores(<span class="st">"tabular_text"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    copied <span class="op">=</span> pd.read_csv(score_path, dtype<span class="op">=</span>{automl.ID_COLUMN: <span class="bu">str</span>})</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Read </span><span class="sc">{</span>score_path<span class="sc">.</span>name<span class="sc">}</span><span class="ss">. No Google call was made."</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>shown <span class="op">=</span> [</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    name <span class="cf">for</span> name <span class="kw">in</span> (automl.ID_COLUMN, <span class="st">"p_automl_tabular"</span>, <span class="st">"p_automl_text"</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="kw">in</span> copied.columns</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>copied[shown].head(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Wrote p_automl_text for 880 comparison customers from gs://my-aidata-course-bucket/telco-automl/20261119T172255Z/tabular_text/predictions/.</code></pre>
+<pre><code>Read validation_probabilities.csv. No Google call was made.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div>
@@ -1183,6 +1200,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">customerID</th>
+<th data-quarto-table-cell-role="th">p_automl_tabular</th>
 <th data-quarto-table-cell-role="th">p_automl_text</th>
 </tr>
 </thead>
@@ -1190,11 +1208,13 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>7996-BPXHY</td>
+<td>0.040444</td>
 <td>0.022887</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>0376-YMCJC</td>
+<td>0.528902</td>
 <td>0.241196</td>
 </tr>
 </tbody>
@@ -1208,8 +1228,8 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <h3 data-number="7.3.9" class="anchored" data-anchor-id="add-the-gemini-scores-to-the-comparison-file"><span class="header-section-number">7.3.9</span> Add the Gemini scores to the comparison file</h3>
 <p><code>load_workshop()</code> takes no argument. It reads <code>CLOUD_MODE</code> and <code>OUTPUT_DIR</code>. <code>"LOAD"</code> opens <code>manifest.json</code> and <code>validation_probabilities.csv</code>. <code>"SAVE"</code> runs <code>prepare()</code> again and fits the tabular model a second time. <code>"RUN"</code> is refused. The paid call is <code>run_cloud()</code>.</p>
 <p>This cell is not a third switch. Keep the assignment below as <code>"LOAD"</code>. The line you edit is still the one in <strong>Paths of the saved results</strong>. If that line is <code>"SAVE"</code> when this cell runs, <code>load_workshop()</code> rebuilds the files again.</p>
-<p>It returns a dictionary. <code>state["probabilities"]</code> is the comparison file, one row per comparison customer. A column written by <code>import_saved_scores</code> is on those rows. <code>state["split_summary"]</code> counts the fit rows, the test rows, the comparison rows, the unused test rows, and the three <code>ml_split</code> labels. <code>state["automl_columns"]</code> lists the Gemini columns present in the file.</p>
-<div id="a0ced55d" class="cell" data-execution_count="12">
+<p>It returns a dictionary. <code>state["probabilities"]</code> is the comparison file, one row per comparison customer. On the telco file the two Gemini columns are already on those rows. <code>state["split_summary"]</code> counts the fit rows, the test rows, the comparison rows, the unused test rows, and the three <code>ml_split</code> labels. <code>state["automl_columns"]</code> lists the Gemini columns present in the file.</p>
+<div id="305d85b7" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep "LOAD". Do not use this line to rebuild.</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The rebuild line is CLOUD_MODE in "Paths of the saved results".</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>automl.CLOUD_MODE <span class="op">=</span> <span class="st">"LOAD"</span></span>
@@ -1320,12 +1340,12 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <tr class="even">
 <td><code>p_automl_tabular</code></td>
 <td>Gemini score, structured fields</td>
-<td><code>import_saved_scores("tabular")</code>. The bucket column is <code>TARGET_COLUMN</code>, <code>_</code>, <code>POSITIVE_LABEL</code>, <code>_scores</code>. In the example, <code>Churn_Yes_scores</code>.</td>
+<td>Already in the telco <code>validation_probabilities.csv</code>. A new batch is copied by <code>import_saved_scores("tabular")</code>. The bucket column is <code>TARGET_COLUMN</code>, <code>_</code>, <code>POSITIVE_LABEL</code>, <code>_scores</code>. In the example, <code>Churn_Yes_scores</code>.</td>
 </tr>
 <tr class="odd">
 <td><code>p_automl_text</code></td>
 <td>Gemini score, fields plus <code>TEXT_FEATURE</code></td>
-<td><code>import_saved_scores("tabular_text")</code>, after that batch prediction exists</td>
+<td>Already in the same telco file. A new batch is copied by <code>import_saved_scores("tabular_text")</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -1337,7 +1357,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <p>In Chapter 5, under <strong>The idea, before the command</strong>, each fit row is weighted in the log-likelihood by <code>1 / (2 × the share of its own class)</code>. Leavers are fewer, so each leaver has the larger weight, and the two classes have the same total weight. The Gemini models fit without those weights. On the calibration plot, the logistic curve and the Gemini curve are scores from those two fits.</p>
 <p><strong>PR-AUC.</strong> Chapter 5, under <strong>Ranking, across cutoffs</strong>, defines ROC-AUC as the probability that a random leaver receives a higher score than a random stayer. That is one leaver compared with one stayer. PR-AUC reads the list those scores produce. Order the comparison customers from the highest score to the lowest. Pick a leaver at random, each leaver equally likely. Keep that leaver and every customer ranked at least as high. Customers with the same score are kept together. Precision at that leaver is the share of the kept group who left. PR-AUC is the expected value of that precision. It is the area under the precision-recall curve: as the cutoff moves, recall is the share of leavers who are kept, and precision is the share of the kept group who left. A value of 1 means the kept group contains only leavers, whichever leaver is chosen. A ranking with no link to the outcome has PR-AUC equal to the share of leavers in the comparison rows. ROC-AUC can stand well above one half while this expected precision stays near that share, because many stayers can still sit above a leaver. The column <code>PR-AUC</code> in the next table is this average.</p>
 <p><code>metrics_table(state["probabilities"])</code> takes the comparison table and reads <code>DECISION_THRESHOLD</code>. It uses every score column that is present. It returns one row per model.</p>
-<div id="b3c4dcbd" class="cell" data-execution_count="13">
+<div id="7fb4f638" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>automl.metrics_table(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <div>
@@ -1409,7 +1429,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 </div>
 </div>
 <p><code>plot_roc(state["probabilities"])</code> takes the same table. It returns one curve per score column. The number in the legend is the ROC-AUC. The vertical axis is the share of positive outcomes flagged. The horizontal axis is the share of negative outcomes flagged. In the example, a positive outcome is a customer who left.</p>
-<div id="9bf10859" class="cell" data-execution_count="14">
+<div id="015b8066" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>automl.plot_roc(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div>
@@ -1420,7 +1440,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 </div>
 </div>
 <p><code>plot_calibration(state["probabilities"])</code> takes the same table. It returns a figure: mean predicted probability against the share of those customers with <code>OBSERVED_COLUMN</code> equal to <code>1</code>.</p>
-<div id="a8629f23" class="cell" data-execution_count="15">
+<div id="e320b51e" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>automl.plot_calibration(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <div>
@@ -1430,14 +1450,14 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 </div>
 </div>
 </div>
-<p>Until the paid cell has run, the displays contain the two logistic models. After it has run, run the three cells again. Compare tabular logistic regression with tabular Gemini. Separately, compare the communications logistic regression with Gemini plus <code>TEXT_FEATURE</code>. The table is the result.</p>
+<p>On the telco file the four scores are already present, so the displays compare all four. A comparison file with no Gemini column shows the two logistic models. After a paid run, run the three cells again. Compare tabular logistic regression with tabular Gemini. Separately, compare the communications logistic regression with Gemini plus <code>TEXT_FEATURE</code>. The table is the result.</p>
 </section>
 <section id="does-the-campaign-decision-change" class="level3" data-number="7.3.11">
 <h3 data-number="7.3.11" class="anchored" data-anchor-id="does-the-campaign-decision-change"><span class="header-section-number">7.3.11</span> Does the campaign decision change?</h3>
 <p>The calculation uses <code>p1</code>, <code>cost</code>, <code>loss</code> and <code>BUDGET</code>. Only the churn score changes: once <code>p_logistic_tabular</code>, once <code>p_logistic_text</code>, and, when those columns exist, once <code>p_automl_tabular</code> and once <code>p_automl_text</code>.</p>
 <p>The Chapter 6 rule is unchanged. Target the customer when the expected loss avoided by the campaign is larger than <code>cost</code>.</p>
 <p><code>economic_table(state["probabilities"])</code> takes the comparison table. It reads <code>BUDGET</code>, <code>OBSERVED_COLUMN</code>, <code>p1</code>, <code>cost</code>, <code>loss</code> and each score column. It returns one row per model: ROC-AUC, customers targeted, spend, expected cost, and the same figures under <code>BUDGET</code>. <code>summary</code> is that table.</p>
-<div id="0770c552" class="cell" data-execution_count="16">
+<div id="3c6a9455" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> automl.economic_table(state[<span class="st">"probabilities"</span>])</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
@@ -1521,7 +1541,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 </div>
 <p><code>Expected cost</code> and <code>Expected net benefit</code> use the score as <span class="math inline">\(p_0\)</span>. Logistic regression and the Gemini search are fitted to the probabilities of the outcome. They are not fitted to this cost. A higher score raises <span class="math inline">\(b_i = L_i(p_{0,i} - p_{1,i}) - c_i\)</span>. The smallest expected cost is then a property of those estimated probabilities. It is not a reason to prefer the model.</p>
 <p><code>realized_cost_table(state["probabilities"])</code> keeps <code>p1</code>, <code>cost</code> and <code>loss</code> fixed and reads <code>OBSERVED_COLUMN</code>. With no campaign, a customer who left costs <code>loss</code> and a customer who stayed costs 0. The contact list is still the Chapter 6 list for that score. For a selected customer who left, <code>loss</code> is replaced by <code>cost + loss * p1</code>. For a selected customer who stayed, the cost is <code>cost</code>. <code>Net benefit</code> is the no-campaign total minus the with-campaign total. The budget columns use the contact list that respects <code>BUDGET</code>. <code>p1</code> is held as given. The table accounts for the historical outcomes under that fixed <code>p1</code>. It does not measure the effect of a campaign.</p>
-<div id="d8604426" class="cell" data-execution_count="17">
+<div id="68be4a6c" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>automl.realized_cost_table(state[<span class="st">"probabilities"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="17">
 <div>
@@ -1614,7 +1634,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <h3 data-number="7.3.12" class="anchored" data-anchor-id="delete-the-cloud-resources"><span class="header-section-number">7.3.12</span> Delete the cloud resources</h3>
 <p>When <code>validation_probabilities.csv</code> has the Gemini columns, the campaign calculation does not need the cloud model.</p>
 <p><code>cleanup_cloud(approve_delete=True)</code> runs only when <code>DELETE_CLOUD_RESOURCES</code> is <code>True</code>. It also requires <code>AUTOML_APPROVE_DELETE=yes</code>. It reads <code>cloud_resources.json</code> in <code>OUTPUT_DIR</code>, the names <code>run_cloud()</code> recorded. It returns <code>0</code> when nothing remains or the deletion finished, and <code>2</code> when the approval is missing.</p>
-<div id="ada64e59" class="cell" data-execution_count="18">
+<div id="b374750b" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>DELETE_CLOUD_RESOURCES <span class="op">=</span> <span class="va">False</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> DELETE_CLOUD_RESOURCES:</span>
@@ -1649,7 +1669,7 @@ gcloud storage buckets create gs://my-aidata-course-bucket --location=us-central
 <!--
 `verify_saved_files()` takes no argument. It reads `manifest.json` and `validation_probabilities.csv`. It returns columns `Check`, `Result`, `Detail` and `Required`. A row that says the Gemini probabilities are not saved means `p_automl_tabular` and `p_automl_text` are not in the comparison file yet. The check does not start a job.
 
-::: {#81eadac3 .cell execution_count=19}
+::: {#c53ca8a7 .cell execution_count=19}
 ``` {.python .cell-code}
 # automl.verify_saved_files()
 ```

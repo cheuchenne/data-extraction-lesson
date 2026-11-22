@@ -419,7 +419,7 @@ Optional prompt for an AI assistant
 <li><code>TEXT_MODE</code> controls the text step. <code>"RUN"</code> computes it. <code>"SAVE"</code> computes it and stores it. <code>"LOAD"</code> reads a stored result and continues. On the machine used to prepare this workshop the text step took a little over two seconds, so the default is <code>"RUN"</code>. Use <code>"LOAD"</code> if you have already saved a matching result and want to skip the computation. <code>"LOAD"</code> fails with an explanation if no matching file exists. It will not invent a result.</li>
 <li><code>DECISION_THRESHOLD</code> is the cutoff. Scores at or above this value are flagged as predicted churn. The comparison later in the workshop uses <code>0.5</code>.</li>
 </ul>
-<div id="9c554fc9" class="cell" data-execution_count="1">
+<div id="c3a80036" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
@@ -575,7 +575,7 @@ Optional prompt for an AI assistant
 </div>
 <p>The calculations themselves live in <code>python/workshop_churn.py</code>. You can open that file if you want to see the steps. You do not need to edit it.</p>
 <p>Confirm that the packages import:</p>
-<div id="9078bd38" class="cell" data-execution_count="2">
+<div id="2321a26a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sklearn</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -605,7 +605,7 @@ Optional prompt
 <section id="load-the-two-datasets" class="level3" data-number="5.2.4">
 <h3 data-number="5.2.4" class="anchored" data-anchor-id="load-the-two-datasets"><span class="header-section-number">5.2.4</span> Load the two datasets</h3>
 <p><code>load_datasets()</code> reads the two files named in the settings cell. It checks that <code>Churn</code> contains only <code>Yes</code> and <code>No</code>. If a numeric field such as total charge is blank, it replaces that blank with zero and prints how many replacements it made. Zero is a fixed rule, not an average computed from other customers.</p>
-<div id="a3487c7d" class="cell" data-execution_count="3">
+<div id="a22d4e35" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>customers, communications <span class="op">=</span> workshop.load_datasets(TABULAR_FILE, TEXT_FILE)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>workshop.data_overview(customers, communications)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -682,7 +682,7 @@ Blank numeric values replaced with zero: 0</code></pre>
 </div>
 </div>
 <p>A row of the customer table is one customer. A row of the communications file is one message. The two files cannot be stacked side by side as they stand: most customers have more than one message, so a direct match would repeat the customer once per message. The model would then treat copies of the same person as if they were different people. Later we will build <strong>one row of text numbers per customer</strong>, and only then attach those numbers.</p>
-<div id="3245b9e0" class="cell" data-execution_count="4">
+<div id="d3d40267" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>customers.head(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
@@ -748,7 +748,7 @@ Blank numeric values replaced with zero: 0</code></pre>
 </div>
 </div>
 <p><code>head(3)</code> shows the first three customers.</p>
-<div id="2c658b1e" class="cell" data-execution_count="5">
+<div id="38f5819f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>communications[[</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    workshop.ID_COLUMN,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    workshop.TEXT_ORDER_COLUMN,</span>
@@ -798,7 +798,7 @@ Blank numeric values replaced with zero: 0</code></pre>
 </div>
 </div>
 <p><code>customerID</code> is the shared identifier. <code>text_index</code> orders one customer’s messages. It is not a calendar date. <code>communication_type</code> says what kind of message it is. <code>text</code> is the message.</p>
-<div id="05c0abe5" class="cell" data-execution_count="6">
+<div id="d5b65ed3" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>workshop.target_counts(customers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
@@ -832,7 +832,7 @@ Blank numeric values replaced with zero: 0</code></pre>
 </div>
 </div>
 </div>
-<div id="345848e3" class="cell" data-execution_count="7">
+<div id="48134e26" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>workshop.text_type_counts(communications)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <div>
@@ -892,7 +892,7 @@ Blank numeric values replaced with zero: 0</code></pre>
 </div>
 <!--
 
-::: {#b652109b .cell execution_count=8}
+::: {#a71137de .cell execution_count=8}
 ``` {.python .cell-code}
 workshop.total_charge_check()
 ```
@@ -901,7 +901,7 @@ workshop.total_charge_check()
 
 The public source file has a few blank total charges. The tenure row in this table tells you who those customers are. The prepared file used in the models already stores those totals as numbers. The loading command reported how many blanks it still found there.
 -->
-<div id="85043462" class="cell" data-execution_count="9">
+<div id="b248922d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>workshop.timing_summary(communications)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
@@ -952,7 +952,7 @@ It is done once, at customer level, and then reused. Splitting messages instead 
 A contract with three levels becomes three yes/no columns. The list of levels is taken from the training customers. An unseen level in the test set would be recorded as all zeros rather than stopping the workshop.
 -->
 <p><code>TotalCharges</code> and <code>tenure</code> describe related facts about the same history. The model may use both. That does not make each one a separate cause of churn.</p>
-<div id="75c783f0" class="cell" data-execution_count="10">
+<div id="39e17619" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>split <span class="op">=</span> workshop.prepare_train_test(customers)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>workshop.split_summary(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1000,7 +1000,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 <section id="fit-the-tabular-model" class="level3" data-number="5.3.3">
 <h3 data-number="5.3.3" class="anchored" data-anchor-id="fit-the-tabular-model"><span class="header-section-number">5.3.3</span> Fit the tabular model</h3>
 <p><code>run_tabular_model()</code> fits the logistic regression on the training customers and scores both groups. The cutoff is the value in <code>DECISION_THRESHOLD</code>.</p>
-<div id="b6ef03e6" class="cell" data-execution_count="11">
+<div id="0df85e1d" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tabular <span class="op">=</span> workshop.run_tabular_model(split)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>workshop.show_metrics(tabular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1068,7 +1068,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 <section id="a-rule-that-ignores-the-customer-record" class="level3" data-number="5.4.1">
 <h3 data-number="5.4.1" class="anchored" data-anchor-id="a-rule-that-ignores-the-customer-record"><span class="header-section-number">5.4.1</span> A rule that ignores the customer record</h3>
 <p>Most customers stay. A rule that predicts “stay” for everyone will therefore be right quite often, while finding none of the customers who leave. That rule is the reference for accuracy.</p>
-<div id="d8bfe651" class="cell" data-execution_count="12">
+<div id="8f77b0f6" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>always_stay <span class="op">=</span> workshop.baseline_always_negative(split)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>workshop.show_metrics(always_stay)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
@@ -1118,7 +1118,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 </div>
 </div>
 </div>
-<div id="06ef1137" class="cell" data-execution_count="13">
+<div id="ed59f783" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_accuracy(tabular, always_stay)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="12">
 <p>Test accuracy is 0.750. The always-negative rule reaches 0.735 on the same rows, so the model is only 0.015 above that rule. Test recall is 0.797: at the current cutoff the model flags that share of the positive test rows. Accuracy and recall answer different questions. Accuracy alone is a weak guide when most rows are negative.</p>
@@ -1130,7 +1130,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 <section id="who-was-flagged" class="level3" data-number="5.4.2">
 <h3 data-number="5.4.2" class="anchored" data-anchor-id="who-was-flagged"><span class="header-section-number">5.4.2</span> Who was flagged</h3>
 <p>A <strong>confusion matrix</strong> crosses the actual outcome with the flag. The plain-language counts below are the test customers. In technical shorthand, flagged churners are true positives, flagged stayers are false positives, missed churners are false negatives, and unflagged stayers are true negatives.</p>
-<div id="ff4a73c9" class="cell" data-execution_count="14">
+<div id="4929d0bd" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>workshop.confusion_table(tabular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <div>
@@ -1161,7 +1161,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 </div>
 </div>
 </div>
-<div id="e218b3b9" class="cell" data-execution_count="15">
+<div id="973b78f6" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>workshop.plot_confusion(tabular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div>
@@ -1171,7 +1171,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 </div>
 </div>
 </div>
-<div id="06ec5c2a" class="cell" data-execution_count="16">
+<div id="abc80cfc" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_confusion(tabular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="15">
 <p>At a cutoff of 0.50, the model flags 372 of the 467 positive test rows and misses 95. It also flags 345 negative test rows, and leaves 949 negative rows unflagged. A flag is a score at or above the cutoff. It is an input to a decision, and it is itself a decision only after the business accepts that cutoff.</p>
@@ -1183,7 +1183,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 <h3 data-number="5.4.3" class="anchored" data-anchor-id="ranking-across-cutoffs"><span class="header-section-number">5.4.3</span> Ranking, across cutoffs</h3>
 <p><strong>ROC-AUC</strong> measures how often a randomly chosen churner receives a higher score than a randomly chosen stayer. A value of 0.5 means the ranking is no better than chance. A value of 1 means every churner is ranked above every stayer. The curve shows that trade-off as the cutoff moves: the horizontal axis is the share of stayers who are flagged, and the vertical axis is the share of churners who are flagged.</p>
 <p><strong>PR-AUC</strong> uses the same ranking and reads the contact list. Order the customers from the highest score to the lowest. Pick a leaver at random, each leaver equally likely. Keep that leaver and every customer ranked at least as high. Customers with the same score are kept together. Precision is the share of this group who left. PR-AUC is the expected value of that share. A value of 1 means every leaver stands above every stayer, so the kept group contains only leavers. A ranking with no link to the outcome has PR-AUC equal to the share of leavers. This chapter judges the ranking by ROC-AUC, and one cutoff by precision and recall. Chapter 7 computes PR-AUC because its comparison table and the cloud evaluation both report it.</p>
-<div id="a1fa2ebb" class="cell" data-execution_count="17">
+<div id="0f5fcf8a" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>workshop.plot_roc([tabular])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <div>
@@ -1193,7 +1193,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 </div>
 </div>
 </div>
-<div id="67a698a8" class="cell" data-execution_count="18">
+<div id="8ea95933" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_train_test(tabular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="17">
 <p>Training ROC-AUC is 0.848. Test ROC-AUC is 0.846. The two scores are close. The test score is the one that describes rows the model had not seen.</p>
@@ -1203,7 +1203,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 </section>
 <section id="the-scores-themselves" class="level3" data-number="5.4.4">
 <h3 data-number="5.4.4" class="anchored" data-anchor-id="the-scores-themselves"><span class="header-section-number">5.4.4</span> The scores themselves</h3>
-<div id="41945974" class="cell" data-execution_count="19">
+<div id="9842f55c" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>workshop.plot_probabilities(tabular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div>
@@ -1213,14 +1213,14 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 </div>
 </div>
 </div>
-<div id="27d51b2c" class="cell" data-execution_count="20">
+<div id="84ffc239" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_scores(tabular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="19">
 <p>On the test rows, the average predicted score is 0.414. The positive share is 0.265. The average score sits above the positive rate. The model was told to pay extra attention to the positive class, so a score of 0.70 is a ranking signal rather than a statement that the chance of the positive class is 70 percent. The cutoff that triggers an action is a business choice.</p>
 </div>
 </div>
 <p>The dashed line is the cutoff. Moving it changes who is flagged. It does not refit the model.</p>
-<div id="1a1df078" class="cell" data-execution_count="21">
+<div id="fe5ad4f3" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>tabular_lower_cutoff <span class="op">=</span> workshop.apply_threshold(tabular, <span class="fl">0.30</span>)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>workshop.show_metrics(tabular_lower_cutoff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
@@ -1270,7 +1270,7 @@ A contract with three levels becomes three yes/no columns. The list of levels is
 </div>
 </div>
 </div>
-<div id="22cd7310" class="cell" data-execution_count="22">
+<div id="a47ec58b" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_threshold_change(tabular, tabular_lower_cutoff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="21">
 <p>At a cutoff of 0.50, test recall is 0.797 and test precision is 0.519. At a cutoff of 0.30, test recall is 0.927 and test precision is 0.433. A lower cutoff flags more rows: it usually finds more of the positive rows and also flags more negative rows. The rest of the workshop keeps the cutoff at 0.50 so the models are compared at the same rule.</p>
@@ -1330,7 +1330,7 @@ Optional prompt
 <section id="a-three-line-illustration" class="level3" data-number="5.5.2">
 <h3 data-number="5.5.2" class="anchored" data-anchor-id="a-three-line-illustration"><span class="header-section-number">5.5.2</span> A three-line illustration</h3>
 <p>The next cell is a teaching example. The three lines are not customer records, and they are not fed into the churn models. It uses every word because the example is tiny. The real step uses the restrictions described above, and it uses 64 columns rather than two.</p>
-<div id="593125af" class="cell" data-execution_count="23">
+<div id="aa85a396" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>illustration <span class="op">=</span> workshop.illustrate_text_encoding()</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>illustration[<span class="st">"word_scores"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1406,7 +1406,7 @@ The workshop compresses real documents into 64 numbers. The two columns in the c
 </div>
 </div>
 </div>
-<div id="2cac4595" class="cell" data-execution_count="24">
+<div id="042ac0ef" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>illustration[<span class="st">"compressed"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="23">
 <div>
@@ -1448,12 +1448,12 @@ The workshop compresses real documents into 64 numbers. The two columns in the c
 <h3 data-number="5.5.3" class="anchored" data-anchor-id="run-the-text-step"><span class="header-section-number">5.5.3</span> Run the text step</h3>
 <p>This cell uses <code>TEXT_MODE</code> and <code>N_TEXT_COMPONENTS</code> from the settings cell. <code>"RUN"</code> computes the columns. <code>"SAVE"</code> computes them and writes <code>data/processed/text_model_cache/</code>. <code>"LOAD"</code> reads a saved file only when the split, the text file, the number of columns and the processing rules match. A mismatch stops with an instruction. It does not substitute an older or unrelated file.</p>
 <p>To recompute and store a new file, set <code>workshop.TEXT_MODE = "SAVE"</code> in the settings cell and run again from that cell downward. To force a fresh computation without reading the saved file, set <code>workshop.TEXT_MODE = "RUN"</code>.</p>
-<div id="c5b9389a" class="cell" data-execution_count="25">
+<div id="30f967e3" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>text_features <span class="op">=</span> workshop.build_text_features(split, communications)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>workshop.text_feature_summary(text_features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Computed texts text features. Results were not saved.
-64 text columns for 7043 rows. Fitted on 5282 training documents. Variation retained: 0.467. Seconds: 2.4.</code></pre>
+64 text columns for 7043 rows. Fitted on 5282 training documents. Variation retained: 0.467. Seconds: 2.3.</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="24">
 <div>
@@ -1516,7 +1516,7 @@ The workshop compresses real documents into 64 numbers. The two columns in the c
 <tr class="even">
 <td data-quarto-table-cell-role="th">9</td>
 <td>Seconds</td>
-<td>2.400</td>
+<td>2.300</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">10</td>
@@ -1529,7 +1529,7 @@ The workshop compresses real documents into 64 numbers. The two columns in the c
 </div>
 </div>
 </div>
-<div id="3f76ff20" class="cell" data-execution_count="26">
+<div id="1fa9cb94" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>workshop.preview_text_features(text_features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <div>
@@ -1626,7 +1626,7 @@ Optional prompt
 <li><code>Churn</code> stays the outcome. It is not copied into the predictors.</li>
 </ul>
 <p>The combined table holds two kinds of information: the structured account fields, and a numerical summary of the free-text messages. They enter the model as one list of columns. The technical name for joining them before the model is <strong>early fusion</strong>. The idea is simply that the model sees both blocks at once.</p>
-<div id="396082b9" class="cell" data-execution_count="27">
+<div id="9ede764b" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>combined_data <span class="op">=</span> workshop.combine_with_text(split, text_features)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>combined_data[<span class="st">"check"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1680,7 +1680,7 @@ Optional prompt
 <section id="stage-7-fit-and-evaluate-the-combined-model" class="level2" data-number="5.7">
 <h2 data-number="5.7" class="anchored" data-anchor-id="stage-7-fit-and-evaluate-the-combined-model"><span class="header-section-number">5.7</span> Stage 7 — Fit and evaluate the combined model</h2>
 <p>The command below fits a second logistic regression. The model family, the cutoff, the training customers and the test customers are the same as in Stage 3. The new ingredient is the block of text columns. Those columns were produced by a text step fitted on the training customers only.</p>
-<div id="5b64145b" class="cell" data-execution_count="28">
+<div id="198eba30" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>combined <span class="op">=</span> workshop.run_combined_model(combined_data)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>workshop.show_metrics(combined)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1733,13 +1733,13 @@ Optional prompt
 </div>
 </div>
 </div>
-<div id="f67f4876" class="cell" data-execution_count="29">
+<div id="91b94416" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_train_test(combined)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="28">
 <p>Training ROC-AUC is 0.907. Test ROC-AUC is 0.908. The two scores are close. The test score is the one that describes rows the model had not seen.</p>
 </div>
 </div>
-<div id="7d13a888" class="cell" data-execution_count="30">
+<div id="702282e4" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>workshop.plot_probabilities(combined)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
 <div>
@@ -1749,7 +1749,7 @@ Optional prompt
 </div>
 </div>
 </div>
-<div id="8b93f63d" class="cell" data-execution_count="31">
+<div id="fe3868c3" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_score_shape(combined)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="30">
 <p>On the test rows, 5% of the scores are below 0.01 or above 0.99. Many rows sit between those extremes, so the cutoff changes who would be flagged.</p>
@@ -1758,7 +1758,7 @@ Optional prompt
 <p>Compare this histogram with the tabular one. Scores that sit between the two ends mean the cutoff still changes who would be contacted. A pile of scores at 0 and at 1 would mean the model is very sure about most customers.</p>
 <section id="the-tabular-model-and-the-combined-model-on-the-same-test-customers" class="level3" data-number="5.7.1">
 <h3 data-number="5.7.1" class="anchored" data-anchor-id="the-tabular-model-and-the-combined-model-on-the-same-test-customers"><span class="header-section-number">5.7.1</span> The tabular model and the combined model on the same test customers</h3>
-<div id="cfcbbf91" class="cell" data-execution_count="32">
+<div id="4652823c" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>workshop.compare_models([tabular, combined])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="31">
 <div>
@@ -1811,7 +1811,7 @@ Optional prompt
 </div>
 </div>
 </div>
-<div id="fffc92ed" class="cell" data-execution_count="33">
+<div id="eef87b78" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>workshop.plot_roc([tabular, combined])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="32">
 <div>
@@ -1823,7 +1823,7 @@ Optional prompt
 </div>
 <p>Read the test ROC-AUC column as the ranking comparison. Read recall and precision as the comparison at the shared cutoff of 0.5. A gain in ranking is one fact. A gain large enough to pay for collecting and processing communications is a second fact. A reason for the business to change a retention process is a third fact. The table can support the first. It does not settle the second or the third.</p>
 <p>We still have to fit the text-only model before drawing the full comparison. The checks below confirm that these two models used the same test customers and that the text step did not learn from them.</p>
-<div id="166692da" class="cell" data-execution_count="34">
+<div id="458d91ba" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>workshop.evaluation_checks(split, [tabular, combined], text_features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="33">
 <div>
@@ -1892,7 +1892,7 @@ Optional prompt
 <section id="stage-8-fit-and-evaluate-the-text-only-model" class="level2" data-number="5.8">
 <h2 data-number="5.8" class="anchored" data-anchor-id="stage-8-fit-and-evaluate-the-text-only-model"><span class="header-section-number">5.8</span> Stage 8 — Fit and evaluate the text-only model</h2>
 <p>The third model uses the text columns and no structured fields. Same training customers, same test customers, same cutoff, same kind of logistic regression.</p>
-<div id="47b61e3d" class="cell" data-execution_count="35">
+<div id="736db73c" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>text_only <span class="op">=</span> workshop.run_text_only_model(combined_data)</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>workshop.show_metrics(text_only)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1947,7 +1947,7 @@ Optional prompt
 </div>
 <section id="the-three-models-together" class="level3" data-number="5.8.1">
 <h3 data-number="5.8.1" class="anchored" data-anchor-id="the-three-models-together"><span class="header-section-number">5.8.1</span> The three models together</h3>
-<div id="b1cb9f82" class="cell" data-execution_count="36">
+<div id="1692bdb6" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>workshop.compare_models([tabular, combined, text_only])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="35">
 <div>
@@ -2012,7 +2012,7 @@ Optional prompt
 </div>
 </div>
 </div>
-<div id="6de09917" class="cell" data-execution_count="37">
+<div id="99ae4129" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>workshop.plot_metric_bars([tabular, combined, text_only])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="36">
 <div>
@@ -2022,7 +2022,7 @@ Optional prompt
 </div>
 </div>
 </div>
-<div id="6d109828" class="cell" data-execution_count="38">
+<div id="30dfa86b" class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>workshop.plot_roc([tabular, combined, text_only])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="37">
 <div>
@@ -2032,7 +2032,7 @@ Optional prompt
 </div>
 </div>
 </div>
-<div id="fff56245" class="cell" data-execution_count="39">
+<div id="d8489a72" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>workshop.evaluation_checks(split, [tabular, combined, text_only], text_features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="38">
 <div>
@@ -2114,7 +2114,7 @@ Optional prompt
 </div>
 </div>
 </div>
-<div id="4c48e17c" class="cell" data-execution_count="40">
+<div id="68f37aef" class="cell" data-execution_count="40">
 <div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>workshop.explain_model_comparison([tabular, combined, text_only])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="39">
 <p>On the same test rows, ROC-AUC is 0.846 for the tabular model, 0.908 for the tabular model plus text, and 0.829 for the text-only model. The combined model differs from the tabular model by +0.062 ROC-AUC.</p>
@@ -2151,7 +2151,7 @@ The comparison is not a causal finding. A higher score does not show that a cont
 </section>
 <section id="all-of-the-test-results-on-one-page" class="level3" data-number="5.8.2">
 <h3 data-number="5.8.2" class="anchored" data-anchor-id="all-of-the-test-results-on-one-page"><span class="header-section-number">5.8.2</span> All of the test results on one page</h3>
-<div id="948aba71" class="cell" data-execution_count="41">
+<div id="1339d5bf" class="cell" data-execution_count="41">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>workshop.compare_models([always_stay, tabular, combined, text_only])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="40">
 <div>
@@ -2269,7 +2269,7 @@ Optional prompt
 <li><code>p0</code> is the test score.</li>
 <li><code>observed_outcome</code> is 1 when the target equals the positive label, and 0 otherwise.</li>
 </ul>
-<div id="addb0403" class="cell" data-execution_count="42">
+<div id="4786cb9b" class="cell" data-execution_count="42">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>SCORE_FILE <span class="op">=</span> <span class="st">"data/processed/telco/test_probabilities_with_text.csv"</span></span>
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>workshop.save_scores(combined, SCORE_FILE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -2375,7 +2375,7 @@ Optional prompt
 <li><code>p_logistic_text</code> is the score from the structured fields plus the communications. On a test row it equals <code>p0</code> in <code>SCORE_FILE</code>.</li>
 <li><code>observed_outcome</code> is 1 when the target equals the positive label, and 0 otherwise.</li>
 </ul>
-<div id="2e6ab842" class="cell" data-execution_count="43">
+<div id="f76b85e1" class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>MODEL_ROWS_FILE <span class="op">=</span> <span class="st">"data/processed/telco/model_rows.csv"</span></span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>workshop.save_model_rows(tabular, combined, MODEL_ROWS_FILE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
