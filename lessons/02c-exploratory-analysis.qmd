@@ -28,7 +28,7 @@ By the end of this session you should be able to:
 6. Build the invoice-level DataFrame step by step with `pandas.merge`.
 7. Add a few analysis columns, save the table, and forward each source's variable descriptions into Excel.
 
-We do **not** start the full visualisation lesson today. The deliverable is the analysis DataFrame.
+We do **not** start the full visualisation lesson in this chapter. The deliverable is the analysis DataFrame.
 
 ## Why this step comes first
 
@@ -83,9 +83,12 @@ The picture is always the same:
 
 ## Load each source
 
-The panel files live in `data/raw/analysis/`. They were generated with `python/generate_analysis_data.py` and include the customers from the previous section.
+The panel files live in `data/raw/analysis/`. 
+<!--
+They were generated with `python/generate_analysis_data.py` and include the customers from the previous section.
 
 That script does not write the extracts alone. In the same run it calls `write_source_description_files`, which places a companion CSV next to each source (`customers_variables.csv`, `invoices_variables.csv`, `subscriptions_variables.csv`, `payments_variables.csv`, `interactions_variables.csv`, `api_invoices_variables.csv`). SQLite does not store those sentences inside `company.sqlite`; they sit next to the database, one CSV per table that we will join. Every companion has three columns: `variable`, `type`, `definition`. They are not the data. They are the meaning of the columns, stored **when the files are constructed** so that a later merge can copy the sentences with the columns.
+-->
 
 ```{python}
 import json
@@ -192,6 +195,8 @@ show_invoice(
         "status",
     ],
 )
+
+analysis.head()
 ```
 
 `analysis = invoices.copy()` creates the working table as a copy of the invoice sheet. From now on, **the number of rows should stay equal to the number of invoices**, except if we make a mistake.
@@ -264,6 +269,7 @@ subscriptions.loc[
     subscriptions["subscription_id"] == "SUB-1827",
     ["subscription_id", "customer_id", "subscription_type", "monthly_amount", "start_date"],
 ]
+
 ```
 
 Again, one subscription row. Several invoices share that identifier. We do not need every subscription column: `customer_id` is already on the invoice. We select only the fields we want to add.
@@ -453,7 +459,7 @@ analysis = analysis.merge(
 
 - The key is `invoice_id`.
 - `how="left"` is essential. Most invoices in the panel are not from September. They have no API row. They must stay in the table, with `status_api` missing.
-- `validate="m:1"` (not `1:1`): many historical invoices will not appear on the right. The check only forbids the API from listing the same invoice twice.
+- `validate="1:1"` would be wrong. It would forbid any invoice from being missing on the right. That is not what we want. The API is a snapshot, not a complete history. Many historical invoices will not appear on the right. 
 
 ```{python}
 show_invoice(
